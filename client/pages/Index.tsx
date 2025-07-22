@@ -10,9 +10,6 @@ export default function Index() {
           <div className="flex justify-center mb-6">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-soft-lavender-400 to-pastel-blue-400 rounded-full blur-lg opacity-30 animate-pulse"></div>
-              <div className="relative bg-white rounded-full p-6 shadow-lg">
-                <Headphones className="w-12 h-12 text-soft-lavender-600" />
-              </div>
             </div>
           </div>
 
