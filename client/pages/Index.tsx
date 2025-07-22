@@ -44,18 +44,8 @@ export default function Index() {
           {/* Additional Visual Elements */}
           <div className="flex justify-center space-x-8 pt-6 opacity-60">
             <div className="flex flex-col items-center space-y-2">
-              <div className="bg-white/50 rounded-full p-3">
-                <MessageCircle className="w-6 h-6 text-soft-lavender-600" />
-              </div>
-              <span className="text-sm text-gray-600">
-                Natural conversation
-              </span>
             </div>
             <div className="flex flex-col items-center space-y-2">
-              <div className="bg-white/50 rounded-full p-3">
-                <PhoneCall className="w-6 h-6 text-pastel-blue-600" />
-              </div>
-              <span className="text-sm text-gray-600">In-browser calling</span>
             </div>
           </div>
         </div>
