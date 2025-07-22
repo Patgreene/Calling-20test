@@ -43,10 +43,8 @@ export default function Index() {
 
           {/* Additional Visual Elements */}
           <div className="flex justify-center space-x-8 pt-6 opacity-60">
-            <div className="flex flex-col items-center space-y-2">
-            </div>
-            <div className="flex flex-col items-center space-y-2">
-            </div>
+            <div className="flex flex-col items-center space-y-2"></div>
+            <div className="flex flex-col items-center space-y-2"></div>
           </div>
         </div>
       </div>
