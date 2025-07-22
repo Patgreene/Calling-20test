@@ -62,33 +62,7 @@ export default function Index() {
         </div>
       </div>
 
-      {/* SDK Script Placeholder - Space for Retell Web SDK Integration */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            // SDK Script will be injected here
-            // <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script>
-            
-            // Call Start Logic will be injected here
-            /*
-            document.getElementById('startCallBtn').addEventListener('click', async () => {
-              const accessToken = 'PASTE_ACCESS_TOKEN_HERE'; // Replace this later with dynamic one
 
-              const retell = new RetellWebClient();
-              await retell.startCall({ accessToken });
-
-              retell.on('call_started', () => {
-                console.log('Call started');
-              });
-
-              retell.on('call_ended', () => {
-                console.log('Call ended');
-              });
-            });
-            */
-          `,
-        }}
-      />
     </>
   );
 }
