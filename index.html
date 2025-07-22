@@ -3,12 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello world project</title>
+    <title>Vouch Call - AI Voice Agent</title>
+    <meta name="description" content="Start a voice call with our AI agent Kate for vouching" />
   </head>
 
   <body>
     <div id="root"></div>
 
+    <!-- Retell Web SDK - Uncomment when ready to integrate -->
+    <!-- <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script> -->
+
     <script type="module" src="/client/App.tsx"></script>
+
+    <!-- Retell Call Logic - Uncomment and configure when ready -->
+    <!--
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('startCallBtn').addEventListener('click', async () => {
+          const accessToken = 'PASTE_ACCESS_TOKEN_HERE'; // Replace this later with dynamic one
+
+          const retell = new RetellWebClient();
+          await retell.startCall({ accessToken });
+
+          retell.on('call_started', () => {
+            console.log('Call started');
+          });
+
+          retell.on('call_ended', () => {
+            console.log('Call ended');
+          });
+        });
+      });
+    </script>
+    -->
   </body>
 </html>
