@@ -35,7 +35,7 @@ export default function Index() {
           {/* Start Call Button */}
           <div className="pt-4">
             <Button
-              id="startCallBtn"
+              id="start-call-btn"
               size="lg"
               className="bg-gradient-to-r from-soft-lavender-500 to-pastel-blue-500 hover:from-soft-lavender-600 hover:to-pastel-blue-600 text-white font-semibold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full md:w-auto md:min-w-[200px] group"
             >
