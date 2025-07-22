@@ -1,62 +1,94 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PhoneCall, Headphones, MessageCircle } from "lucide-react";
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
-  useEffect(() => {
-    fetchDemo();
-  }, []);
-
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-pastel-blue-50 via-soft-lavender-50 to-pastel-blue-100 flex items-center justify-center px-4 py-8">
+        <div className="max-w-2xl w-full text-center space-y-8">
+          {/* Visual Icon */}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-soft-lavender-400 to-pastel-blue-400 rounded-full blur-lg opacity-30 animate-pulse"></div>
+              <div className="relative bg-white rounded-full p-6 shadow-lg">
+                <Headphones className="w-12 h-12 text-soft-lavender-600" />
+              </div>
+            </div>
+          </div>
+
+          {/* Headline */}
+          <div className="space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-soft-lavender-700 to-pastel-blue-700 bg-clip-text text-transparent leading-tight">
+              Start Your Vouch Call
+            </h1>
+          </div>
+
+          {/* Instruction Text */}
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/20">
+            <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+              You'll speak with our AI agent, <span className="font-semibold text-soft-lavender-700">Kate</span>. 
+              She'll ask you a few simple questions about the person you're vouching for. 
+              No pressure — just speak naturally.
+            </p>
+          </div>
+
+          {/* Start Call Button */}
+          <div className="pt-4">
+            <Button
+              id="startCallBtn"
+              size="lg"
+              className="bg-gradient-to-r from-soft-lavender-500 to-pastel-blue-500 hover:from-soft-lavender-600 hover:to-pastel-blue-600 text-white font-semibold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full md:w-auto md:min-w-[200px] group"
+            >
+              <PhoneCall className="w-6 h-6 mr-3 group-hover:animate-pulse" />
+              Start Call
+            </Button>
+          </div>
+
+          {/* Additional Visual Elements */}
+          <div className="flex justify-center space-x-8 pt-6 opacity-60">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="bg-white/50 rounded-full p-3">
+                <MessageCircle className="w-6 h-6 text-soft-lavender-600" />
+              </div>
+              <span className="text-sm text-gray-600">Natural conversation</span>
+            </div>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="bg-white/50 rounded-full p-3">
+                <PhoneCall className="w-6 h-6 text-pastel-blue-600" />
+              </div>
+              <span className="text-sm text-gray-600">In-browser calling</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* SDK Script Placeholder - Space for Retell Web SDK Integration */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            // SDK Script will be injected here
+            // <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script>
+            
+            // Call Start Logic will be injected here
+            /*
+            document.getElementById('startCallBtn').addEventListener('click', async () => {
+              const accessToken = 'PASTE_ACCESS_TOKEN_HERE'; // Replace this later with dynamic one
+
+              const retell = new RetellWebClient();
+              await retell.startCall({ accessToken });
+
+              retell.on('call_started', () => {
+                console.log('Call started');
+              });
+
+              retell.on('call_ended', () => {
+                console.log('Call ended');
+              });
+            });
+            */
+          `,
+        }}
+      />
+    </>
   );
 }
