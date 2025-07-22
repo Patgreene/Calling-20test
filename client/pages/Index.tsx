@@ -26,9 +26,10 @@ export default function Index() {
           {/* Instruction Text */}
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/20">
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-              You'll speak with our AI agent, <span className="font-semibold text-soft-lavender-700">Kate</span>. 
-              She'll ask you a few simple questions about the person you're vouching for. 
-              No pressure — just speak naturally.
+              You'll speak with our AI agent,{" "}
+              <span className="font-semibold text-soft-lavender-700">Kate</span>
+              . She'll ask you a few simple questions about the person you're
+              vouching for. No pressure — just speak naturally.
             </p>
           </div>
 
@@ -50,7 +51,9 @@ export default function Index() {
               <div className="bg-white/50 rounded-full p-3">
                 <MessageCircle className="w-6 h-6 text-soft-lavender-600" />
               </div>
-              <span className="text-sm text-gray-600">Natural conversation</span>
+              <span className="text-sm text-gray-600">
+                Natural conversation
+              </span>
             </div>
             <div className="flex flex-col items-center space-y-2">
               <div className="bg-white/50 rounded-full p-3">
@@ -61,8 +64,6 @@ export default function Index() {
           </div>
         </div>
       </div>
-
-
     </>
   );
 }
