@@ -11,39 +11,20 @@
   <body>
     <div id="root"></div>
 
-    <!-- Retell Web SDK -->
-    <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script>
-
     <script type="module" src="/client/App.tsx"></script>
 
     <!-- Retell Call Logic -->
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('startCallBtn').addEventListener('click', async () => {
-          try {
-            console.log('Starting Retell call...');
-
-            const accessToken = 'eyJhbGciOiJIUzI1NiJ9...'; // Your provided access token
-
+      document.addEventListener("DOMContentLoaded", function () {
+        const startButton = document.getElementById("start-call-btn");
+        if (startButton) {
+          startButton.addEventListener("click", async () => {
             const retell = new RetellWebClient();
-            await retell.startCall({ accessToken });
-
-            retell.on('call_started', () => {
-              console.log('Call started successfully');
+            await retell.startCall({
+              accessToken: "eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6IndlYl9jYWxsXzE2N2IyOWU0OTY2ZDk2NDBlODAwMDdhM2YwMyJ9LCJpc3MiOiJBUElqWGZBMzVHTmM3WHgiLCJleHAiOjE3NTMxODUyMTEsIm5iZiI6MCwic3ViIjoiY2xpZW50In0.e3VNib2zp-gg1W4fFBPP7R-mCTUpfP59ewkFl8omwKM"
             });
-
-            retell.on('call_ended', () => {
-              console.log('Call ended');
-            });
-
-            retell.on('error', (error) => {
-              console.error('Retell error:', error);
-            });
-
-          } catch (error) {
-            console.error('Error starting call:', error);
-          }
-        });
+          });
+        }
       });
     </script>
   </body>
