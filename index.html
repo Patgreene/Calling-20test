@@ -19,15 +19,27 @@
     <!-- Retell Call Logic -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM loaded, looking for start-call-btn...");
         const startButton = document.getElementById("start-call-btn");
+        console.log("Button found:", startButton);
+
         if (startButton) {
+          console.log("Adding click listener to button");
           startButton.addEventListener("click", async () => {
-            const retell = new RetellWebClient();
-            await retell.startCall({
-              accessToken:
-                "eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6IndlYl9jYWxsXzE2N2IyOWU0OTY2ZDk2NDBlODAwMDdhM2YwMyJ9LCJpc3MiOiJBUElqWGZBMzVHTmM3WHgiLCJleHAiOjE3NTMxODUyMTEsIm5iZiI6MCwic3ViIjoiY2xpZW50In0.e3VNib2zp-gg1W4fFBPP7R-mCTUpfP59ewkFl8omwKM",
-            });
+            try {
+              console.log("Button clicked! Starting Retell call...");
+              const retell = new RetellWebClient();
+              await retell.startCall({
+                accessToken:
+                  "eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6IndlYl9jYWxsXzE2N2IyOWU0OTY2ZDk2NDBlODAwMDdhM2YwMyJ9LCJpc3MiOiJBUElqWGZBMzVHTmM3WHgiLCJleHAiOjE3NTMxODUyMTEsIm5iZiI6MCwic3ViIjoiY2xpZW50In0.e3VNib2zp-gg1W4fFBPP7R-mCTUpfP59ewkFl8omwKM",
+              });
+              console.log("Call started successfully!");
+            } catch (error) {
+              console.error("Error starting call:", error);
+            }
           });
+        } else {
+          console.error("Could not find button with id 'start-call-btn'");
         }
       });
     </script>
