@@ -10,31 +10,40 @@
   <body>
     <div id="root"></div>
 
-    <!-- Retell Web SDK - Uncomment when ready to integrate -->
-    <!-- <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script> -->
+    <!-- Retell Web SDK -->
+    <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script>
 
     <script type="module" src="/client/App.tsx"></script>
 
-    <!-- Retell Call Logic - Uncomment and configure when ready -->
-    <!--
+    <!-- Retell Call Logic -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('startCallBtn').addEventListener('click', async () => {
-          const accessToken = 'PASTE_ACCESS_TOKEN_HERE'; // Replace this later with dynamic one
+          try {
+            console.log('Starting Retell call...');
 
-          const retell = new RetellWebClient();
-          await retell.startCall({ accessToken });
+            const accessToken = 'eyJhbGciOiJIUzI1NiJ9...'; // Your provided access token
 
-          retell.on('call_started', () => {
-            console.log('Call started');
-          });
+            const retell = new RetellWebClient();
+            await retell.startCall({ accessToken });
 
-          retell.on('call_ended', () => {
-            console.log('Call ended');
-          });
+            retell.on('call_started', () => {
+              console.log('Call started successfully');
+            });
+
+            retell.on('call_ended', () => {
+              console.log('Call ended');
+            });
+
+            retell.on('error', (error) => {
+              console.error('Retell error:', error);
+            });
+
+          } catch (error) {
+            console.error('Error starting call:', error);
+          }
         });
       });
     </script>
-    -->
   </body>
 </html>
