@@ -77,11 +77,26 @@ export default function Index() {
               </h3>
               <div
                 id="synthflow-container"
-                className="flex justify-center items-center min-h-[400px] bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-300"
+                className="flex justify-center items-center min-h-[500px] bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-300"
               >
-                <p className="text-gray-500 text-center">
-                  SynthFlow widget will appear here when you start a call
-                </p>
+                {showWidget ? (
+                  <iframe
+                    id="audio_iframe"
+                    src="https://widget.synthflow.ai/widget/v2/63e56c5a-2a00-447a-906a-131e89aa7ccd/1753267522798x927161966671406300"
+                    allow="microphone"
+                    width="100%"
+                    height="500px"
+                    style={{ border: "none", borderRadius: "12px" }}
+                    scrolling="no"
+                  />
+                ) : (
+                  <div className="text-center">
+                    <PhoneCall className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-500">
+                      SynthFlow widget will appear here when you start a call
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
