@@ -32,7 +32,10 @@ export default function Index() {
 
           {/* SynthFlow Widget Container - Seamlessly Integrated */}
           <div className="pt-8">
-            <div className="bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-md rounded-3xl p-8 shadow-2xl overflow-hidden bg-gray-50" style={{ border: "0.625px solid rgba(255, 255, 255, 0.4)" }}>
+            <div
+              className="bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-md rounded-3xl p-8 shadow-2xl overflow-hidden bg-gray-50"
+              style={{ border: "0.625px solid rgba(255, 255, 255, 0.4)" }}
+            >
               <div
                 id="synthflow-container"
                 className="rounded-2xl overflow-hidden shadow-inner"
