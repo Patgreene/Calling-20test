@@ -8,38 +8,47 @@
       name="description"
       content="Start a voice call with our AI agent Kate for vouching"
     />
-    <script src="https://unpkg.com/retell-client-js-sdk@latest/dist/retell-web-sdk.umd.js"></script>
   </head>
 
   <body>
     <div id="root"></div>
 
+    <!-- SynthFlow Widget (hidden by default) -->
+    <iframe
+      id="audio_iframe"
+      src="https://widget.synthflow.ai/widget/v2/63e56c5a-2a00-447a-906a-131e89aa7ccd/1753267522798x927161966671406300"
+      allow="microphone"
+      width="400px"
+      height="550px"
+      style="position: fixed; background: transparent; border: none; z-index: 999; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;"
+      scrolling="no">
+    </iframe>
+
     <script type="module" src="/client/App.tsx"></script>
 
-    <!-- Retell Call Logic -->
+    <!-- SynthFlow Call Logic -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         console.log("DOM loaded, looking for start-call-btn...");
         const startButton = document.getElementById("start-call-btn");
+        const audioIframe = document.getElementById("audio_iframe");
         console.log("Button found:", startButton);
+        console.log("SynthFlow iframe found:", audioIframe);
 
-        if (startButton) {
+        if (startButton && audioIframe) {
           console.log("Adding click listener to button");
-          startButton.addEventListener("click", async () => {
-            try {
-              console.log("Button clicked! Starting Retell call...");
-              const retell = new RetellWebClient();
-              await retell.startCall({
-                accessToken:
-                  "eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6IndlYl9jYWxsXzE2N2IyOWU0OTY2ZDk2NDBlODAwMDdhM2YwMyJ9LCJpc3MiOiJBUElqWGZBMzVHTmM3WHgiLCJleHAiOjE3NTMxODUyMTEsIm5iZiI6MCwic3ViIjoiY2xpZW50In0.e3VNib2zp-gg1W4fFBPP7R-mCTUpfP59ewkFl8omwKM",
-              });
-              console.log("Call started successfully!");
-            } catch (error) {
-              console.error("Error starting call:", error);
+          startButton.addEventListener("click", function() {
+            console.log("Button clicked! Opening SynthFlow widget...");
+            if (audioIframe.style.display === "none") {
+              audioIframe.style.display = "block";
+              startButton.textContent = "Close Call";
+            } else {
+              audioIframe.style.display = "none";
+              startButton.innerHTML = '<svg width="24" height="24" class="lucide lucide-phone-call w-6 h-6 group-hover:animate-pulse"></svg>Start Call';
             }
           });
         } else {
-          console.error("Could not find button with id 'start-call-btn'");
+          console.error("Could not find button or iframe");
         }
       });
     </script>
