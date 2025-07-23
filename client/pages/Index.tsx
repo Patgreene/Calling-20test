@@ -1,7 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { PhoneCall, Headphones, MessageCircle } from "lucide-react";
+import { useState } from "react";
 
 export default function Index() {
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [showWidget, setShowWidget] = useState(false);
+
+  const handleStartCall = async () => {
+    try {
+      // Request microphone permission first
+      console.log("Requesting microphone permission...");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // Stop the stream immediately - we just needed permission
+      stream.getTracks().forEach(track => track.stop());
+
+      console.log("Microphone permission granted, loading SynthFlow widget...");
+      setShowWidget(true);
+      setIsCallActive(true);
+
+    } catch (error) {
+      console.error("Microphone permission denied:", error);
+      alert("Microphone access is required for voice calls. Please allow microphone access and try again.");
+    }
+  };
+
+  const handleEndCall = () => {
+    console.log("Ending call...");
+    setShowWidget(false);
+    setIsCallActive(false);
+  };
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-pastel-blue-50 via-soft-lavender-50 to-pastel-blue-100 flex items-center justify-center px-4 py-8">
