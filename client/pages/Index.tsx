@@ -40,10 +40,21 @@ export default function Index() {
             </button>
           </div>
 
-          {/* Additional Visual Elements */}
-          <div className="flex justify-center space-x-8 pt-6 opacity-60">
-            <div className="flex flex-col items-center space-y-2"></div>
-            <div className="flex flex-col items-center space-y-2"></div>
+          {/* SynthFlow Widget Container */}
+          <div className="pt-8">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+                AI Voice Agent
+              </h3>
+              <div
+                id="synthflow-container"
+                className="flex justify-center items-center min-h-[400px] bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-300"
+              >
+                <p className="text-gray-500 text-center">
+                  SynthFlow widget will appear here when you start a call
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
