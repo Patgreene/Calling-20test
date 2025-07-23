@@ -5,11 +5,13 @@ export default function Index() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 flex items-center justify-center px-4 py-8">
         <div className="max-w-2xl w-full text-center space-y-8">
-          {/* Visual Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-soft-lavender-400 to-pastel-blue-400 rounded-full blur-lg opacity-30 animate-pulse"></div>
-            </div>
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
+              alt="Vouch Logo"
+              className="h-20 md:h-24 object-contain filter drop-shadow-lg"
+            />
           </div>
 
           {/* Headline */}
