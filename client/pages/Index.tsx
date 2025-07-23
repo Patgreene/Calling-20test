@@ -3,7 +3,7 @@ import { Headphones, MessageCircle } from "lucide-react";
 export default function Index() {
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-pastel-blue-50 via-soft-lavender-50 to-pastel-blue-100 flex items-center justify-center px-4 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 flex items-center justify-center px-4 py-8">
         <div className="max-w-2xl w-full text-center space-y-8">
           {/* Visual Icon */}
           <div className="flex justify-center mb-6">
