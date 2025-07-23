@@ -24,9 +24,9 @@ export default function Index() {
           {/* Instruction Text */}
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl border border-white/30">
             <p className="text-lg md:text-xl text-gray-800 leading-relaxed">
-              You'll speak with our AI agent. They'll ask you a few simple
-              questions about the person you're vouching for. No pressure — just
-              speak naturally.
+              You'll speak our expert interviewer Kate. She'll ask you a few
+              simple questions about the person you're vouching for. No
+              pressure&nbsp; just speak naturally.
             </p>
           </div>
 
