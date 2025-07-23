@@ -13,15 +13,16 @@ export default function Index() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       // Stop the stream immediately - we just needed permission
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
 
       console.log("Microphone permission granted, loading SynthFlow widget...");
       setShowWidget(true);
       setIsCallActive(true);
-
     } catch (error) {
       console.error("Microphone permission denied:", error);
-      alert("Microphone access is required for voice calls. Please allow microphone access and try again.");
+      alert(
+        "Microphone access is required for voice calls. Please allow microphone access and try again.",
+      );
     }
   };
 
@@ -51,9 +52,9 @@ export default function Index() {
           {/* Instruction Text */}
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/20">
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-              You'll speak with our AI agent.
-              They'll ask you a few simple questions about the person you're
-              vouching for. No pressure — just speak naturally.
+              You'll speak with our AI agent. They'll ask you a few simple
+              questions about the person you're vouching for. No pressure — just
+              speak naturally.
             </p>
           </div>
 
