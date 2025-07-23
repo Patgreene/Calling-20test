@@ -16,7 +16,7 @@ export default function Index() {
 
           {/* Headline */}
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-soft-lavender-700 to-pastel-blue-700 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg leading-tight">
               Start Your Vouch Call
             </h1>
           </div>
