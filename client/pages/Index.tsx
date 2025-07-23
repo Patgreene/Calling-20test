@@ -1,36 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { PhoneCall, Headphones, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { Headphones, MessageCircle } from "lucide-react";
 
 export default function Index() {
-  const [isCallActive, setIsCallActive] = useState(false);
-  const [showWidget, setShowWidget] = useState(false);
-
-  const handleStartCall = async () => {
-    try {
-      // Request microphone permission first
-      console.log("Requesting microphone permission...");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      // Stop the stream immediately - we just needed permission
-      stream.getTracks().forEach((track) => track.stop());
-
-      console.log("Microphone permission granted, loading SynthFlow widget...");
-      setShowWidget(true);
-      setIsCallActive(true);
-    } catch (error) {
-      console.error("Microphone permission denied:", error);
-      alert(
-        "Microphone access is required for voice calls. Please allow microphone access and try again.",
-      );
-    }
-  };
-
-  const handleEndCall = () => {
-    console.log("Ending call...");
-    setShowWidget(false);
-    setIsCallActive(false);
-  };
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-pastel-blue-50 via-soft-lavender-50 to-pastel-blue-100 flex items-center justify-center px-4 py-8">
@@ -58,46 +28,24 @@ export default function Index() {
             </p>
           </div>
 
-          {/* Start Call Button */}
-          <div className="pt-4">
-            <button
-              id="start-call-btn"
-              onClick={isCallActive ? handleEndCall : handleStartCall}
-              className="inline-flex items-center justify-center bg-gradient-to-r from-soft-lavender-500 to-pastel-blue-500 hover:from-soft-lavender-600 hover:to-pastel-blue-600 text-white font-semibold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full md:w-auto md:min-w-[200px] group gap-3"
-            >
-              <PhoneCall className="w-6 h-6 group-hover:animate-pulse" />
-              {isCallActive ? "End Call" : "Start Call"}
-            </button>
-          </div>
 
-          {/* SynthFlow Widget Container */}
+
+          {/* SynthFlow Widget Container - Seamlessly Integrated */}
           <div className="pt-8">
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
-                AI Voice Agent
-              </h3>
+            <div className="bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/30 overflow-hidden">
               <div
                 id="synthflow-container"
-                className="flex justify-center items-center min-h-[500px] bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-300"
+                className="rounded-2xl overflow-hidden shadow-inner"
               >
-                {showWidget ? (
-                  <iframe
-                    id="audio_iframe"
-                    src="https://widget.synthflow.ai/widget/v2/63e56c5a-2a00-447a-906a-131e89aa7ccd/1753267522798x927161966671406300"
-                    allow="microphone"
-                    width="100%"
-                    height="500px"
-                    style={{ border: "none", borderRadius: "12px" }}
-                    scrolling="no"
-                  />
-                ) : (
-                  <div className="text-center">
-                    <PhoneCall className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500">
-                      SynthFlow widget will appear here when you start a call
-                    </p>
-                  </div>
-                )}
+                <iframe
+                  id="audio_iframe"
+                  src="https://widget.synthflow.ai/widget/v2/63e56c5a-2a00-447a-906a-131e89aa7ccd/1753267522798x927161966671406300"
+                  allow="microphone"
+                  width="100%"
+                  height="500px"
+                  style={{ border: "none" }}
+                  scrolling="no"
+                />
               </div>
             </div>
           </div>
