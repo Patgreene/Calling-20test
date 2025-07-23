@@ -30,8 +30,6 @@ export default function Index() {
             </p>
           </div>
 
-
-
           {/* SynthFlow Widget Container - Seamlessly Integrated */}
           <div className="pt-8">
             <div className="bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/40 overflow-hidden">
