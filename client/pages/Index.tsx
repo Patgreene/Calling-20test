@@ -61,10 +61,11 @@ export default function Index() {
           <div className="pt-4">
             <button
               id="start-call-btn"
+              onClick={isCallActive ? handleEndCall : handleStartCall}
               className="inline-flex items-center justify-center bg-gradient-to-r from-soft-lavender-500 to-pastel-blue-500 hover:from-soft-lavender-600 hover:to-pastel-blue-600 text-white font-semibold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full md:w-auto md:min-w-[200px] group gap-3"
             >
               <PhoneCall className="w-6 h-6 group-hover:animate-pulse" />
-              Start Call
+              {isCallActive ? "End Call" : "Start Call"}
             </button>
           </div>
 
