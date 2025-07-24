@@ -85,6 +85,18 @@ export default function Interview() {
               </div>
             </div>
           </div>
+
+          {/* Next Button - Hidden by default */}
+          {showNextButton && (
+            <div className="pt-8">
+              <Button
+                onClick={handleNext}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </>
