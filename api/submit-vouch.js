@@ -1,8 +1,8 @@
 // File: /api/submit-vouch.js
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
@@ -10,12 +10,12 @@ export default async function handler(req, res) {
     const { vouchForm, vouchSummary, vouchID } = req.body;
 
     // Send the data to your Make.com webhook
-    const makeWebhookUrl = 'https://hook.eu2.make.com/your-hook-id'; // Replace with your actual webhook
+    const makeWebhookUrl = "https://hook.eu2.make.com/your-hook-id"; // Replace with your actual webhook
 
     const makeResponse = await fetch(makeWebhookUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         vouchForm,
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Error submitting to Make.com:', error);
-    return res.status(500).json({ error: 'Failed to submit data' });
+    console.error("Error submitting to Make.com:", error);
+    return res.status(500).json({ error: "Failed to submit data" });
   }
 }
