@@ -64,6 +64,18 @@ export default function Form() {
 
         {/* Form */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+          {/* Back Button */}
+          <div className="flex justify-start mb-6">
+            <Button
+              onClick={handleBack}
+              variant="ghost"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
             Let's get started
           </h2>
