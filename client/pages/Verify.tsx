@@ -94,8 +94,8 @@ export default function Verify() {
       const vouchSummary = localStorage.getItem("vouchSummary") || "";
       const vouchID = localStorage.getItem("vouchID") || "";
 
-      // 2. Send a POST request to the specified URL
-      const response = await fetch("https://hook.eu2.make.com/your-hook-id", {
+      // 2. Send a POST request to our serverless API proxy
+      const response = await fetch("/api/submit-vouch", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
