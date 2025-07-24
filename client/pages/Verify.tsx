@@ -34,7 +34,9 @@ export default function Verify() {
     try {
       // Check if camera is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("Camera access is not supported on this device. Please use the upload option instead.");
+        alert(
+          "Camera access is not supported on this device. Please use the upload option instead.",
+        );
         return;
       }
 
@@ -46,8 +48,8 @@ export default function Verify() {
         video: {
           facingMode: "environment", // Prefer back camera
           width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
+          height: { ideal: 720 },
+        },
       };
 
       let stream;
@@ -60,8 +62,8 @@ export default function Verify() {
           video: {
             facingMode: "user", // Front camera
             width: { ideal: 1280 },
-            height: { ideal: 720 }
-          }
+            height: { ideal: 720 },
+          },
         };
         stream = await navigator.mediaDevices.getUserMedia(frontConstraints);
       }
@@ -166,13 +168,13 @@ export default function Verify() {
         stream.getTracks().forEach((track) => track.stop());
         document.body.removeChild(cameraModal);
       };
-
     } catch (error) {
       console.error("Camera access error:", error);
 
       let errorMessage = "Could not access camera. ";
       if (error.name === "NotAllowedError") {
-        errorMessage += "Camera permission was denied. Please allow camera access and try again.";
+        errorMessage +=
+          "Camera permission was denied. Please allow camera access and try again.";
       } else if (error.name === "NotFoundError") {
         errorMessage += "No camera found on this device.";
       } else if (error.name === "NotSupportedError") {
