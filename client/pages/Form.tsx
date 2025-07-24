@@ -50,8 +50,12 @@ export default function Form() {
       return;
     }
 
-    // Save to localStorage
-    localStorage.setItem("vouchForm", JSON.stringify(formData));
+    // Save to localStorage including consent status
+    const formDataWithConsent = {
+      ...formData,
+      recordingConsent: consentToRecording ? "Yes" : "No"
+    };
+    localStorage.setItem("vouchForm", JSON.stringify(formDataWithConsent));
 
     // Navigate to interview page
     navigate("/interview");
