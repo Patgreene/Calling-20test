@@ -4,7 +4,10 @@ import { CheckCircle } from "lucide-react";
 
 export default function ThankYou() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#F8F8F8" }}>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ backgroundColor: "#F8F8F8" }}
+    >
       <div className="text-center space-y-8 max-w-2xl">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -20,20 +23,19 @@ export default function ThankYou() {
           <div className="flex justify-center">
             <CheckCircle className="w-16 h-16 text-green-500" />
           </div>
-          
+
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-sans">
             Thank You!
           </h1>
-          
+
           <p className="text-lg text-gray-600 leading-relaxed max-w-lg mx-auto">
-            Your vouch has been submitted successfully. We'll review your submission and get back to you soon.
+            Your vouch has been submitted successfully. We'll review your
+            submission and get back to you soon.
           </p>
 
           <div className="pt-6">
             <Link to="/">
-              <Button
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              >
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
                 Submit Another Vouch
               </Button>
             </Link>

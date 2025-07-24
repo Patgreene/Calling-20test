@@ -15,9 +15,9 @@ export default function Verify() {
     const file = event.target.files?.[0];
     if (file) {
       // Check if it's an image file
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         setFileName(file.name);
-        
+
         // Create preview URL
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -25,7 +25,7 @@ export default function Verify() {
         };
         reader.readAsDataURL(file);
       } else {
-        alert('Please select an image file (.jpg, .png, .heic)');
+        alert("Please select an image file (.jpg, .png, .heic)");
       }
     }
   };
@@ -34,41 +34,41 @@ export default function Verify() {
     try {
       // Check if camera is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Camera access is not supported on this device');
+        alert("Camera access is not supported on this device");
         return;
       }
 
       // Request camera access
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } // Use back camera if available
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }, // Use back camera if available
       });
 
       // Create video element to capture photo
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       video.srcObject = stream;
       video.play();
 
       // Wait for video to load
       video.onloadedmetadata = () => {
         // Create canvas to capture frame
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        
-        const ctx = canvas.getContext('2d');
+
+        const ctx = canvas.getContext("2d");
         ctx?.drawImage(video, 0, 0);
-        
+
         // Convert to data URL
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
         setUploadedImage(dataUrl);
-        setFileName('camera-photo.jpg');
-        
+        setFileName("camera-photo.jpg");
+
         // Stop camera stream
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
     } catch (error) {
-      console.error('Camera access error:', error);
-      alert('Could not access camera. Please try uploading a file instead.');
+      console.error("Camera access error:", error);
+      alert("Could not access camera. Please try uploading a file instead.");
     }
   };
 
@@ -76,7 +76,7 @@ export default function Verify() {
     setUploadedImage(null);
     setFileName(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -86,39 +86,44 @@ export default function Verify() {
     try {
       // Save image to localStorage
       if (uploadedImage) {
-        localStorage.setItem('vouchID', uploadedImage);
+        localStorage.setItem("vouchID", uploadedImage);
       }
 
       // Gather all localStorage data using the exact format requested
-      const vouchForm = JSON.parse(localStorage.getItem('vouchForm') || '{}');
-      const vouchSummary = localStorage.getItem('vouchSummary') || '';
-      const vouchID = localStorage.getItem('vouchID') || '';
+      const vouchForm = JSON.parse(localStorage.getItem("vouchForm") || "{}");
+      const vouchSummary = localStorage.getItem("vouchSummary") || "";
+      const vouchID = localStorage.getItem("vouchID") || "";
 
       // Send to Make.com webhook
-      await fetch('https://ch5r693uwg7th3pkubijrkpzyxqdvh3v@hook.eu2.make.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      await fetch(
+        "https://ch5r693uwg7th3pkubijrkpzyxqdvh3v@hook.eu2.make.com",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            vouchForm,
+            vouchSummary,
+            vouchID,
+          }),
         },
-        body: JSON.stringify({
-          vouchForm,
-          vouchSummary,
-          vouchID
-        })
-      });
+      );
 
       // Redirect to thank-you page
       window.location.href = "/thank-you";
-
     } catch (error) {
-      console.error('Error submitting data:', error);
-      alert('There was an error submitting your data. Please try again.');
+      console.error("Error submitting data:", error);
+      alert("There was an error submitting your data. Please try again.");
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen px-4 py-8" style={{ backgroundColor: "#F8F8F8" }}>
+    <div
+      className="min-h-screen px-4 py-8"
+      style={{ backgroundColor: "#F8F8F8" }}
+    >
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -137,7 +142,8 @@ export default function Verify() {
               Verify Your Vouch (Optional)
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed max-w-lg mx-auto">
-              You can upload a photo of your ID or take one with your phone. This step is optional but helps us confirm authenticity.
+              You can upload a photo of your ID or take one with your phone.
+              This step is optional but helps us confirm authenticity.
             </p>
           </div>
 
@@ -146,7 +152,7 @@ export default function Verify() {
             <Label className="text-lg font-medium text-gray-800">
               Upload ID Photo
             </Label>
-            
+
             {/* Upload Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -157,7 +163,7 @@ export default function Verify() {
                 <Upload className="w-5 h-5" />
                 Upload ID Photo
               </Button>
-              
+
               <Button
                 onClick={handleTakePhoto}
                 variant="outline"
@@ -184,7 +190,7 @@ export default function Verify() {
                   <div className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-600" />
                     <span className="text-green-800 font-medium">
-                      {fileName || 'Image uploaded'}
+                      {fileName || "Image uploaded"}
                     </span>
                   </div>
                   <Button
@@ -196,7 +202,7 @@ export default function Verify() {
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 {/* Thumbnail Preview */}
                 <div className="flex justify-center">
                   <div className="relative">
@@ -218,7 +224,7 @@ export default function Verify() {
               disabled={isSubmitting}
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
             >
-              {isSubmitting ? 'Submitting...' : 'Finish'}
+              {isSubmitting ? "Submitting..." : "Finish"}
             </Button>
           </div>
         </div>

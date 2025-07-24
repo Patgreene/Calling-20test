@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 export default function Index() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#F8F8F8" }}>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ backgroundColor: "#F8F8F8" }}
+    >
       <div className="text-center space-y-8 max-w-2xl">
         {/* Logo */}
         <div className="flex justify-center mb-12">

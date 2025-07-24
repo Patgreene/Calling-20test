@@ -15,30 +15,38 @@ export default function Form() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check if all fields are filled
-    if (!formData.fullName || !formData.yourEmail || !formData.vouchingFor || !formData.theirEmail) {
+    if (
+      !formData.fullName ||
+      !formData.yourEmail ||
+      !formData.vouchingFor ||
+      !formData.theirEmail
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
 
     // Save to localStorage
     localStorage.setItem("vouchForm", JSON.stringify(formData));
-    
+
     // Navigate to interview page
     navigate("/interview");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8" style={{ backgroundColor: "#F8F8F8" }}>
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-8"
+      style={{ backgroundColor: "#F8F8F8" }}
+    >
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -54,11 +62,14 @@ export default function Form() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
             Let's get started
           </h2>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name */}
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="fullName"
+                className="text-sm font-medium text-gray-700"
+              >
                 Full Name *
               </Label>
               <Input
@@ -75,7 +86,10 @@ export default function Form() {
 
             {/* Your Email */}
             <div className="space-y-2">
-              <Label htmlFor="yourEmail" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="yourEmail"
+                className="text-sm font-medium text-gray-700"
+              >
                 Your Email *
               </Label>
               <Input
@@ -92,7 +106,10 @@ export default function Form() {
 
             {/* Who are you vouching for */}
             <div className="space-y-2">
-              <Label htmlFor="vouchingFor" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="vouchingFor"
+                className="text-sm font-medium text-gray-700"
+              >
                 Who are you vouching for? *
               </Label>
               <Input
@@ -109,7 +126,10 @@ export default function Form() {
 
             {/* Their Email */}
             <div className="space-y-2">
-              <Label htmlFor="theirEmail" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="theirEmail"
+                className="text-sm font-medium text-gray-700"
+              >
                 Their Email *
               </Label>
               <Input

@@ -11,8 +11,8 @@ export default function Interview() {
     // Listen for messages from the SynthFlow iframe to detect call end
     const handleMessage = (event: MessageEvent) => {
       // SynthFlow may send messages when call ends
-      if (event.data && typeof event.data === 'object') {
-        if (event.data.type === 'call_ended' || event.data.status === 'ended') {
+      if (event.data && typeof event.data === "object") {
+        if (event.data.type === "call_ended" || event.data.status === "ended") {
           setShowNextButton(true);
         }
       }
@@ -23,16 +23,16 @@ export default function Interview() {
       setShowNextButton(true);
     }, 30000);
 
-    window.addEventListener('message', handleMessage);
+    window.addEventListener("message", handleMessage);
 
     return () => {
-      window.removeEventListener('message', handleMessage);
+      window.removeEventListener("message", handleMessage);
       clearTimeout(timeout);
     };
   }, []);
 
   const handleNext = () => {
-    navigate('/summary');
+    navigate("/summary");
   };
   return (
     <>

@@ -23,16 +23,19 @@ export default function Summary() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Save edited text to localStorage
     localStorage.setItem("vouchSummary", vouchText);
-    
+
     // Navigate to verify page
     navigate("/verify");
   };
 
   return (
-    <div className="min-h-screen px-4 py-8" style={{ backgroundColor: "#F8F8F8" }}>
+    <div
+      className="min-h-screen px-4 py-8"
+      style={{ backgroundColor: "#F8F8F8" }}
+    >
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -54,7 +57,10 @@ export default function Summary() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Textarea */}
             <div className="space-y-3">
-              <Label htmlFor="vouchText" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="vouchText"
+                className="text-sm font-medium text-gray-700"
+              >
                 Your Vouch Content
               </Label>
               <textarea
