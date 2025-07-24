@@ -195,6 +195,10 @@ export default function Verify() {
     }
   };
 
+  const handleBack = () => {
+    navigate("/summary");
+  };
+
   const handleFinish = () => {
     // Save image to localStorage if uploaded
     if (uploadedImage) {
