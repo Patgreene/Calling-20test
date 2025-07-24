@@ -316,8 +316,8 @@ export default function Review() {
           <div className="flex flex-col sm:flex-row gap-4 justify-between pt-6">
             <Button
               onClick={handleBack}
-              variant="outline"
-              className="flex items-center gap-2 px-6 py-3 text-base border-2 border-gray-300 hover:border-orange-500 hover:text-orange-600"
+              variant="ghost"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Edit
