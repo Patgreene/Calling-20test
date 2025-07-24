@@ -16,6 +16,18 @@ export default function Interview() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 flex items-center justify-center px-4 py-8">
         <div className="max-w-2xl w-full text-center space-y-8">
+          {/* Back Button */}
+          <div className="flex justify-start mb-4">
+            <Button
+              onClick={handleBack}
+              variant="ghost"
+              className="flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
           {/* Logo */}
           <div className="flex justify-center mb-8">
             <img
