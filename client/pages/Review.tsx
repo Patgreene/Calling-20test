@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Mail, FileText, Image, CheckCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  FileText,
+  Image,
+  CheckCircle,
+} from "lucide-react";
 
 interface FormData {
   fullName: string;
@@ -137,12 +144,20 @@ export default function Review() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Full Name</label>
-                  <p className="text-gray-900 font-medium">{formData.fullName}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Full Name
+                  </label>
+                  <p className="text-gray-900 font-medium">
+                    {formData.fullName}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Your Email</label>
-                  <p className="text-gray-900 font-medium">{formData.yourEmail}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Your Email
+                  </label>
+                  <p className="text-gray-900 font-medium">
+                    {formData.yourEmail}
+                  </p>
                 </div>
               </div>
             </div>
@@ -155,12 +170,20 @@ export default function Review() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Who you're vouching for</label>
-                  <p className="text-gray-900 font-medium">{formData.vouchingFor}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Who you're vouching for
+                  </label>
+                  <p className="text-gray-900 font-medium">
+                    {formData.vouchingFor}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Their Email</label>
-                  <p className="text-gray-900 font-medium">{formData.theirEmail}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Their Email
+                  </label>
+                  <p className="text-gray-900 font-medium">
+                    {formData.theirEmail}
+                  </p>
                 </div>
               </div>
             </div>
@@ -190,10 +213,14 @@ export default function Review() {
                 {hasIdPhoto ? (
                   <>
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-green-700 font-medium">ID photo uploaded</span>
+                    <span className="text-green-700 font-medium">
+                      ID photo uploaded
+                    </span>
                   </>
                 ) : (
-                  <span className="text-gray-500">No ID photo uploaded (optional)</span>
+                  <span className="text-gray-500">
+                    No ID photo uploaded (optional)
+                  </span>
                 )}
               </div>
             </div>
@@ -223,7 +250,8 @@ export default function Review() {
           {!isDataComplete && (
             <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-yellow-800">
-                Some required information is missing. Please go back and complete all steps.
+                Some required information is missing. Please go back and
+                complete all steps.
               </p>
             </div>
           )}
