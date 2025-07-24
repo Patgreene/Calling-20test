@@ -44,7 +44,9 @@ export default function Form() {
 
     // Check if recording consent is given
     if (!consentToRecording) {
-      alert("Please confirm that you consent to the call being recorded and shared.");
+      alert(
+        "Please confirm that you consent to the call being recorded and shared.",
+      );
       return;
     }
 
@@ -163,7 +165,9 @@ export default function Form() {
                 <Checkbox
                   id="recordingConsent"
                   checked={consentToRecording}
-                  onCheckedChange={(checked) => setConsentToRecording(checked === true)}
+                  onCheckedChange={(checked) =>
+                    setConsentToRecording(checked === true)
+                  }
                   className="mt-1"
                 />
                 <Label
@@ -171,7 +175,8 @@ export default function Form() {
                   className="text-sm text-gray-700 leading-relaxed cursor-pointer"
                 >
                   <strong>
-                    I consent to this call being recorded and shared for verification purposes.
+                    I consent to this call being recorded and shared for
+                    verification purposes.
                   </strong>
                 </Label>
               </div>
