@@ -78,7 +78,7 @@ export default function Review() {
       // Parse and prepare data
       const vouchForm = vouchFormData ? JSON.parse(vouchFormData) : {};
       const vouchSummary = vouchSummaryData || "";
-      const vouchID = vouchIDData || "";
+      let vouchIDUrl = "";
 
       // Validate required data
       if (
@@ -96,10 +96,42 @@ export default function Review() {
         );
       }
 
+      // Convert base64 image to URL if present
+      if (vouchIDData) {
+        console.log("Converting image to URL...");
+        try {
+          const imageUploadResponse = await fetch("/api/upload-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              imageData: vouchIDData,
+              fileName: `id-${Date.now()}.jpg`,
+            }),
+          });
+
+          const imageResult = await imageUploadResponse.json();
+
+          if (imageUploadResponse.ok && imageResult.success) {
+            vouchIDUrl = imageResult.url;
+            console.log("Image uploaded successfully:", vouchIDUrl);
+          } else {
+            console.error("Image upload failed:", imageResult);
+            // Continue with base64 data as fallback
+            vouchIDUrl = vouchIDData;
+          }
+        } catch (imageError) {
+          console.error("Error uploading image:", imageError);
+          // Continue with base64 data as fallback
+          vouchIDUrl = vouchIDData;
+        }
+      }
+
       const payload = {
         vouchForm,
         vouchSummary,
-        vouchID,
+        vouchID: vouchIDUrl, // Now contains URL instead of base64
       };
 
       console.log("Sending payload:", {
@@ -107,7 +139,11 @@ export default function Review() {
         vouchSummary: payload.vouchSummary
           ? `${payload.vouchSummary.substring(0, 100)}...`
           : "empty",
-        vouchID: payload.vouchID ? "present" : "not present",
+        vouchID: payload.vouchID
+          ? payload.vouchID.startsWith("http")
+            ? "URL provided"
+            : "base64 data"
+          : "not present",
       });
 
       // Send to our serverless API proxy
