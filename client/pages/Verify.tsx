@@ -82,52 +82,37 @@ export default function Verify() {
 
   const handleFinish = async () => {
     setIsSubmitting(true);
-    
+
     try {
       // Save image to localStorage
       if (uploadedImage) {
         localStorage.setItem('vouchID', uploadedImage);
       }
 
-      // Gather all localStorage data
-      const vouchForm = localStorage.getItem('vouchForm');
-      const vouchSummary = localStorage.getItem('vouchSummary');
-      const vouchID = localStorage.getItem('vouchID');
+      // Gather all localStorage data using the exact format requested
+      const vouchForm = JSON.parse(localStorage.getItem('vouchForm') || '{}');
+      const vouchSummary = localStorage.getItem('vouchSummary') || '';
+      const vouchID = localStorage.getItem('vouchID') || '';
 
-      const webhookData = {
-        form: vouchForm ? JSON.parse(vouchForm) : null,
-        summary: vouchSummary,
-        idPhoto: vouchID,
-        timestamp: new Date().toISOString()
-      };
-
-      // TODO: Replace with actual webhook URL when configured with Make.com
-      const webhookUrl = 'https://hook.integromat.com/your-webhook-url';
-      
-      // Send to webhook (commented out until URL is configured)
-      /*
-      const response = await fetch(webhookUrl, {
+      // Send to Make.com webhook
+      await fetch('https://ch5r693uwg7th3pkubijrkpzyxqdvh3v@hook.eu2.make.com', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(webhookData)
+        body: JSON.stringify({
+          vouchForm,
+          vouchSummary,
+          vouchID
+        })
       });
-      
-      if (!response.ok) {
-        throw new Error('Failed to submit data');
-      }
-      */
 
-      console.log('Data ready for webhook:', webhookData);
-      
       // Redirect to thank-you page
-      navigate('/thank-you');
-      
+      window.location.href = "/thank-you";
+
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('There was an error submitting your data. Please try again.');
-    } finally {
       setIsSubmitting(false);
     }
   };
