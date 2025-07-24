@@ -63,9 +63,41 @@ export default function Review() {
 
     try {
       // Get all data from localStorage
-      const vouchForm = JSON.parse(localStorage.getItem("vouchForm") || "{}");
-      const vouchSummary = localStorage.getItem("vouchSummary") || "";
-      const vouchID = localStorage.getItem("vouchID") || "";
+      const vouchFormData = localStorage.getItem("vouchForm");
+      const vouchSummaryData = localStorage.getItem("vouchSummary");
+      const vouchIDData = localStorage.getItem("vouchID");
+
+      console.log("Raw localStorage data:", {
+        vouchForm: vouchFormData,
+        vouchSummary: vouchSummaryData ? `${vouchSummaryData.substring(0, 100)}...` : "empty",
+        vouchID: vouchIDData ? "present" : "not present"
+      });
+
+      // Parse and prepare data
+      const vouchForm = vouchFormData ? JSON.parse(vouchFormData) : {};
+      const vouchSummary = vouchSummaryData || "";
+      const vouchID = vouchIDData || "";
+
+      // Validate required data
+      if (!vouchForm.fullName || !vouchForm.yourEmail || !vouchForm.vouchingFor || !vouchForm.theirEmail) {
+        throw new Error("Missing required form data");
+      }
+
+      if (!vouchSummary) {
+        console.warn("No vouch summary found - this might be expected if user skipped interview");
+      }
+
+      const payload = {
+        vouchForm,
+        vouchSummary,
+        vouchID,
+      };
+
+      console.log("Sending payload:", {
+        ...payload,
+        vouchSummary: payload.vouchSummary ? `${payload.vouchSummary.substring(0, 100)}...` : "empty",
+        vouchID: payload.vouchID ? "present" : "not present"
+      });
 
       // Send to our serverless API proxy
       const response = await fetch("/api/submit-vouch", {
@@ -73,23 +105,22 @@ export default function Review() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          vouchForm: vouchForm,
-          vouchSummary: vouchSummary,
-          vouchID: vouchID,
-        }),
+        body: JSON.stringify(payload),
       });
+
+      const responseData = await response.json();
+      console.log("API response:", responseData);
 
       // Check if the request was successful
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${responseData.error || 'Unknown error'}`);
       }
 
       // Redirect to thank-you page
       window.location.href = "/thank-you";
     } catch (error) {
       console.error("Error submitting data:", error);
-      alert("There was a problem submitting your data. Please try again.");
+      alert(`There was a problem submitting your data: ${error.message}. Please check the console and try again.`);
       setIsSubmitting(false);
     }
   };
