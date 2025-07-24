@@ -42,6 +42,12 @@ export default function Form() {
       return;
     }
 
+    // Check if recording consent is given
+    if (!consentToRecording) {
+      alert("Please confirm that you consent to the call being recorded and shared.");
+      return;
+    }
+
     // Save to localStorage
     localStorage.setItem("vouchForm", JSON.stringify(formData));
 
