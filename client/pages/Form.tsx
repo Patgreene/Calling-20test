@@ -22,6 +22,10 @@ export default function Form() {
     }));
   };
 
+  const handleBack = () => {
+    navigate("/");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
