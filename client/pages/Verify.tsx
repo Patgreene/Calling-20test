@@ -226,6 +226,18 @@ export default function Verify() {
 
         {/* Content */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 space-y-8">
+          {/* Back Button */}
+          <div className="flex justify-start mb-4">
+            <Button
+              onClick={handleBack}
+              variant="ghost"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+
           {/* Heading */}
           <div className="text-center space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-sans">
