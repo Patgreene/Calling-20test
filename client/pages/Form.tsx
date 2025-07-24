@@ -53,7 +53,7 @@ export default function Form() {
     // Save to localStorage including consent status
     const formDataWithConsent = {
       ...formData,
-      recordingConsent: consentToRecording ? "Yes" : "No"
+      recordingConsent: consentToRecording ? "Yes" : "No",
     };
     localStorage.setItem("vouchForm", JSON.stringify(formDataWithConsent));
 

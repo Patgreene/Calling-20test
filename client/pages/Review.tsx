@@ -323,7 +323,8 @@ export default function Review() {
                   <>
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <span className="text-green-700 font-medium">
-                      Consent given to record and share call for verification purposes
+                      Consent given to record and share call for verification
+                      purposes
                     </span>
                   </>
                 ) : (
