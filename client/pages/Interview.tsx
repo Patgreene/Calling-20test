@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 export default function Interview() {
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    navigate("/form");
+  };
+
   const handleNext = () => {
     navigate("/summary");
   };
