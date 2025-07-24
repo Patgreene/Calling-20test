@@ -14,6 +14,7 @@ export default function Form() {
     vouchingFor: "",
     theirEmail: "",
   });
+  const [consentToRecording, setConsentToRecording] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
