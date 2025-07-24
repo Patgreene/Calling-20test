@@ -16,6 +16,7 @@ interface FormData {
   yourEmail: string;
   vouchingFor: string;
   theirEmail: string;
+  recordingConsent?: string;
 }
 
 export default function Review() {
