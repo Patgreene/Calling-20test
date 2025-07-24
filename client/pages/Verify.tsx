@@ -80,46 +80,14 @@ export default function Verify() {
     }
   };
 
-  const handleFinish = async () => {
-    setIsSubmitting(true);
-
-    try {
-      // Save image to localStorage
-      if (uploadedImage) {
-        localStorage.setItem("vouchID", uploadedImage);
-      }
-
-      // 1. Retrieve the following from localStorage:
-      const vouchForm = JSON.parse(localStorage.getItem("vouchForm") || "{}");
-      const vouchSummary = localStorage.getItem("vouchSummary") || "";
-      const vouchID = localStorage.getItem("vouchID") || "";
-
-      // 2. Send a POST request to our serverless API proxy
-      const response = await fetch("/api/submit-vouch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          vouchForm: vouchForm,
-          vouchSummary: vouchSummary,
-          vouchID: vouchID,
-        }),
-      });
-
-      // Check if the request was successful
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // 3. If the POST request succeeds, redirect to thank-you
-      window.location.href = "/thank-you";
-    } catch (error) {
-      // 4. If the POST request fails, show alert and log error
-      console.error("Error submitting data:", error);
-      alert("There was a problem submitting your data. Please try again.");
-      setIsSubmitting(false);
+  const handleFinish = () => {
+    // Save image to localStorage if uploaded
+    if (uploadedImage) {
+      localStorage.setItem("vouchID", uploadedImage);
     }
+
+    // Navigate to review page instead of submitting directly
+    navigate("/review");
   };
 
   return (
