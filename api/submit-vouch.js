@@ -25,6 +25,7 @@ export default async function handler(req, res) {
       yourEmail: vouchForm?.yourEmail || "",
       vouchingFor: vouchForm?.vouchingFor || "",
       theirEmail: vouchForm?.theirEmail || "",
+      recordingConsent: vouchForm?.recordingConsent || "No",
 
       // Complete form object for flexibility
       vouchForm: vouchForm || {},
