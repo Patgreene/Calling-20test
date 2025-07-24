@@ -301,9 +301,12 @@ export default function Review() {
                     </span>
                   </>
                 ) : (
-                  <span className="text-gray-500">
-                    No ID photo uploaded (optional)
-                  </span>
+                  <>
+                    <X className="w-5 h-5 text-red-500" />
+                    <span className="text-red-600 font-medium">
+                      No ID photo uploaded (optional)
+                    </span>
+                  </>
                 )}
               </div>
             </div>
