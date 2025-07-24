@@ -311,6 +311,31 @@ export default function Review() {
                 )}
               </div>
             </div>
+
+            {/* Recording Consent */}
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-orange-500" />
+                Recording Consent
+              </h3>
+              <div className="flex items-center gap-3">
+                {formData?.recordingConsent === "Yes" ? (
+                  <>
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-green-700 font-medium">
+                      Consent given to record and share call for verification purposes
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <X className="w-5 h-5 text-red-500" />
+                    <span className="text-red-600 font-medium">
+                      Recording consent not provided
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Action Buttons */}
