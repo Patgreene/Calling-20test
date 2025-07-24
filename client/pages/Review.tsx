@@ -69,8 +69,10 @@ export default function Review() {
 
       console.log("Raw localStorage data:", {
         vouchForm: vouchFormData,
-        vouchSummary: vouchSummaryData ? `${vouchSummaryData.substring(0, 100)}...` : "empty",
-        vouchID: vouchIDData ? "present" : "not present"
+        vouchSummary: vouchSummaryData
+          ? `${vouchSummaryData.substring(0, 100)}...`
+          : "empty",
+        vouchID: vouchIDData ? "present" : "not present",
       });
 
       // Parse and prepare data
@@ -79,12 +81,19 @@ export default function Review() {
       const vouchID = vouchIDData || "";
 
       // Validate required data
-      if (!vouchForm.fullName || !vouchForm.yourEmail || !vouchForm.vouchingFor || !vouchForm.theirEmail) {
+      if (
+        !vouchForm.fullName ||
+        !vouchForm.yourEmail ||
+        !vouchForm.vouchingFor ||
+        !vouchForm.theirEmail
+      ) {
         throw new Error("Missing required form data");
       }
 
       if (!vouchSummary) {
-        console.warn("No vouch summary found - this might be expected if user skipped interview");
+        console.warn(
+          "No vouch summary found - this might be expected if user skipped interview",
+        );
       }
 
       const payload = {
@@ -95,8 +104,10 @@ export default function Review() {
 
       console.log("Sending payload:", {
         ...payload,
-        vouchSummary: payload.vouchSummary ? `${payload.vouchSummary.substring(0, 100)}...` : "empty",
-        vouchID: payload.vouchID ? "present" : "not present"
+        vouchSummary: payload.vouchSummary
+          ? `${payload.vouchSummary.substring(0, 100)}...`
+          : "empty",
+        vouchID: payload.vouchID ? "present" : "not present",
       });
 
       // Send to our serverless API proxy
@@ -113,14 +124,18 @@ export default function Review() {
 
       // Check if the request was successful
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}, message: ${responseData.error || 'Unknown error'}`);
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${responseData.error || "Unknown error"}`,
+        );
       }
 
       // Redirect to thank-you page
       window.location.href = "/thank-you";
     } catch (error) {
       console.error("Error submitting data:", error);
-      alert(`There was a problem submitting your data: ${error.message}. Please check the console and try again.`);
+      alert(
+        `There was a problem submitting your data: ${error.message}. Please check the console and try again.`,
+      );
       setIsSubmitting(false);
     }
   };

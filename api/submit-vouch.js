@@ -12,8 +12,10 @@ export default async function handler(req, res) {
     // Log the received data for debugging
     console.log("Received data from frontend:", {
       vouchForm,
-      vouchSummary: vouchSummary ? `${vouchSummary.substring(0, 100)}...` : "empty",
-      vouchID: vouchID ? "present" : "not present"
+      vouchSummary: vouchSummary
+        ? `${vouchSummary.substring(0, 100)}...`
+        : "empty",
+      vouchID: vouchID ? "present" : "not present",
     });
 
     // Prepare comprehensive data payload for Make.com
@@ -35,13 +37,15 @@ export default async function handler(req, res) {
 
       // Metadata
       timestamp: new Date().toISOString(),
-      source: "vouch-app"
+      source: "vouch-app",
     };
 
     console.log("Sending payload to Make.com:", {
       ...payload,
-      vouchSummary: payload.vouchSummary ? `${payload.vouchSummary.substring(0, 100)}...` : "empty",
-      vouchID: payload.vouchID ? "present" : "not present"
+      vouchSummary: payload.vouchSummary
+        ? `${payload.vouchSummary.substring(0, 100)}...`
+        : "empty",
+      vouchID: payload.vouchID ? "present" : "not present",
     });
 
     // Send the data to your Make.com webhook
@@ -60,12 +64,16 @@ export default async function handler(req, res) {
     console.log("Make.com response:", makeResponse.status, responseText);
 
     if (!makeResponse.ok) {
-      throw new Error(`Make.com responded with status ${makeResponse.status}: ${responseText}`);
+      throw new Error(
+        `Make.com responded with status ${makeResponse.status}: ${responseText}`,
+      );
     }
 
     return res.status(200).json({ success: true, makeResponse: responseText });
   } catch (error) {
     console.error("Error submitting to Make.com:", error);
-    return res.status(500).json({ error: "Failed to submit data", details: error.message });
+    return res
+      .status(500)
+      .json({ error: "Failed to submit data", details: error.message });
   }
 }
