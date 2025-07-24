@@ -47,6 +47,7 @@ export default async function handler(req, res) {
         ? `${payload.vouchSummary.substring(0, 100)}...`
         : "empty",
       vouchID: payload.vouchID ? "present" : "not present",
+      recordingConsent: payload.recordingConsent,
     });
 
     // Send the data to your Make.com webhook
