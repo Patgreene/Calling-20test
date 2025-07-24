@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
     // Send the data to your Make.com webhook
     const makeWebhookUrl =
-      "https://hook.eu2.make.com/ch5r693uwg7th3pkubijrkpzyxqdvh3v";
+      "https://hook.eu2.make.com/6u7fsl4v8twtk92xr42pvxm3l922rm7q";
 
     const makeResponse = await fetch(makeWebhookUrl, {
       method: "POST",
