@@ -159,6 +159,18 @@ export default function Form() {
           </form>
         </div>
       </div>
+
+      {/* Back Button - Bottom Left */}
+      <div className="absolute bottom-6 left-6">
+        <Button
+          onClick={handleBack}
+          variant="ghost"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Button>
+      </div>
     </div>
   );
 }
