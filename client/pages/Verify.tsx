@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, Upload, Check, X } from "lucide-react";
+import { Camera, Upload, Check, X, ArrowLeft } from "lucide-react";
 
 export default function Verify() {
   const navigate = useNavigate();
