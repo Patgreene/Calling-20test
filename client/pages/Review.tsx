@@ -8,6 +8,7 @@ import {
   FileText,
   Image,
   CheckCircle,
+  X,
 } from "lucide-react";
 
 interface FormData {
