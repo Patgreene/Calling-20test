@@ -157,10 +157,30 @@ export default function Form() {
               />
             </div>
 
+            {/* Recording Consent Checkbox */}
+            <div className="space-y-3 pt-4">
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="recordingConsent"
+                  checked={consentToRecording}
+                  onCheckedChange={(checked) => setConsentToRecording(checked === true)}
+                  className="mt-1"
+                />
+                <Label
+                  htmlFor="recordingConsent"
+                  className="text-sm text-gray-700 leading-relaxed cursor-pointer"
+                >
+                  I consent to this call being recorded and shared for vouching purposes.
+                  I understand that the recording may be used to verify the information I provide.
+                </Label>
+              </div>
+            </div>
+
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
+              disabled={!consentToRecording}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </Button>
