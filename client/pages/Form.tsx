@@ -170,8 +170,9 @@ export default function Form() {
                   htmlFor="recordingConsent"
                   className="text-sm text-gray-700 leading-relaxed cursor-pointer"
                 >
-                  I consent to this call being recorded and shared for vouching purposes.
-                  I understand that the recording may be used to verify the information I provide.
+                  <strong>
+                    I consent to this call being recorded and shared for verification purposes.
+                  </strong>
                 </Label>
               </div>
             </div>
