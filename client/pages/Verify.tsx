@@ -34,22 +34,113 @@ export default function Verify() {
     try {
       // Check if camera is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("Camera access is not supported on this device");
+        alert("Camera access is not supported on this device. Please use the upload option instead.");
         return;
       }
 
-      // Request camera access
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }, // Use back camera if available
-      });
+      // Show user that we're requesting camera permission
+      console.log("Requesting camera permission...");
 
-      // Create video element to capture photo
+      // Request camera access with better mobile support
+      const constraints = {
+        video: {
+          facingMode: "environment", // Prefer back camera
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (backCameraError) {
+        // If back camera fails, try front camera
+        console.log("Back camera failed, trying front camera...");
+        const frontConstraints = {
+          video: {
+            facingMode: "user", // Front camera
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+        stream = await navigator.mediaDevices.getUserMedia(frontConstraints);
+      }
+
+      console.log("Camera permission granted, setting up camera...");
+
+      // Create a modal/overlay for the camera view
+      const cameraModal = document.createElement("div");
+      cameraModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      `;
+
+      // Create video element
       const video = document.createElement("video");
+      video.style.cssText = `
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 12px;
+        margin-bottom: 20px;
+      `;
       video.srcObject = stream;
-      video.play();
+      video.setAttribute("playsinline", "true"); // Important for iOS
+      video.setAttribute("autoplay", "true");
+      video.setAttribute("muted", "true");
 
-      // Wait for video to load
-      video.onloadedmetadata = () => {
+      // Create capture button
+      const captureBtn = document.createElement("button");
+      captureBtn.textContent = "Capture Photo";
+      captureBtn.style.cssText = `
+        background: #f97316;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 10px;
+        cursor: pointer;
+      `;
+
+      // Create cancel button
+      const cancelBtn = document.createElement("button");
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.style.cssText = `
+        background: #6b7280;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 10px;
+        cursor: pointer;
+      `;
+
+      // Add elements to modal
+      cameraModal.appendChild(video);
+      const buttonContainer = document.createElement("div");
+      buttonContainer.appendChild(captureBtn);
+      buttonContainer.appendChild(cancelBtn);
+      cameraModal.appendChild(buttonContainer);
+      document.body.appendChild(cameraModal);
+
+      // Start video
+      await video.play();
+
+      // Handle capture button click
+      captureBtn.onclick = () => {
         // Create canvas to capture frame
         const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
@@ -63,12 +154,34 @@ export default function Verify() {
         setUploadedImage(dataUrl);
         setFileName("camera-photo.jpg");
 
-        // Stop camera stream
+        // Clean up
         stream.getTracks().forEach((track) => track.stop());
+        document.body.removeChild(cameraModal);
+
+        console.log("Photo captured successfully");
       };
+
+      // Handle cancel button click
+      cancelBtn.onclick = () => {
+        stream.getTracks().forEach((track) => track.stop());
+        document.body.removeChild(cameraModal);
+      };
+
     } catch (error) {
       console.error("Camera access error:", error);
-      alert("Could not access camera. Please try uploading a file instead.");
+
+      let errorMessage = "Could not access camera. ";
+      if (error.name === "NotAllowedError") {
+        errorMessage += "Camera permission was denied. Please allow camera access and try again.";
+      } else if (error.name === "NotFoundError") {
+        errorMessage += "No camera found on this device.";
+      } else if (error.name === "NotSupportedError") {
+        errorMessage += "Camera is not supported on this device.";
+      } else {
+        errorMessage += "Please try uploading a file instead.";
+      }
+
+      alert(errorMessage);
     }
   };
 
