@@ -38,7 +38,7 @@ export default function Summary() {
 
   return (
     <div
-      className="min-h-screen px-4 py-8"
+      className="min-h-screen px-4 py-8 relative"
       style={{ backgroundColor: "#F8F8F8" }}
     >
       <div className="max-w-3xl mx-auto space-y-8">
@@ -53,18 +53,6 @@ export default function Summary() {
 
         {/* Content */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-          {/* Back Button */}
-          <div className="flex justify-start mb-6">
-            <Button
-              onClick={handleBack}
-              variant="ghost"
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-          </div>
-
           {/* Heading */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center font-sans">
             Review & Edit Your Vouch
