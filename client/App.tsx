@@ -11,6 +11,7 @@ import Form from "./pages/Form";
 import Interview from "./pages/Interview";
 import Summary from "./pages/Summary";
 import Verify from "./pages/Verify";
+import Review from "./pages/Review";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 
