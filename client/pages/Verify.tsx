@@ -89,32 +89,35 @@ export default function Verify() {
         localStorage.setItem("vouchID", uploadedImage);
       }
 
-      // Gather all localStorage data using the exact format requested
+      // 1. Retrieve the following from localStorage:
       const vouchForm = JSON.parse(localStorage.getItem("vouchForm") || "{}");
       const vouchSummary = localStorage.getItem("vouchSummary") || "";
       const vouchID = localStorage.getItem("vouchID") || "";
 
-      // Send to Make.com webhook
-      await fetch(
-        "https://ch5r693uwg7th3pkubijrkpzyxqdvh3v@hook.eu2.make.com",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            vouchForm,
-            vouchSummary,
-            vouchID,
-          }),
+      // 2. Send a POST request to the specified URL
+      const response = await fetch("https://hook.eu2.make.com/your-hook-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          vouchForm: vouchForm,
+          vouchSummary: vouchSummary,
+          vouchID: vouchID,
+        }),
+      });
 
-      // Redirect to thank-you page
+      // Check if the request was successful
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // 3. If the POST request succeeds, redirect to thank-you
       window.location.href = "/thank-you";
     } catch (error) {
+      // 4. If the POST request fails, show alert and log error
       console.error("Error submitting data:", error);
-      alert("There was an error submitting your data. Please try again.");
+      alert("There was a problem submitting your data. Please try again.");
       setIsSubmitting(false);
     }
   };
