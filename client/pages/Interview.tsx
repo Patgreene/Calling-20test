@@ -1,6 +1,39 @@
 import { Headphones, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Interview() {
+  const [showNextButton, setShowNextButton] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Listen for messages from the SynthFlow iframe to detect call end
+    const handleMessage = (event: MessageEvent) => {
+      // SynthFlow may send messages when call ends
+      if (event.data && typeof event.data === 'object') {
+        if (event.data.type === 'call_ended' || event.data.status === 'ended') {
+          setShowNextButton(true);
+        }
+      }
+    };
+
+    // Simple timeout fallback - show button after 30 seconds for demo purposes
+    const timeout = setTimeout(() => {
+      setShowNextButton(true);
+    }, 30000);
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  const handleNext = () => {
+    navigate('/summary');
+  };
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 flex items-center justify-center px-4 py-8">
