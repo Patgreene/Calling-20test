@@ -17,25 +17,25 @@ export default async function handler(req, res) {
 
     // For now, we'll use a simple approach with Cloudinary
     // You can replace this with your preferred image hosting service
-    
+
     // Option 1: Upload to Cloudinary (recommended)
     if (process.env.CLOUDINARY_URL) {
-      const cloudinary = require('cloudinary').v2;
-      
+      const cloudinary = require("cloudinary").v2;
+
       try {
         const result = await cloudinary.uploader.upload(
           `data:image/jpeg;base64,${base64Data}`,
           {
             folder: "vouch-ids",
             public_id: `id-${Date.now()}`,
-            resource_type: "image"
-          }
+            resource_type: "image",
+          },
         );
-        
-        return res.status(200).json({ 
-          success: true, 
+
+        return res.status(200).json({
+          success: true,
           url: result.secure_url,
-          publicId: result.public_id
+          publicId: result.public_id,
         });
       } catch (cloudinaryError) {
         console.error("Cloudinary upload failed:", cloudinaryError);
@@ -45,20 +45,19 @@ export default async function handler(req, res) {
 
     // Option 2: Convert to data URL (fallback - not ideal for production)
     const dataUrl = `data:image/jpeg;base64,${base64Data}`;
-    
+
     // For a production app, you'd want to upload to a proper storage service
     // This is a temporary solution that just returns the data URL
-    return res.status(200).json({ 
-      success: true, 
+    return res.status(200).json({
+      success: true,
       url: dataUrl,
-      note: "Using data URL - consider setting up Cloudinary for production"
+      note: "Using data URL - consider setting up Cloudinary for production",
     });
-
   } catch (error) {
     console.error("Error processing image:", error);
-    return res.status(500).json({ 
-      error: "Failed to process image", 
-      details: error.message 
+    return res.status(500).json({
+      error: "Failed to process image",
+      details: error.message,
     });
   }
 }

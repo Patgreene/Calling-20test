@@ -139,7 +139,11 @@ export default function Review() {
         vouchSummary: payload.vouchSummary
           ? `${payload.vouchSummary.substring(0, 100)}...`
           : "empty",
-        vouchID: payload.vouchID ? (payload.vouchID.startsWith('http') ? "URL provided" : "base64 data") : "not present",
+        vouchID: payload.vouchID
+          ? payload.vouchID.startsWith("http")
+            ? "URL provided"
+            : "base64 data"
+          : "not present",
       });
 
       // Send to our serverless API proxy
