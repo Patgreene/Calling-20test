@@ -22,6 +22,10 @@ export default function Summary() {
     setVouchText(e.target.value);
   };
 
+  const handleBack = () => {
+    navigate("/interview");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
