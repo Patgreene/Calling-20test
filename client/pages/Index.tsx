@@ -22,16 +22,28 @@ export default function Index() {
           Profiles that capture your reputation.
         </h1>
 
-        {/* CTA Button */}
-        <div className="pt-8">
+        {/* CTA Buttons */}
+        <div className="pt-8 space-y-4">
           <Link to="/form">
             <Button
               size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
             >
               Vouch for someone
             </Button>
           </Link>
+
+          <div className="flex justify-center">
+            <Link to="/interview-test">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Test Interview (API)
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
