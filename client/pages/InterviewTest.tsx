@@ -42,42 +42,37 @@ export default function InterviewTest() {
         throw new Error("Please fill in all fields");
       }
 
-      // Prepare the payload for SynthFlow API
+      // Prepare the payload for Make.com webhook
       const payload = {
-        agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-        metadata: {
-          form_id: formId,
-          name: formData.name,
-          vouching_for: formData.vouchingFor,
-        },
+        form_id: formId,
+        name: formData.name,
+        vouching_for: formData.vouchingFor,
+        timestamp: new Date().toISOString(),
       };
 
-      console.log("Starting SynthFlow call with payload:", payload);
+      console.log("Sending data to Make.com webhook with payload:", payload);
 
-      // Make API call to SynthFlow
-      const response = await fetch("https://api.synthflow.ai/api/calls/start", {
+      // Make API call to Make.com webhook
+      const response = await fetch("https://hook.eu2.make.com/008su7o1nauoaqj3i02fgzdh3aawu7wc", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer FlT1-eljHprcbqvlL5AeHQDkm-MaWPTvIF-YURu0aF0",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`API call failed: ${response.status} - ${errorData.message || 'Unknown error'}`);
+        throw new Error(`Webhook call failed: ${response.status}`);
       }
 
-      const result = await response.json();
-      console.log("SynthFlow API response:", result);
+      console.log("Data sent successfully to Make.com");
 
       // Show success state
       setCallStarted(true);
 
     } catch (error) {
-      console.error("Error starting call:", error);
-      setError(error instanceof Error ? error.message : "Failed to start call");
+      console.error("Error sending data:", error);
+      setError(error instanceof Error ? error.message : "Failed to send data");
     } finally {
       setIsSubmitting(false);
     }
