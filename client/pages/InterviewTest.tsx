@@ -45,7 +45,6 @@ export default function InterviewTest() {
       // Prepare the payload for SynthFlow API
       const payload = {
         agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-        phone_number: "+49123456789",
         metadata: {
           form_id: formId,
           name: formData.name,
@@ -56,7 +55,7 @@ export default function InterviewTest() {
       console.log("Starting SynthFlow call with payload:", payload);
 
       // Make API call to SynthFlow
-      const response = await fetch("https://api.synthflow.ai/v1/calls", {
+      const response = await fetch("https://api.synthflow.ai/api/calls/start", {
         method: "POST",
         headers: {
           "Authorization": "Bearer FlT1-eljHprcbqvlL5AeHQDkm-MaWPTvIF-YURu0aF0",
