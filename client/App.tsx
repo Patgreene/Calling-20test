@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/interview" element={<Interview />} />
+          <Route path="/interview-test" element={<InterviewTest />} />
           <Route path="/summary" element={<Summary />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/review" element={<Review />} />
