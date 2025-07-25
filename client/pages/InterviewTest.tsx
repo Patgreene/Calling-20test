@@ -98,10 +98,10 @@ export default function InterviewTest() {
           <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 space-y-6">
             <div className="text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-sans mb-4">
-                Call Started!
+                Data Sent Successfully!
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
-                The call has started. You'll be able to review the summary shortly.
+                Your information has been sent to the webhook for processing.
               </p>
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-500">
