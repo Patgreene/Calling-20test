@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import Interview from "./pages/Interview";
-import InterviewTest from "./pages/InterviewTest";
+
 import Summary from "./pages/Summary";
 import Verify from "./pages/Verify";
 import Review from "./pages/Review";
@@ -28,7 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/interview" element={<Interview />} />
-          <Route path="/interview-test" element={<InterviewTest />} />
+
           <Route path="/summary" element={<Summary />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/review" element={<Review />} />
