@@ -59,7 +59,7 @@ export default function InterviewTest() {
       const response = await fetch("https://api.synthflow.ai/v1/calls", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer YOUR_SYNTHFLOW_API_KEY", // TODO: Replace with actual API key
+          "Authorization": "Bearer FlT1-eljHprcbqvlL5AeHQDkm-MaWPTvIF-YURu0aF0",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
