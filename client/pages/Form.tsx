@@ -30,37 +30,81 @@ export default function Form() {
     navigate("/");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // Check if all fields are filled
-    if (
-      !formData.fullName ||
-      !formData.yourEmail ||
-      !formData.vouchingFor ||
-      !formData.theirEmail
-    ) {
-      alert("Please fill in all required fields.");
-      return;
+    try {
+      // Check if all fields are filled
+      if (
+        !formData.voucherFirst ||
+        !formData.voucherLast ||
+        !formData.voucherEmail ||
+        !formData.voucheeFirst ||
+        !formData.voucheeLast
+      ) {
+        alert("Please fill in all required fields.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Check if recording consent is given
+      if (!consentToRecording) {
+        alert(
+          "Please confirm that you consent to the call being recorded and shared.",
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Generate unique form_id
+      const formId = crypto.randomUUID();
+
+      // Prepare Supabase payload
+      const supabasePayload = {
+        form_id: formId,
+        voucher_first: formData.voucherFirst,
+        voucher_last: formData.voucherLast,
+        voucher_email: formData.voucherEmail,
+        vouchee_first: formData.voucheeFirst,
+        vouchee_last: formData.voucheeLast,
+      };
+
+      // Send to Supabase
+      const response = await fetch("https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form", {
+        method: "POST",
+        headers: {
+          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(supabasePayload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Supabase API error: ${response.status}`);
+      }
+
+      // Store form_id in localStorage
+      localStorage.setItem("form_id", formId);
+
+      // Save form data to localStorage (for backwards compatibility)
+      const formDataWithConsent = {
+        ...formData,
+        recordingConsent: consentToRecording ? "Yes" : "No",
+        formId: formId,
+      };
+      localStorage.setItem("vouchForm", JSON.stringify(formDataWithConsent));
+
+      // Navigate to interview page
+      navigate("/interview");
+
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("There was an error submitting your form. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Check if recording consent is given
-    if (!consentToRecording) {
-      alert(
-        "Please confirm that you consent to the call being recorded and shared.",
-      );
-      return;
-    }
-
-    // Save to localStorage including consent status
-    const formDataWithConsent = {
-      ...formData,
-      recordingConsent: consentToRecording ? "Yes" : "No",
-    };
-    localStorage.setItem("vouchForm", JSON.stringify(formDataWithConsent));
-
-    // Navigate to interview page
-    navigate("/interview");
   };
 
   return (
