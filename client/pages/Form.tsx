@@ -129,44 +129,44 @@ export default function Form() {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Voucher First Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucherFirst"
-                className="text-sm font-medium text-gray-700"
-              >
-                Your First Name *
-              </Label>
-              <Input
-                id="voucherFirst"
-                name="voucherFirst"
-                type="text"
-                required
-                value={formData.voucherFirst}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter your first name"
-              />
-            </div>
-
-            {/* Voucher Last Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucherLast"
-                className="text-sm font-medium text-gray-700"
-              >
-                Your Last Name *
-              </Label>
-              <Input
-                id="voucherLast"
-                name="voucherLast"
-                type="text"
-                required
-                value={formData.voucherLast}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter your last name"
-              />
+            {/* Voucher First and Last Name */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="voucherFirst"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Your First Name *
+                </Label>
+                <Input
+                  id="voucherFirst"
+                  name="voucherFirst"
+                  type="text"
+                  required
+                  value={formData.voucherFirst}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="First name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="voucherLast"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Your Last Name *
+                </Label>
+                <Input
+                  id="voucherLast"
+                  name="voucherLast"
+                  type="text"
+                  required
+                  value={formData.voucherLast}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Last name"
+                />
+              </div>
             </div>
 
             {/* Your Email */}
