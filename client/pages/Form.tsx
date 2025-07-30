@@ -9,12 +9,14 @@ import { ArrowLeft } from "lucide-react";
 export default function Form() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: "",
-    yourEmail: "",
-    vouchingFor: "",
-    theirEmail: "",
+    voucherFirst: "",
+    voucherLast: "",
+    voucherEmail: "",
+    voucheeFirst: "",
+    voucheeLast: "",
   });
   const [consentToRecording, setConsentToRecording] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
