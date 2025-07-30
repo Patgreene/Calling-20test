@@ -71,15 +71,20 @@ export default function Form() {
       };
 
       // Send to Supabase
-      const response = await fetch("https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form", {
-        method: "POST",
-        headers: {
-          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-          "Content-Type": "application/json"
+      const response = await fetch(
+        "https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form",
+        {
+          method: "POST",
+          headers: {
+            apikey:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(supabasePayload),
         },
-        body: JSON.stringify(supabasePayload),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`Supabase API error: ${response.status}`);
@@ -98,7 +103,6 @@ export default function Form() {
 
       // Navigate to interview page
       navigate("/interview");
-
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("There was an error submitting your form. Please try again.");
