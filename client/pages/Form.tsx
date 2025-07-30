@@ -129,83 +129,103 @@ export default function Form() {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Full Name */}
+            {/* Voucher First Name */}
             <div className="space-y-2">
               <Label
-                htmlFor="fullName"
+                htmlFor="voucherFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Full Name *
+                Your First Name *
               </Label>
               <Input
-                id="fullName"
-                name="fullName"
+                id="voucherFirst"
+                name="voucherFirst"
                 type="text"
                 required
-                value={formData.fullName}
+                value={formData.voucherFirst}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter your full name"
+                placeholder="Enter your first name"
+              />
+            </div>
+
+            {/* Voucher Last Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucherLast"
+                className="text-sm font-medium text-gray-700"
+              >
+                Your Last Name *
+              </Label>
+              <Input
+                id="voucherLast"
+                name="voucherLast"
+                type="text"
+                required
+                value={formData.voucherLast}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                placeholder="Enter your last name"
               />
             </div>
 
             {/* Your Email */}
             <div className="space-y-2">
               <Label
-                htmlFor="yourEmail"
+                htmlFor="voucherEmail"
                 className="text-sm font-medium text-gray-700"
               >
                 Your Email *
               </Label>
               <Input
-                id="yourEmail"
-                name="yourEmail"
+                id="voucherEmail"
+                name="voucherEmail"
                 type="email"
                 required
-                value={formData.yourEmail}
+                value={formData.voucherEmail}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Enter your email address"
               />
             </div>
 
-            {/* Who are you vouching for */}
+            {/* Vouchee First Name */}
             <div className="space-y-2">
               <Label
-                htmlFor="vouchingFor"
+                htmlFor="voucheeFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Who are you vouching for? *
+                Who are you vouching for? (First Name) *
               </Label>
               <Input
-                id="vouchingFor"
-                name="vouchingFor"
+                id="voucheeFirst"
+                name="voucheeFirst"
                 type="text"
                 required
-                value={formData.vouchingFor}
+                value={formData.voucheeFirst}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter their full name"
+                placeholder="Enter their first name"
               />
             </div>
 
-            {/* Their Email */}
+            {/* Vouchee Last Name */}
             <div className="space-y-2">
               <Label
-                htmlFor="theirEmail"
+                htmlFor="voucheeLast"
                 className="text-sm font-medium text-gray-700"
               >
-                Their Email *
+                Their Last Name *
               </Label>
               <Input
-                id="theirEmail"
-                name="theirEmail"
-                type="email"
+                id="voucheeLast"
+                name="voucheeLast"
+                type="text"
                 required
-                value={formData.theirEmail}
+                value={formData.voucheeLast}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter their email address"
+                placeholder="Enter their last name"
               />
             </div>
 
