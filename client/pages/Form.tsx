@@ -189,44 +189,33 @@ export default function Form() {
               />
             </div>
 
-            {/* Vouchee First Name */}
+            {/* Vouchee First and Last Name */}
             <div className="space-y-2">
-              <Label
-                htmlFor="voucheeFirst"
-                className="text-sm font-medium text-gray-700"
-              >
-                Who are you vouching for? (First Name) *
+              <Label className="text-sm font-medium text-gray-700">
+                Who are you vouching for? *
               </Label>
-              <Input
-                id="voucheeFirst"
-                name="voucheeFirst"
-                type="text"
-                required
-                value={formData.voucheeFirst}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter their first name"
-              />
-            </div>
-
-            {/* Vouchee Last Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucheeLast"
-                className="text-sm font-medium text-gray-700"
-              >
-                Their Last Name *
-              </Label>
-              <Input
-                id="voucheeLast"
-                name="voucheeLast"
-                type="text"
-                required
-                value={formData.voucheeLast}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter their last name"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  id="voucheeFirst"
+                  name="voucheeFirst"
+                  type="text"
+                  required
+                  value={formData.voucheeFirst}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="First name"
+                />
+                <Input
+                  id="voucheeLast"
+                  name="voucheeLast"
+                  type="text"
+                  required
+                  value={formData.voucheeLast}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Last name"
+                />
+              </div>
             </div>
 
             {/* Recording Consent Checkbox */}
