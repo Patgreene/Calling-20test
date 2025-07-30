@@ -136,7 +136,7 @@ export default function Form() {
                   htmlFor="voucherFirst"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Your First Name *
+                  Your Name *
                 </Label>
                 <Input
                   id="voucherFirst"
@@ -163,7 +163,7 @@ export default function Form() {
                   required
                   value={formData.voucherLast}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mt-8"
                   placeholder="Last name"
                 />
               </div>
