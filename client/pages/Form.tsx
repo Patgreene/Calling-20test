@@ -255,10 +255,10 @@ export default function Form() {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={!consentToRecording}
+              disabled={!consentToRecording || isSubmitting}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
+              {isSubmitting ? "Submitting..." : "Next"}
             </Button>
           </form>
         </div>
