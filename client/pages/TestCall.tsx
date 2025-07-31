@@ -268,6 +268,37 @@ export default function TestCall() {
     setIsRecording(false);
   };
 
+  const testAudio = async () => {
+    try {
+      // Test microphone
+      const stream = await requestMicrophone();
+
+      // Test speakers by playing a beep
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.frequency.value = 440; // A note
+      gainNode.gain.value = 0.1;
+
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.5);
+
+      console.log("🔊 Audio test completed - you should hear a beep");
+      alert("Audio test completed! Check console for microphone details and you should hear a beep.");
+
+      // Clean up
+      stream.getTracks().forEach(track => track.stop());
+
+    } catch (error) {
+      console.error("❌ Audio test failed:", error);
+      alert(`Audio test failed: ${error.message}`);
+    }
+  };
+
   const endCall = () => {
     disconnectWebSocket();
     setIsCallInProgress(false);
