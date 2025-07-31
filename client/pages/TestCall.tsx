@@ -145,8 +145,8 @@ export default function TestCall() {
             inputBuffer.length,
         );
 
-        // Apply gain to boost microphone signal
-        const gain = 2.0;
+        // Apply moderate gain to boost microphone signal (reduced from 2.0 to 1.5)
+        const gain = 1.5;
         rms *= gain;
 
         const hasAudio = rms > 0.01; // Threshold for detection (1%)
