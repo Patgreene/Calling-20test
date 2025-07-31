@@ -289,7 +289,7 @@ export default function TestCall() {
         }, 10000); // Every 10 seconds
       };
 
-      ws.onmessage = (event) => {
+      ws.onmessage = async (event) => {
         if (typeof event.data === "string") {
           console.log("📩 Received JSON message:", event.data);
           const message = JSON.parse(event.data);
