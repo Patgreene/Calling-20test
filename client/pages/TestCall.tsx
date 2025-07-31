@@ -169,14 +169,18 @@ export default function TestCall() {
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     if (!audioContext) {
-      console.warn("No audio context available for playback");
+      console.warn("❌ No audio context available for playback");
       return;
     }
 
     try {
+      console.log(`🔊 AudioContext state: ${audioContext.state}, sampleRate: ${audioContext.sampleRate}`);
+
       // Ensure audio context is running
       if (audioContext.state === "suspended") {
+        console.log("🔊 Resuming suspended audio context...");
         await audioContext.resume();
+        console.log(`🔊 Audio context resumed, new state: ${audioContext.state}`);
       }
 
       // Parse PCM16 data (Little Endian)
@@ -184,12 +188,18 @@ export default function TestCall() {
       const sampleCount = audioData.byteLength / 2;
       const float32 = new Float32Array(sampleCount);
 
+      let maxSample = 0;
       for (let i = 0; i < sampleCount; i++) {
         const intSample = view.getInt16(i * 2, true); // true = little endian
         float32[i] = intSample / 32768;
+        maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      console.log("🔊 Playing agent audio:", sampleCount, "samples");
+      console.log(`🔊 Processing ${sampleCount} samples, max amplitude: ${maxSample.toFixed(4)}`);
+
+      if (maxSample < 0.001) {
+        console.warn("🔊 Audio data appears to be silent (max amplitude < 0.001)");
+      }
 
       // Create audio buffer (16kHz mono from agent)
       const audioBuffer = audioContext.createBuffer(1, sampleCount, 16000);
@@ -199,9 +209,19 @@ export default function TestCall() {
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(audioContext.destination);
+
+      // Add event listeners for debugging
+      source.onended = () => {
+        console.log("🔊 Audio playback finished");
+      };
+
+      console.log(`🔊 Starting audio playback: ${sampleCount} samples at 16kHz (${(sampleCount/16000).toFixed(2)}s duration)`);
       source.start();
+
     } catch (error) {
       console.error("❌ Error playing audio:", error);
+      console.error("❌ Audio context state:", audioContext?.state);
+      console.error("❌ Audio data size:", audioData.byteLength);
     }
   };
 
