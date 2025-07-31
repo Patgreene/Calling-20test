@@ -111,7 +111,6 @@ export default function TestCall() {
         setWsStatus("disconnected");
         setWsConnection(null);
       };
-
     } catch (error) {
       console.error("💥 Error creating WebSocket:", error);
       setWsStatus("error");
@@ -194,27 +193,39 @@ export default function TestCall() {
                       <p className="text-sm text-blue-800">
                         WebSocket URL obtained successfully!
                       </p>
-                      <div className={`px-2 py-1 rounded text-xs font-medium ${
-                        wsStatus === "connected" ? "bg-green-100 text-green-800" :
-                        wsStatus === "connecting" ? "bg-yellow-100 text-yellow-800" :
-                        wsStatus === "error" ? "bg-red-100 text-red-800" :
-                        "bg-gray-100 text-gray-800"
-                      }`}>
+                      <div
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          wsStatus === "connected"
+                            ? "bg-green-100 text-green-800"
+                            : wsStatus === "connecting"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : wsStatus === "error"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
                         {wsStatus}
                       </div>
                     </div>
 
                     {wsStatus === "connected" ? (
                       <div className="text-sm text-green-700">
-                        <p className="font-medium">🎉 Connected to SynthFlow AI Agent!</p>
-                        <p>You can now speak and the AI will respond in real-time.</p>
+                        <p className="font-medium">
+                          🎉 Connected to SynthFlow AI Agent!
+                        </p>
+                        <p>
+                          You can now speak and the AI will respond in
+                          real-time.
+                        </p>
                       </div>
                     ) : (
                       <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
                         <li>
                           Use the sessionURL to establish WebSocket connection
                         </li>
-                        <li>Send/receive real-time audio data (PCM16 format)</li>
+                        <li>
+                          Send/receive real-time audio data (PCM16 format)
+                        </li>
                         <li>Implement voice interaction with the AI agent</li>
                       </ul>
                     )}
@@ -229,7 +240,9 @@ export default function TestCall() {
                   <div className="text-center space-y-2">
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button
-                        onClick={() => navigator.clipboard.writeText(callSession.sessionURL)}
+                        onClick={() =>
+                          navigator.clipboard.writeText(callSession.sessionURL)
+                        }
                         variant="outline"
                         size="sm"
                         className="text-xs"
@@ -250,14 +263,17 @@ export default function TestCall() {
                           disabled={wsStatus === "connecting"}
                           className="bg-green-500 hover:bg-green-600 text-white disabled:opacity-50"
                         >
-                          {wsStatus === "connecting" ? "Connecting..." : "Connect to Agent"}
+                          {wsStatus === "connecting"
+                            ? "Connecting..."
+                            : "Connect to Agent"}
                         </Button>
                       )}
                     </div>
 
                     {wsStatus === "disconnected" && (
                       <p className="text-xs text-gray-600 mt-2">
-                        Click "Connect to Agent" to establish real-time voice connection with SynthFlow AI.
+                        Click "Connect to Agent" to establish real-time voice
+                        connection with SynthFlow AI.
                       </p>
                     )}
                   </div>
