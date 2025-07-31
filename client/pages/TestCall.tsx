@@ -93,56 +93,134 @@ export default function TestCall() {
         {/* Test Call Section */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
-            SynthFlow Test Call
+            SynthFlow WebRTC Test
           </h2>
 
-          {isCallInProgress ? (
-            /* Call in Progress Display */
+          {callSession ? (
+            /* Web Call Interface */
+            <div className="space-y-6">
+              <div className="text-center space-y-4">
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                      <Phone className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="absolute inset-0 w-16 h-16 bg-green-400 rounded-full animate-ping opacity-75"></div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-green-600">
+                    Web Call Active
+                  </h3>
+                  <p className="text-gray-600">
+                    SynthFlow WebRTC session established
+                  </p>
+                </div>
+              </div>
+
+              {/* Display session information */}
+              <div className="bg-gray-50 rounded-lg p-4 text-sm">
+                <h4 className="font-semibold mb-2">Session Information:</h4>
+                <pre className="text-xs overflow-auto bg-white p-2 rounded border">
+                  {JSON.stringify(callSession, null, 2)}
+                </pre>
+              </div>
+
+              {/* Check for iframe URL or session URL */}
+              {(callSession.session_url || callSession.iframe_url || callSession.web_url) && (
+                <div className="space-y-2">
+                  <h4 className="font-semibold">Web Call Interface:</h4>
+                  <div className="border rounded-lg overflow-hidden" style={{ height: '400px' }}>
+                    <iframe
+                      src={callSession.session_url || callSession.iframe_url || callSession.web_url}
+                      className="w-full h-full border-0"
+                      allow="microphone; camera; autoplay"
+                      title="SynthFlow WebRTC Call"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Check for external URL that needs to be opened */}
+              {callSession.call_url && !callSession.session_url && !callSession.iframe_url && (
+                <div className="text-center space-y-4">
+                  <p className="text-gray-600">Click below to join the web call:</p>
+                  <Button
+                    onClick={() => window.open(callSession.call_url, '_blank')}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    Join Web Call
+                  </Button>
+                </div>
+              )}
+
+              <div className="flex gap-2 justify-center">
+                <Button
+                  onClick={endCall}
+                  variant="destructive"
+                  className="flex items-center gap-2"
+                >
+                  End Call
+                </Button>
+              </div>
+            </div>
+          ) : isCallInProgress ? (
+            /* Loading State */
             <div className="text-center space-y-6">
               <div className="flex justify-center">
                 <div className="relative">
-                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
                     <Phone className="w-8 h-8 text-white" />
                   </div>
-                  <div className="absolute inset-0 w-16 h-16 bg-green-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute inset-0 w-16 h-16 bg-blue-400 rounded-full animate-ping opacity-75"></div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold text-green-600">
-                  Call in Progress
+                <h3 className="text-xl font-semibold text-blue-600">
+                  Connecting...
                 </h3>
                 <p className="text-gray-600">
-                  SynthFlow call has been initiated...
+                  Setting up WebRTC session...
                 </p>
               </div>
-
-              <Button
-                onClick={() => setIsCallInProgress(false)}
-                variant="outline"
-                className="mt-6"
-              >
-                Reset
-              </Button>
             </div>
           ) : (
-            /* Start Call Button */
-            <div className="text-center space-y-6">
-              <p className="text-gray-600 mb-6">
-                Click the button below to initiate a test call using SynthFlow
-                API.
-              </p>
+            /* Start Call Form */
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Name
+                  </label>
+                  <input
+                    id="userName"
+                    type="text"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter your name"
+                  />
+                </div>
 
-              <Button
-                onClick={startSynthflowCall}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                <Phone className="w-5 h-5" />
-                Start Call
-              </Button>
+                <p className="text-gray-600 text-sm">
+                  Click the button below to start a WebRTC call using SynthFlow.
+                </p>
 
-              <div className="text-xs text-gray-500 mt-4 p-3 bg-gray-50 rounded-lg">
-                <strong>Agent ID:</strong> 63e56c5a-2a00-447a-906a-131e89aa7ccd
+                <Button
+                  onClick={startSynthflowCall}
+                  disabled={!userName.trim()}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Phone className="w-5 h-5" />
+                  Start Web Call
+                </Button>
+              </div>
+
+              <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
+                <div><strong>Agent ID:</strong> 63e56c5a-2a00-447a-906a-131e89aa7ccd</div>
+                <div><strong>Endpoint:</strong> /v2/calls/web</div>
               </div>
             </div>
           )}
