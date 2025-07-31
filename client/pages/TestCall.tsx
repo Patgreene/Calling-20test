@@ -183,13 +183,20 @@ export default function TestCall() {
     };
 
     source.connect(processor);
-    // Don't connect to destination to avoid feedback
+    processor.connect(audioCtx.destination);
     setIsRecording(true);
+
     console.log(
       "🎵 Audio capture started with",
       processor.bufferSize,
       "buffer size",
     );
+    console.log("🎤 Microphone connected. Speak now to test!");
+
+    // Test microphone immediately
+    setTimeout(() => {
+      console.log("🎤 Testing microphone... (speak now)");
+    }, 1000);
   };
 
   const playQueuedAudio = async () => {
