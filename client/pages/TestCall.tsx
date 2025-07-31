@@ -525,14 +525,24 @@ export default function TestCall() {
                   Click the button below to start a WebRTC call using SynthFlow.
                 </p>
 
-                <Button
-                  onClick={startSynthflowCall}
-                  disabled={!userName.trim()}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Phone className="w-5 h-5" />
-                  Start Web Call
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    onClick={testAudio}
+                    variant="outline"
+                    className="w-full border-gray-300 text-gray-600 hover:bg-gray-50"
+                  >
+                    🎵 Test Audio (Mic + Speakers)
+                  </Button>
+
+                  <Button
+                    onClick={startSynthflowCall}
+                    disabled={!userName.trim()}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Start Web Call
+                  </Button>
+                </div>
               </div>
 
               <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
