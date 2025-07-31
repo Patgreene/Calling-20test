@@ -15,26 +15,22 @@ export default function TestCall() {
     const storedFormId = localStorage.getItem("form_id");
     const formId = storedFormId || `test-form-${Date.now()}`;
 
-    // Try POST to create a new web call
-    const requestBody = {
-      agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-      name: userName || "Test User",
-      form_id: formId,
-      call_type: "web", // Specify this is a web call
-    };
+    // Use the correct SynthFlow widget endpoint for WebSocket token
+    const assistantId = "63e56c5a-2a00-447a-906a-131e89aa7ccd";
+    const tokenUrl = `https://widget.synthflow.ai/websocket/token/${assistantId}`;
 
-    console.log("🚀 Starting SynthFlow WebRTC call with:");
-    console.log("📍 URL: https://api.synthflow.ai/v2/calls");
-    console.log("📋 Request Body:", requestBody);
+    console.log("🚀 Requesting SynthFlow WebSocket session with:");
+    console.log("📍 URL:", tokenUrl);
+    console.log("📋 Assistant ID:", assistantId);
+    console.log("📋 Form ID:", formId);
+    console.log("📋 User Name:", userName);
 
     try {
-      const response = await fetch("https://api.synthflow.ai/v2/calls", {
-        method: "POST",
+      const response = await fetch(tokenUrl, {
+        method: "GET",
         headers: {
           Authorization: "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
       });
 
       console.log("📡 Response Status:", response.status, response.statusText);
@@ -47,12 +43,12 @@ export default function TestCall() {
         const errorText = await response.text();
         console.error("❌ API Error Response:", errorText);
         throw new Error(
-          `Call initiation failed: ${response.status} - ${errorText}`,
+          `Token request failed: ${response.status} - ${errorText}`,
         );
       }
 
       const data = await response.json();
-      console.log("✅ API Success Response:", data);
+      console.log("✅ WebSocket Token Response:", data);
 
       // Store session information
       setCallSession(data);
@@ -62,10 +58,10 @@ export default function TestCall() {
         localStorage.setItem("form_id", formId);
       }
 
-      alert("Web call session started successfully!");
+      alert("WebSocket session token obtained successfully!");
     } catch (error) {
-      console.error("💥 Error starting call:", error);
-      alert(`Failed to start call: ${error.message}`);
+      console.error("💥 Error getting WebSocket token:", error);
+      alert(`Failed to get session token: ${error.message}`);
       setIsCallInProgress(false);
     }
   };
