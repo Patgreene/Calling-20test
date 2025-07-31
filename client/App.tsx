@@ -28,7 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/interview" element={<Interview />} />
-
+          <Route path="/synthflow-test" element={<SynthFlowTest />} />
           <Route path="/summary" element={<Summary />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/review" element={<Review />} />
