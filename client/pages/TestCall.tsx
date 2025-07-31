@@ -10,7 +10,7 @@ export default function TestCall() {
     setIsCallInProgress(true);
 
     try {
-      const response = await fetch("https://api.synthflow.ai/v1/calls", {
+      const response = await fetch("https://api.synthflow.ai/api/calls/start", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
