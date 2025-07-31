@@ -86,7 +86,11 @@ export default function TestCall() {
       const tracks = stream.getAudioTracks();
       console.log("🎤 Microphone access granted, tracks:", tracks.length);
       if (tracks.length > 0) {
-        console.log("🎤 Audio track:", tracks[0].label, tracks[0].getSettings());
+        console.log(
+          "🎤 Audio track:",
+          tracks[0].label,
+          tracks[0].getSettings(),
+        );
       }
       return stream;
     } catch (error) {
@@ -103,7 +107,7 @@ export default function TestCall() {
     });
 
     // Resume audio context if needed (browser policy)
-    if (audioCtx.state === 'suspended') {
+    if (audioCtx.state === "suspended") {
       await audioCtx.resume();
     }
 
@@ -117,7 +121,7 @@ export default function TestCall() {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
         // Check for actual audio input
-        const hasAudio = inputBuffer.some(sample => Math.abs(sample) > 0.001);
+        const hasAudio = inputBuffer.some((sample) => Math.abs(sample) > 0.001);
         if (hasAudio) {
           console.log("🎤 Sending audio data, samples:", inputBuffer.length);
         }
@@ -139,7 +143,11 @@ export default function TestCall() {
     source.connect(processor);
     // Don't connect to destination to avoid feedback
     setIsRecording(true);
-    console.log("🎵 Audio capture started with", processor.bufferSize, "buffer size");
+    console.log(
+      "🎵 Audio capture started with",
+      processor.bufferSize,
+      "buffer size",
+    );
   };
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
@@ -150,7 +158,7 @@ export default function TestCall() {
 
     try {
       // Ensure audio context is running
-      if (audioContext.state === 'suspended') {
+      if (audioContext.state === "suspended") {
         await audioContext.resume();
       }
 
@@ -175,7 +183,6 @@ export default function TestCall() {
       source.buffer = audioBuffer;
       source.connect(audioContext.destination);
       source.start();
-
     } catch (error) {
       console.error("❌ Error playing audio:", error);
     }
@@ -274,7 +281,8 @@ export default function TestCall() {
       const stream = await requestMicrophone();
 
       // Test speakers by playing a beep
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioCtx = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
@@ -288,11 +296,12 @@ export default function TestCall() {
       oscillator.stop(audioCtx.currentTime + 0.5);
 
       console.log("🔊 Audio test completed - you should hear a beep");
-      alert("Audio test completed! Check console for microphone details and you should hear a beep.");
+      alert(
+        "Audio test completed! Check console for microphone details and you should hear a beep.",
+      );
 
       // Clean up
-      stream.getTracks().forEach(track => track.stop());
-
+      stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
       console.error("❌ Audio test failed:", error);
       alert(`Audio test failed: ${error.message}`);
