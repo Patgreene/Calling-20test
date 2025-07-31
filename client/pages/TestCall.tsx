@@ -245,10 +245,21 @@ export default function TestCall() {
         setWsConnection(ws);
 
         // Send client ready status
+        console.log("📤 Sending client ready status");
         ws.send(JSON.stringify({ type: "status_client_ready" }));
 
         // Start audio capture
         await startAudioCapture(ws, stream);
+
+        // Set up periodic health check
+        const healthCheck = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            console.log("💓 WebSocket health check: OPEN, bufferedAmount:", ws.bufferedAmount);
+          } else {
+            console.log("💓 WebSocket health check: NOT OPEN, state:", ws.readyState);
+            clearInterval(healthCheck);
+          }
+        }, 10000); // Every 10 seconds
       };
 
       ws.onmessage = (event) => {
