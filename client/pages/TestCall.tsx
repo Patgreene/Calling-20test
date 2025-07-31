@@ -214,7 +214,7 @@ export default function TestCall() {
       }
 
       // Combine multiple audio chunks for smoother playback
-      const chunksToPlay = audioQueue.splice(0, Math.min(5, audioQueue.length));
+      const chunksToPlay = audioQueue.splice(0, Math.min(10, audioQueue.length));
       if (chunksToPlay.length === 0) {
         isPlayingQueue = false;
         return;
@@ -225,6 +225,8 @@ export default function TestCall() {
         (sum, chunk) => sum + chunk.length,
         0,
       );
+
+      console.log(`🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples/16000).toFixed(2)}s)`);
 
       // Create combined audio buffer
       const audioBuffer = ctx.createBuffer(1, totalSamples, 16000);
