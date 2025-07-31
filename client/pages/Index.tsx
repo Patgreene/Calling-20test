@@ -34,6 +34,7 @@ export default function Index() {
           </Link>
 
           <div className="flex justify-center">
+<<<<<<< HEAD
             <Link to="/test-call">
               <Button
                 variant="outline"
@@ -41,6 +42,15 @@ export default function Index() {
                 className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 Test SynthFlow Call
+=======
+            <Link to="/synthflow-test">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                SynthFlow Test
+>>>>>>> 3840c16f7b52d4604b412fb7af0a41168e1f7b3d
               </Button>
             </Link>
           </div>
