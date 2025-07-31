@@ -190,16 +190,34 @@ export default function TestCall() {
                 <div className="space-y-4">
                   <h4 className="font-semibold">WebSocket Session Ready:</h4>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800 mb-2">
-                      WebSocket URL obtained successfully! You can now:
-                    </p>
-                    <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
-                      <li>
-                        Use the sessionURL to establish WebSocket connection
-                      </li>
-                      <li>Send/receive real-time audio data (PCM16 format)</li>
-                      <li>Implement voice interaction with the AI agent</li>
-                    </ul>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-blue-800">
+                        WebSocket URL obtained successfully!
+                      </p>
+                      <div className={`px-2 py-1 rounded text-xs font-medium ${
+                        wsStatus === "connected" ? "bg-green-100 text-green-800" :
+                        wsStatus === "connecting" ? "bg-yellow-100 text-yellow-800" :
+                        wsStatus === "error" ? "bg-red-100 text-red-800" :
+                        "bg-gray-100 text-gray-800"
+                      }`}>
+                        {wsStatus}
+                      </div>
+                    </div>
+
+                    {wsStatus === "connected" ? (
+                      <div className="text-sm text-green-700">
+                        <p className="font-medium">🎉 Connected to SynthFlow AI Agent!</p>
+                        <p>You can now speak and the AI will respond in real-time.</p>
+                      </div>
+                    ) : (
+                      <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
+                        <li>
+                          Use the sessionURL to establish WebSocket connection
+                        </li>
+                        <li>Send/receive real-time audio data (PCM16 format)</li>
+                        <li>Implement voice interaction with the AI agent</li>
+                      </ul>
+                    )}
                   </div>
 
                   <div className="text-xs bg-gray-100 p-3 rounded border overflow-auto">
