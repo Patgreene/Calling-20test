@@ -431,13 +431,26 @@ export default function TestCall() {
       setAudioStream(null);
     }
 
-    if (audioContext) {
-      audioContext.close();
+    // Clear audio queue
+    audioQueue = [];
+    isPlayingQueue = false;
+
+    // Close audio contexts safely
+    if (audioContext && audioContext.state !== 'closed') {
+      try {
+        audioContext.close();
+      } catch (error) {
+        console.warn("Audio context already closed");
+      }
       setAudioContext(null);
     }
 
-    if (globalAudioContext) {
-      globalAudioContext.close();
+    if (globalAudioContext && globalAudioContext.state !== 'closed') {
+      try {
+        globalAudioContext.close();
+      } catch (error) {
+        console.warn("Global audio context already closed");
+      }
       globalAudioContext = null;
     }
 
