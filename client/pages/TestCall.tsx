@@ -130,7 +130,7 @@ export default function TestCall() {
     console.log("🎵 Audio context set in state:", !!audioContext);
 
     const source = audioCtx.createMediaStreamSource(stream);
-    const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Smaller buffer for lower latency
+    const processor = audioCtx.createScriptProcessor(1024, 1, 1); // Even smaller buffer for lower latency
 
     let audioSentCount = 0;
     let lastAudioTime = Date.now();
