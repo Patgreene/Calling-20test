@@ -189,7 +189,9 @@ export default function TestCall() {
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     const ctx = globalAudioContext || audioContext;
     if (!ctx) {
-      console.warn("❌ No audio context available for playback (global or state)");
+      console.warn(
+        "❌ No audio context available for playback (global or state)",
+      );
       console.warn("❌ globalAudioContext:", !!globalAudioContext);
       console.warn("❌ audioContext state:", !!audioContext);
       return;
@@ -204,9 +206,7 @@ export default function TestCall() {
       if (ctx.state === "suspended") {
         console.log("🔊 Resuming suspended audio context...");
         await ctx.resume();
-        console.log(
-          `🔊 Audio context resumed, new state: ${ctx.state}`,
-        );
+        console.log(`🔊 Audio context resumed, new state: ${ctx.state}`);
       }
 
       // Parse PCM16 data (Little Endian)
@@ -321,7 +321,11 @@ export default function TestCall() {
           let audioData = event.data;
           let dataSize = 0;
 
-          console.log("🎵 Raw audio data received, type:", typeof audioData, audioData.constructor?.name);
+          console.log(
+            "🎵 Raw audio data received, type:",
+            typeof audioData,
+            audioData.constructor?.name,
+          );
 
           // Check if it's an ArrayBuffer or Blob
           if (audioData instanceof ArrayBuffer) {
@@ -329,9 +333,16 @@ export default function TestCall() {
             console.log("🎵 ArrayBuffer detected, size:", dataSize);
           } else if (audioData instanceof Blob) {
             dataSize = audioData.size;
-            console.log("🎵 Blob detected, size:", dataSize, "- converting to ArrayBuffer...");
+            console.log(
+              "🎵 Blob detected, size:",
+              dataSize,
+              "- converting to ArrayBuffer...",
+            );
             audioData = await audioData.arrayBuffer();
-            console.log("🎵 Converted to ArrayBuffer, new size:", audioData.byteLength);
+            console.log(
+              "🎵 Converted to ArrayBuffer, new size:",
+              audioData.byteLength,
+            );
           } else if (audioData && audioData.byteLength !== undefined) {
             // Some other binary data type
             dataSize = audioData.byteLength;
@@ -342,7 +353,7 @@ export default function TestCall() {
               typeof audioData,
               audioData?.constructor?.name,
               "Data:",
-              audioData
+              audioData,
             );
             return;
           }
