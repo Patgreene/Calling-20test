@@ -146,15 +146,22 @@ export default function TestCall() {
                     <code className="break-all">{callSession.sessionURL}</code>
                   </div>
 
-                  <div className="text-center">
+                  <div className="text-center space-y-2">
                     <Button
-                      onClick={() =>
-                        window.open(callSession.sessionURL, "_blank")
-                      }
-                      className="bg-blue-500 hover:bg-blue-600 text-white"
+                      onClick={() => navigator.clipboard.writeText(callSession.sessionURL)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
                     >
-                      Open WebSocket URL
+                      Copy WebSocket URL
                     </Button>
+                    <Button
+                      onClick={connectToWebSocket}
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Connect to WebSocket
+                    </Button>
+                    <p className="text-xs text-gray-600 mt-2">
+                      WebSocket URLs can't be opened directly in browser. Use the connect button or copy URL for your WebSocket client.
+                    </p>
                   </div>
                 </div>
               )}
