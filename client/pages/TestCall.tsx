@@ -199,13 +199,13 @@ export default function TestCall() {
     console.log(
       "🎵 Audio capture started with",
       processor.bufferSize,
-      "buffer size",
+      "buffer size for low latency",
     );
-    console.log("🎤 Microphone connected. Speak now to test!");
+    console.log("🎤 Microphone connected with 1.5x gain. Speak now to test!");
 
     // Test microphone immediately
     setTimeout(() => {
-      console.log("🎤 Testing microphone... (speak now)");
+      console.log("🎤 Testing microphone... (speak loudly now)");
     }, 1000);
   };
 
