@@ -197,8 +197,7 @@ export default function TestCall() {
     }, 1000);
   };
 
-  // Simplified direct audio playback - no complex buffering
-  let lastPlayTime = 0;
+  // Simplified direct audio playback - immediate response
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     const ctx = globalAudioContext || audioContext;
@@ -307,7 +306,7 @@ export default function TestCall() {
           console.log("📩 Received JSON message:", event.data);
           const message = JSON.parse(event.data);
           if (message.type === "status_agent_ready") {
-            console.log("�� Agent is ready to receive audio");
+            console.log("🤖 Agent is ready to receive audio");
           }
         } else {
           // Handle binary audio data
