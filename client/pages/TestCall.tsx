@@ -251,7 +251,7 @@ export default function TestCall() {
       source.start();
     } catch (error) {
       console.error("❌ Error playing audio:", error);
-      console.error("❌ Audio context state:", audioContext?.state);
+      console.error("❌ Audio context state:", ctx?.state);
       console.error("❌ Audio data size:", audioData.byteLength);
     }
   };
