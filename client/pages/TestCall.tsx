@@ -13,31 +13,26 @@ export default function TestCall() {
 
     // Get form_id from localStorage or generate one
     const storedFormId = localStorage.getItem("form_id");
-    const formId = storedFormId || `web_call_${Date.now()}`;
+    const formId = storedFormId || `test-form-${Date.now()}`;
 
-    // Build URL with query parameters
-    const baseUrl = "https://api.synthflow.ai/v2/calls/web";
-    const queryParams = new URLSearchParams({
+    const requestBody = {
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-      name: userName,
+      name: userName || "Test User",
       form_id: formId,
-    });
-    const fullUrl = `${baseUrl}?${queryParams.toString()}`;
+    };
 
     console.log("🚀 Starting SynthFlow WebRTC call with:");
-    console.log("📍 Full URL:", fullUrl);
-    console.log("📋 Query Parameters:", {
-      agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-      name: userName,
-      form_id: formId,
-    });
+    console.log("📍 URL: https://api.synthflow.ai/v2/calls/web");
+    console.log("📋 Request Body:", requestBody);
 
     try {
-      const response = await fetch(fullUrl, {
-        method: "GET",
+      const response = await fetch("https://api.synthflow.ai/v2/calls/web", {
+        method: "POST",
         headers: {
-          Authorization: "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
+          "Authorization": "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(requestBody),
       });
 
       console.log("📡 Response Status:", response.status, response.statusText);
