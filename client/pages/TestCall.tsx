@@ -210,7 +210,7 @@ export default function TestCall() {
   };
 
   const playQueuedAudio = async () => {
-    if (isPlayingQueue || audioQueue.length < 3) return; // Wait for at least 3 chunks
+    if (isPlayingQueue || audioQueue.length < 2) return; // Reduced from 3 to 2 for lower latency
 
     const ctx = globalAudioContext || audioContext;
     if (!ctx) return;
