@@ -5,20 +5,30 @@ import { Link } from "react-router-dom";
 
 export default function TestCall() {
   const [isCallInProgress, setIsCallInProgress] = useState(false);
+  const [callSession, setCallSession] = useState<any>(null);
+  const [userName, setUserName] = useState("Patrick");
 
   const startSynthflowCall = async () => {
     setIsCallInProgress(true);
 
+    // Get form_id from localStorage or generate one
+    const storedFormId = localStorage.getItem("form_id");
+    const formId = storedFormId || `web_call_${Date.now()}`;
+
     const requestBody = {
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
+      name: userName,
+      metadata: {
+        form_id: formId,
+      },
     };
 
-    console.log("🚀 Starting SynthFlow call with:");
-    console.log("📍 Endpoint: https://api.synthflow.ai/v2/calls");
+    console.log("🚀 Starting SynthFlow WebRTC call with:");
+    console.log("📍 Endpoint: https://api.synthflow.ai/v2/calls/web");
     console.log("📋 Request Body:", requestBody);
 
     try {
-      const response = await fetch("https://api.synthflow.ai/v2/calls", {
+      const response = await fetch("https://api.synthflow.ai/v2/calls/web", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,12 +53,26 @@ export default function TestCall() {
 
       const data = await response.json();
       console.log("✅ API Success Response:", data);
-      alert("Call started successfully!");
+
+      // Store session information
+      setCallSession(data);
+
+      // Store form_id if we generated one
+      if (!storedFormId) {
+        localStorage.setItem("form_id", formId);
+      }
+
+      alert("Web call session started successfully!");
     } catch (error) {
       console.error("💥 Error starting call:", error);
       alert(`Failed to start call: ${error.message}`);
       setIsCallInProgress(false);
     }
+  };
+
+  const endCall = () => {
+    setIsCallInProgress(false);
+    setCallSession(null);
   };
 
   return (
