@@ -145,7 +145,9 @@ export default function TestCall() {
         // Minimal logging - only every 15 seconds
         const now = Date.now();
         if (now - lastAudioTime > 15000) {
-          console.log(`🎤 Mic: ${(rms * 100).toFixed(1)}% | ${audioSentCount} sent`);
+          console.log(
+            `🎤 Mic: ${(rms * 100).toFixed(1)}% | ${audioSentCount} sent`,
+          );
           lastAudioTime = now;
           audioSentCount = 0;
         }
@@ -180,9 +182,7 @@ export default function TestCall() {
       processor.bufferSize,
       "buffer (maximum speed)",
     );
-    console.log(
-      "🎤 Ready! Zero-delay microphone + clean agent audio.",
-    );
+    console.log("🎤 Ready! Zero-delay microphone + clean agent audio.");
 
     // Test microphone immediately
     setTimeout(() => {
