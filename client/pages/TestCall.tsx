@@ -258,6 +258,16 @@ export default function TestCall() {
       // Request microphone access first
       const stream = await requestMicrophone();
 
+      // Create audio context early to ensure it's available for playback
+      if (!audioContext) {
+        const audioCtx = new (window.AudioContext ||
+          (window as any).webkitAudioContext)({
+          sampleRate: 48000,
+        });
+        setAudioContext(audioCtx);
+        console.log("🎵 Pre-created audio context for playback");
+      }
+
       const ws = new WebSocket(callSession.sessionURL);
 
       ws.onopen = async () => {
