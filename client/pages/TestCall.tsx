@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 // Global audio context to ensure it's available across all functions
 let globalAudioContext: AudioContext | null = null;
 
+// Audio buffering for smooth playback
+let audioQueue: Float32Array[] = [];
+let isPlayingQueue = false;
+
 export default function TestCall() {
   const [isCallInProgress, setIsCallInProgress] = useState(false);
   const [callSession, setCallSession] = useState<any>(null);
