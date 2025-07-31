@@ -139,29 +139,30 @@ export default function TestCall() {
       if (ws.readyState === WebSocket.OPEN) {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
-        // Calculate audio levels
+        // Calculate audio levels with better sensitivity
         const rms = Math.sqrt(
           inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) /
             inputBuffer.length,
         );
-        const hasAudio = rms > 0.001;
+        const hasAudio = rms > 0.0001; // Lower threshold for better detection
 
-        // Log audio activity every 2 seconds
+        // Log audio activity every 5 seconds (reduced spam)
         const now = Date.now();
-        if (now - lastAudioTime > 2000) {
+        if (now - lastAudioTime > 5000) {
           console.log(
-            `🎤 Audio status: RMS=${rms.toFixed(4)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
+            `🎤 Audio status: RMS=${rms.toFixed(6)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
           );
           lastAudioTime = now;
+          audioSentCount = 0; // Reset counter
         }
 
-        if (hasAudio) {
+        if (hasAudio && rms > 0.01) { // Only log significant audio
           console.log(
             `🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`,
           );
         }
 
-        // Convert Float32Array to PCM16 (Little Endian)
+        // Always send audio data (including silence) to keep connection alive
         const pcm16 = new ArrayBuffer(inputBuffer.length * 2);
         const view = new DataView(pcm16);
 
