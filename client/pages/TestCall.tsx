@@ -245,10 +245,10 @@ export default function TestCall() {
                   63e56c5a-2a00-447a-906a-131e89aa7ccd
                 </div>
                 <div>
-                  <strong>Method:</strong> GET /v2/calls/web
+                  <strong>Method:</strong> GET /v2/calls
                 </div>
                 <div>
-                  <strong>Parameters:</strong> agent_id, name, form_id
+                  <strong>Parameters:</strong> agent_id, name, form_id, call_type=web
                 </div>
               </div>
             </div>
