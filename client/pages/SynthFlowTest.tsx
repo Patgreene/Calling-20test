@@ -8,10 +8,11 @@ export default function SynthFlowTest() {
 
   const startSynthflowCall = async () => {
     setIsStartingCall(true);
-    
+
     // Get form_id from localStorage if available
-    const storedFormId = localStorage.getItem("form_id") || "test_form_id_" + Date.now();
-    
+    const storedFormId =
+      localStorage.getItem("form_id") || "test_form_id_" + Date.now();
+
     // Get form data from localStorage if available
     const storedFormData = localStorage.getItem("vouchForm");
     let formData = null;
@@ -27,7 +28,9 @@ export default function SynthFlowTest() {
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd", // SynthFlow agent ID
       phone_number: "+447123456789", // replace with the voucher's phone number
       first_name: formData?.voucherFirst || "Patrick", // dynamic, from your form
-      vouchee_name: formData ? `${formData.voucheeFirst} ${formData.voucheeLast}` : "Tim Greene", // dynamic, from your form
+      vouchee_name: formData
+        ? `${formData.voucheeFirst} ${formData.voucheeLast}`
+        : "Tim Greene", // dynamic, from your form
       form_id: storedFormId, // the unique form_id stored earlier
     };
 
@@ -42,7 +45,7 @@ export default function SynthFlowTest() {
       });
 
       if (!response.ok) throw new Error("Call initiation failed");
-      
+
       const data = await response.json();
       console.log("Call started:", data);
       alert("Call started successfully!");
@@ -74,10 +77,11 @@ export default function SynthFlowTest() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
             SynthFlow Test
           </h2>
-          
+
           <div className="text-center space-y-6">
             <p className="text-gray-600">
-              Click the button below to initiate a SynthFlow call with the stored form data.
+              Click the button below to initiate a SynthFlow call with the
+              stored form data.
             </p>
 
             <Button
