@@ -347,62 +347,27 @@ export default function TestCall() {
           let audioData = event.data;
           let dataSize = 0;
 
-          console.log(
-            "🎵 Raw audio data received, type:",
-            typeof audioData,
-            audioData.constructor?.name,
-          );
-
-          // Check if it's an ArrayBuffer or Blob
+          // Check if it's an ArrayBuffer or Blob (reduced logging)
           if (audioData instanceof ArrayBuffer) {
             dataSize = audioData.byteLength;
-            console.log("🎵 ArrayBuffer detected, size:", dataSize);
           } else if (audioData instanceof Blob) {
             dataSize = audioData.size;
-            console.log(
-              "🎵 Blob detected, size:",
-              dataSize,
-              "- converting to ArrayBuffer...",
-            );
             audioData = await audioData.arrayBuffer();
-            console.log(
-              "🎵 Converted to ArrayBuffer, new size:",
-              audioData.byteLength,
-            );
           } else if (audioData && audioData.byteLength !== undefined) {
-            // Some other binary data type
             dataSize = audioData.byteLength;
-            console.log("🎵 Binary data with byteLength:", dataSize);
           } else {
-            console.error(
-              "🎵 Unknown audio data type:",
-              typeof audioData,
-              audioData?.constructor?.name,
-              "Data:",
-              audioData,
-            );
+            console.error("🎵 Unknown audio data type:", typeof audioData);
             return;
           }
 
-          console.log(
-            "🎵 AGENT AUDIO RECEIVED! Size:",
-            dataSize,
-            "bytes, Final type:",
-            audioData.constructor?.name,
-          );
+          // Only log every 50th audio packet to reduce spam
+          if (Math.random() < 0.02) { // 2% chance = ~1 in 50
+            console.log(`🎵 Agent audio received: ${dataSize} bytes`);
+          }
 
-          // Detailed analysis of received audio
+          // Process audio if we have data
           if (dataSize > 0) {
-            const view = new DataView(audioData);
-            const firstSample = view.getInt16(0, true);
-            const lastSample = view.getInt16(dataSize - 2, true);
-            console.log(
-              `🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${dataSize / 2} samples`,
-            );
-
             playAgentAudio(audioData);
-          } else {
-            console.warn("🎵 Received empty audio data");
           }
         }
       };
