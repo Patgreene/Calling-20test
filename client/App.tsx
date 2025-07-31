@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import Interview from "./pages/Interview";
-
+import SynthFlowTest from "./pages/SynthFlowTest";
 import Summary from "./pages/Summary";
 import Verify from "./pages/Verify";
 import Review from "./pages/Review";
