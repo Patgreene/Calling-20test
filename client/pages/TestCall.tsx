@@ -397,9 +397,8 @@ export default function TestCall() {
       setAudioStream(null);
     }
 
-    // Clear audio queue
-    audioQueue = [];
-    isPlayingQueue = false;
+    // Reset audio timing
+    lastPlayTime = 0;
 
     // Close audio contexts safely
     if (audioContext && audioContext.state !== "closed") {
