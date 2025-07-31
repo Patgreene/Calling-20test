@@ -15,12 +15,13 @@ export default function TestCall() {
     const storedFormId = localStorage.getItem("form_id");
     const formId = storedFormId || `test-form-${Date.now()}`;
 
-    // Build URL with query parameters
-    const baseUrl = "https://api.synthflow.ai/v2/calls/web";
+    // Build URL with query parameters - try /v2/calls instead of /v2/calls/web
+    const baseUrl = "https://api.synthflow.ai/v2/calls";
     const queryParams = new URLSearchParams({
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
       name: userName || "Test User",
       form_id: formId,
+      call_type: "web", // Specify this is a web call
     });
     const fullUrl = `${baseUrl}?${queryParams.toString()}`;
 
@@ -30,6 +31,7 @@ export default function TestCall() {
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
       name: userName || "Test User",
       form_id: formId,
+      call_type: "web",
     });
 
     try {
