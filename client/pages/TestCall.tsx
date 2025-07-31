@@ -223,10 +223,10 @@ export default function TestCall() {
         await ctx.resume();
       }
 
-      // Combine multiple audio chunks for smoother playback
+      // Combine fewer chunks for lower latency (reduced from 10 to 5)
       const chunksToPlay = audioQueue.splice(
         0,
-        Math.min(10, audioQueue.length),
+        Math.min(5, audioQueue.length),
       );
       if (chunksToPlay.length === 0) {
         isPlayingQueue = false;
