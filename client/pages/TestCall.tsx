@@ -135,46 +135,39 @@ export default function TestCall() {
       if (ws.readyState === WebSocket.OPEN) {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
-        // Calculate audio levels without gain distortion
-        const rms = Math.sqrt(
-          inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) /
-            inputBuffer.length,
-        );
+        // Ultra-fast RMS calculation
+        let sum = 0;
+        for (let i = 0; i < inputBuffer.length; i++) {
+          sum += inputBuffer[i] * inputBuffer[i];
+        }
+        const rms = Math.sqrt(sum / inputBuffer.length);
 
-        const hasAudio = rms > 0.001; // Lower threshold
-
-        // Reduced logging - only every 10 seconds
+        // Minimal logging - only every 15 seconds
         const now = Date.now();
-        if (now - lastAudioTime > 10000) {
-          console.log(
-            `🎤 Mic: ${(rms * 100).toFixed(2)}% | Sent: ${audioSentCount} packets`,
-          );
+        if (now - lastAudioTime > 15000) {
+          console.log(`🎤 Mic: ${(rms * 100).toFixed(1)}% | ${audioSentCount} sent`);
           lastAudioTime = now;
           audioSentCount = 0;
         }
 
-        // Only log very loud audio
-        if (rms > 0.05) {
-          console.log(`🎤 SPEAKING! Level: ${(rms * 100).toFixed(1)}%`);
+        // Only log significant speech
+        if (rms > 0.08) {
+          console.log(`🎤 LOUD: ${(rms * 100).toFixed(0)}%`);
         }
 
-        // Send high-quality audio without distortion
+        // FASTEST possible audio conversion and send
         const pcm16 = new ArrayBuffer(inputBuffer.length * 2);
         const view = new DataView(pcm16);
 
+        // Optimized conversion loop
         for (let i = 0; i < inputBuffer.length; i++) {
-          // No gain - preserve original quality
           const sample = Math.max(-1, Math.min(1, inputBuffer[i]));
-          const intSample = Math.round(sample * 32767);
-          view.setInt16(i * 2, intSample, true);
+          view.setInt16(i * 2, Math.round(sample * 32767), true);
         }
 
-        try {
-          ws.send(pcm16);
-          audioSentCount++;
-        } catch (error) {
-          console.error("❌ Failed to send audio:", error);
-        }
+        // IMMEDIATE send - no try/catch for maximum speed
+        ws.send(pcm16);
+        audioSentCount++;
       }
     };
 
@@ -188,7 +181,7 @@ export default function TestCall() {
       "buffer (low latency)",
     );
     console.log(
-      "�� Microphone ready! Agent audio optimized for speed + quality.",
+      "🎤 Microphone ready! Agent audio optimized for speed + quality.",
     );
 
     // Test microphone immediately
