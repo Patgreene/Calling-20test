@@ -116,14 +116,26 @@ export default function TestCall() {
     const source = audioCtx.createMediaStreamSource(stream);
     const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Smaller buffer for lower latency
 
+    let audioSentCount = 0;
+    let lastAudioTime = Date.now();
+
     processor.onaudioprocess = (event) => {
       if (ws.readyState === WebSocket.OPEN) {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
-        // Check for actual audio input
-        const hasAudio = inputBuffer.some((sample) => Math.abs(sample) > 0.001);
+        // Calculate audio levels
+        const rms = Math.sqrt(inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) / inputBuffer.length);
+        const hasAudio = rms > 0.001;
+
+        // Log audio activity every 2 seconds
+        const now = Date.now();
+        if (now - lastAudioTime > 2000) {
+          console.log(`🎤 Audio status: RMS=${rms.toFixed(4)}, Active=${hasAudio}, Sent=${audioSentCount} packets`);
+          lastAudioTime = now;
+        }
+
         if (hasAudio) {
-          console.log("🎤 Sending audio data, samples:", inputBuffer.length);
+          console.log(`🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`);
         }
 
         // Convert Float32Array to PCM16 (Little Endian)
@@ -136,7 +148,12 @@ export default function TestCall() {
           view.setInt16(i * 2, intSample, true); // true = little endian
         }
 
-        ws.send(pcm16);
+        try {
+          ws.send(pcm16);
+          audioSentCount++;
+        } catch (error) {
+          console.error("❌ Failed to send audio:", error);
+        }
       }
     };
 
