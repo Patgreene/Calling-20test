@@ -197,15 +197,15 @@ export default function TestCall() {
 
     try {
       console.log(
-        `🔊 AudioContext state: ${audioContext.state}, sampleRate: ${audioContext.sampleRate}`,
+        `🔊 AudioContext state: ${ctx.state}, sampleRate: ${ctx.sampleRate}`,
       );
 
       // Ensure audio context is running
-      if (audioContext.state === "suspended") {
+      if (ctx.state === "suspended") {
         console.log("🔊 Resuming suspended audio context...");
-        await audioContext.resume();
+        await ctx.resume();
         console.log(
-          `🔊 Audio context resumed, new state: ${audioContext.state}`,
+          `🔊 Audio context resumed, new state: ${ctx.state}`,
         );
       }
 
