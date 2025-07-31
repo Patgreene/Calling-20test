@@ -137,19 +137,32 @@ export default function TestCall() {
     console.log("🎵 Audio capture started with", processor.bufferSize, "buffer size");
   };
 
-  const playAgentAudio = (audioData: ArrayBuffer) => {
-    if (!audioContext) return;
+  const playAgentAudio = async (audioData: ArrayBuffer) => {
+    if (!audioContext) {
+      console.warn("No audio context available for playback");
+      return;
+    }
 
     try {
-      // Convert PCM16 to Float32Array
-      const pcm16 = new Int16Array(audioData);
-      const float32 = new Float32Array(pcm16.length);
-      for (let i = 0; i < pcm16.length; i++) {
-        float32[i] = pcm16[i] / 32768;
+      // Ensure audio context is running
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
       }
 
+      // Parse PCM16 data (Little Endian)
+      const view = new DataView(audioData);
+      const sampleCount = audioData.byteLength / 2;
+      const float32 = new Float32Array(sampleCount);
+
+      for (let i = 0; i < sampleCount; i++) {
+        const intSample = view.getInt16(i * 2, true); // true = little endian
+        float32[i] = intSample / 32768;
+      }
+
+      console.log("🔊 Playing agent audio:", sampleCount, "samples");
+
       // Create audio buffer (16kHz mono from agent)
-      const audioBuffer = audioContext.createBuffer(1, float32.length, 16000);
+      const audioBuffer = audioContext.createBuffer(1, sampleCount, 16000);
       audioBuffer.getChannelData(0).set(float32);
 
       // Play the audio
@@ -158,7 +171,6 @@ export default function TestCall() {
       source.connect(audioContext.destination);
       source.start();
 
-      console.log("🔊 Playing agent audio");
     } catch (error) {
       console.error("❌ Error playing audio:", error);
     }
