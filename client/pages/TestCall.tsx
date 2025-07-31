@@ -140,11 +140,16 @@ export default function TestCall() {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
         // Calculate audio levels with better sensitivity
-        const rms = Math.sqrt(
+        let rms = Math.sqrt(
           inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) /
             inputBuffer.length,
         );
-        const hasAudio = rms > 0.0001; // Lower threshold for better detection
+
+        // Apply gain to boost microphone signal
+        const gain = 2.0;
+        rms *= gain;
+
+        const hasAudio = rms > 0.01; // Threshold for detection (1%)
 
         // Log audio activity every 3 seconds (reduced spam)
         const now = Date.now();
