@@ -101,22 +101,28 @@ export default function TestCall() {
   };
 
   const startAudioCapture = async (ws: WebSocket, stream: MediaStream) => {
-    // Create or reuse audio context
+    // Create or reuse audio context - ensure we have a global reference
     let audioCtx = audioContext;
     if (!audioCtx) {
       audioCtx = new (window.AudioContext ||
         (window as any).webkitAudioContext)({
         sampleRate: 48000,
       });
+      console.log("🎵 Created new audio context:", audioCtx.state);
       setAudioContext(audioCtx);
+
+      // Add a small delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     // Resume audio context if needed (browser policy)
     if (audioCtx.state === "suspended") {
+      console.log("🎵 Resuming suspended audio context...");
       await audioCtx.resume();
     }
 
     console.log("🎵 Using audio context:", audioCtx.state, audioCtx.sampleRate);
+    console.log("🎵 Audio context set in state:", !!audioContext);
 
     const source = audioCtx.createMediaStreamSource(stream);
     const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Smaller buffer for lower latency
