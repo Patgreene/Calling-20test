@@ -232,13 +232,13 @@ export default function TestCall() {
       }
 
       // Create audio buffer (16kHz mono from agent)
-      const audioBuffer = audioContext.createBuffer(1, sampleCount, 16000);
+      const audioBuffer = ctx.createBuffer(1, sampleCount, 16000);
       audioBuffer.getChannelData(0).set(float32);
 
       // Play the audio
-      const source = audioContext.createBufferSource();
+      const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
+      source.connect(ctx.destination);
 
       // Add event listeners for debugging
       source.onended = () => {
