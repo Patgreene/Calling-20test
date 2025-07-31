@@ -8,7 +8,7 @@ export default function TestCall() {
 
   const startSynthflowCall = async () => {
     setIsCallInProgress(true);
-    
+
     try {
       const response = await fetch("https://api.synthflow.ai/v1/calls", {
         method: "POST",
@@ -22,11 +22,10 @@ export default function TestCall() {
       });
 
       if (!response.ok) throw new Error("Call initiation failed");
-      
+
       const data = await response.json();
       console.log("Call started:", data);
       alert("Call started successfully!");
-      
     } catch (error) {
       console.error("Error starting call:", error);
       alert("Failed to start call.");
@@ -66,7 +65,7 @@ export default function TestCall() {
                   <div className="absolute inset-0 w-16 h-16 bg-green-400 rounded-full animate-ping opacity-75"></div>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold text-green-600">
                   Call in Progress
@@ -88,7 +87,8 @@ export default function TestCall() {
             /* Start Call Button */
             <div className="text-center space-y-6">
               <p className="text-gray-600 mb-6">
-                Click the button below to initiate a test call using SynthFlow API.
+                Click the button below to initiate a test call using SynthFlow
+                API.
               </p>
 
               <Button
