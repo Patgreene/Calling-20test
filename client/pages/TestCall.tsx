@@ -101,17 +101,22 @@ export default function TestCall() {
   };
 
   const startAudioCapture = async (ws: WebSocket, stream: MediaStream) => {
-    const audioCtx = new (window.AudioContext ||
-      (window as any).webkitAudioContext)({
-      sampleRate: 48000,
-    });
+    // Create or reuse audio context
+    let audioCtx = audioContext;
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext ||
+        (window as any).webkitAudioContext)({
+        sampleRate: 48000,
+      });
+      setAudioContext(audioCtx);
+    }
 
     // Resume audio context if needed (browser policy)
     if (audioCtx.state === "suspended") {
       await audioCtx.resume();
     }
 
-    setAudioContext(audioCtx);
+    console.log("🎵 Using audio context:", audioCtx.state, audioCtx.sampleRate);
 
     const source = audioCtx.createMediaStreamSource(stream);
     const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Smaller buffer for lower latency
