@@ -195,7 +195,7 @@ export default function TestCall() {
 
       const ws = new WebSocket(callSession.sessionURL);
 
-      ws.onopen = () => {
+      ws.onopen = async () => {
         console.log("✅ WebSocket connected successfully");
         setWsStatus("connected");
         setWsConnection(ws);
