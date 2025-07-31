@@ -123,48 +123,46 @@ export default function TestCall() {
                 </pre>
               </div>
 
-              {/* Check for iframe URL or session URL */}
-              {(callSession.session_url ||
-                callSession.iframe_url ||
-                callSession.web_url) && (
-                <div className="space-y-2">
-                  <h4 className="font-semibold">Web Call Interface:</h4>
-                  <div
-                    className="border rounded-lg overflow-hidden"
-                    style={{ height: "400px" }}
-                  >
-                    <iframe
-                      src={
-                        callSession.session_url ||
-                        callSession.iframe_url ||
-                        callSession.web_url
-                      }
-                      className="w-full h-full border-0"
-                      allow="microphone; camera; autoplay"
-                      title="SynthFlow WebRTC Call"
-                    />
+              {/* Check for WebSocket session URL */}
+              {callSession.sessionURL && (
+                <div className="space-y-4">
+                  <h4 className="font-semibold">WebSocket Session Ready:</h4>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-sm text-blue-800 mb-2">
+                      WebSocket URL obtained successfully! You can now:
+                    </p>
+                    <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
+                      <li>Use the sessionURL to establish WebSocket connection</li>
+                      <li>Send/receive real-time audio data (PCM16 format)</li>
+                      <li>Implement voice interaction with the AI agent</li>
+                    </ul>
+                  </div>
+
+                  <div className="text-xs bg-gray-100 p-3 rounded border overflow-auto">
+                    <strong>Session URL:</strong>
+                    <br />
+                    <code className="break-all">{callSession.sessionURL}</code>
+                  </div>
+
+                  <div className="text-center">
+                    <Button
+                      onClick={() => window.open(callSession.sessionURL, '_blank')}
+                      className="bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      Open WebSocket URL
+                    </Button>
                   </div>
                 </div>
               )}
 
-              {/* Check for external URL that needs to be opened */}
-              {callSession.call_url &&
-                !callSession.session_url &&
-                !callSession.iframe_url && (
-                  <div className="text-center space-y-4">
-                    <p className="text-gray-600">
-                      Click below to join the web call:
-                    </p>
-                    <Button
-                      onClick={() =>
-                        window.open(callSession.call_url, "_blank")
-                      }
-                      className="bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Join Web Call
-                    </Button>
-                  </div>
-                )}
+              {/* Show if no recognized session data */}
+              {!callSession.sessionURL && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-sm text-yellow-800">
+                    Unexpected response format. Check session data below for details.
+                  </p>
+                </div>
+              )}
 
               <div className="flex gap-2 justify-center">
                 <Button
