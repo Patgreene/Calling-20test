@@ -71,7 +71,81 @@ export default function TestCall() {
     }
   };
 
-  const connectToWebSocket = () => {
+  const requestMicrophone = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 48000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        }
+      });
+      setAudioStream(stream);
+      console.log("🎤 Microphone access granted");
+      return stream;
+    } catch (error) {
+      console.error("❌ Microphone access denied:", error);
+      alert("Microphone access is required for voice calls");
+      throw error;
+    }
+  };
+
+  const startAudioCapture = (ws: WebSocket, stream: MediaStream) => {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)({
+      sampleRate: 48000
+    });
+    setAudioContext(audioCtx);
+
+    const source = audioCtx.createMediaStreamSource(stream);
+    const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+
+    processor.onaudioprocess = (event) => {
+      if (ws.readyState === WebSocket.OPEN && isRecording) {
+        const inputBuffer = event.inputBuffer.getChannelData(0);
+        // Convert Float32Array to PCM16
+        const pcm16 = new Int16Array(inputBuffer.length);
+        for (let i = 0; i < inputBuffer.length; i++) {
+          pcm16[i] = Math.max(-32768, Math.min(32767, inputBuffer[i] * 32768));
+        }
+        ws.send(pcm16.buffer);
+      }
+    };
+
+    source.connect(processor);
+    processor.connect(audioCtx.destination);
+    setIsRecording(true);
+    console.log("🎵 Audio capture started");
+  };
+
+  const playAgentAudio = (audioData: ArrayBuffer) => {
+    if (!audioContext) return;
+
+    try {
+      // Convert PCM16 to Float32Array
+      const pcm16 = new Int16Array(audioData);
+      const float32 = new Float32Array(pcm16.length);
+      for (let i = 0; i < pcm16.length; i++) {
+        float32[i] = pcm16[i] / 32768;
+      }
+
+      // Create audio buffer (16kHz mono from agent)
+      const audioBuffer = audioContext.createBuffer(1, float32.length, 16000);
+      audioBuffer.getChannelData(0).set(float32);
+
+      // Play the audio
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+
+      console.log("🔊 Playing agent audio");
+    } catch (error) {
+      console.error("❌ Error playing audio:", error);
+    }
+  };
+
+  const connectToWebSocket = async () => {
     if (!callSession?.sessionURL) {
       alert("No WebSocket URL available");
       return;
