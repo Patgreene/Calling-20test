@@ -153,6 +153,10 @@ export default function TestCall() {
 
     try {
       setWsStatus("connecting");
+
+      // Request microphone access first
+      const stream = await requestMicrophone();
+
       const ws = new WebSocket(callSession.sessionURL);
 
       ws.onopen = () => {
@@ -162,6 +166,9 @@ export default function TestCall() {
 
         // Send client ready status
         ws.send(JSON.stringify({ type: "status_client_ready" }));
+
+        // Start audio capture
+        startAudioCapture(ws, stream);
       };
 
       ws.onmessage = (event) => {
@@ -172,8 +179,8 @@ export default function TestCall() {
             console.log("🤖 Agent is ready to receive audio");
           }
         } else {
-          console.log("🎵 Received audio data:", event.data);
-          // Handle binary audio data here
+          console.log("🎵 Received audio data from agent, size:", event.data.byteLength);
+          playAgentAudio(event.data);
         }
       };
 
@@ -183,13 +190,14 @@ export default function TestCall() {
         alert("WebSocket connection failed");
       };
 
-      ws.onclose = () => {
-        console.log("🔌 WebSocket disconnected");
+      ws.onclose = (event) => {
+        console.log("🔌 WebSocket disconnected. Code:", event.code, "Reason:", event.reason);
         setWsStatus("disconnected");
         setWsConnection(null);
+        setIsRecording(false);
       };
     } catch (error) {
-      console.error("💥 Error creating WebSocket:", error);
+      console.error("💥 Error connecting:", error);
       setWsStatus("error");
       alert(`Failed to connect: ${error.message}`);
     }
