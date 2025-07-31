@@ -338,8 +338,10 @@ export default function TestCall() {
 
       ws.onerror = (error) => {
         console.error("❌ WebSocket error:", error);
+        console.error("❌ WebSocket readyState:", ws.readyState);
+        console.error("❌ WebSocket url:", ws.url);
         setWsStatus("error");
-        alert("WebSocket connection failed");
+        alert("WebSocket connection failed - check console for details");
       };
 
       ws.onclose = (event) => {
