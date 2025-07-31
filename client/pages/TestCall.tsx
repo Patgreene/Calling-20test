@@ -174,7 +174,9 @@ export default function TestCall() {
         const view = new DataView(pcm16);
 
         for (let i = 0; i < inputBuffer.length; i++) {
-          const sample = Math.max(-1, Math.min(1, inputBuffer[i]));
+          // Apply gain and clamp
+          let sample = inputBuffer[i] * gain;
+          sample = Math.max(-1, Math.min(1, sample));
           const intSample = Math.round(sample * 32767);
           view.setInt16(i * 2, intSample, true); // true = little endian
         }
