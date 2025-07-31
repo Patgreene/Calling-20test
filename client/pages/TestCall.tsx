@@ -126,7 +126,7 @@ export default function TestCall() {
     console.log("🎵 Audio context set in state:", !!audioContext);
 
     const source = audioCtx.createMediaStreamSource(stream);
-    const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Optimized buffer size for balance of quality and latency
+    const processor = audioCtx.createScriptProcessor(512, 1, 1); // MINIMUM buffer for maximum speed
 
     let audioSentCount = 0;
     let lastAudioTime = Date.now();
@@ -188,7 +188,7 @@ export default function TestCall() {
       "buffer (low latency)",
     );
     console.log(
-      "🎤 Microphone ready! Agent audio optimized for speed + quality.",
+      "�� Microphone ready! Agent audio optimized for speed + quality.",
     );
 
     // Test microphone immediately
