@@ -132,7 +132,9 @@ export default function TestCall() {
                       WebSocket URL obtained successfully! You can now:
                     </p>
                     <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
-                      <li>Use the sessionURL to establish WebSocket connection</li>
+                      <li>
+                        Use the sessionURL to establish WebSocket connection
+                      </li>
                       <li>Send/receive real-time audio data (PCM16 format)</li>
                       <li>Implement voice interaction with the AI agent</li>
                     </ul>
@@ -146,7 +148,9 @@ export default function TestCall() {
 
                   <div className="text-center">
                     <Button
-                      onClick={() => window.open(callSession.sessionURL, '_blank')}
+                      onClick={() =>
+                        window.open(callSession.sessionURL, "_blank")
+                      }
                       className="bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       Open WebSocket URL
@@ -159,7 +163,8 @@ export default function TestCall() {
               {!callSession.sessionURL && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <p className="text-sm text-yellow-800">
-                    Unexpected response format. Check session data below for details.
+                    Unexpected response format. Check session data below for
+                    details.
                   </p>
                 </div>
               )}
@@ -234,7 +239,8 @@ export default function TestCall() {
                   63e56c5a-2a00-447a-906a-131e89aa7ccd
                 </div>
                 <div>
-                  <strong>Method:</strong> GET /websocket/token/{"{assistant_id}"}
+                  <strong>Method:</strong> GET /websocket/token/
+                  {"{assistant_id}"}
                 </div>
                 <div>
                   <strong>Endpoint:</strong> widget.synthflow.ai
