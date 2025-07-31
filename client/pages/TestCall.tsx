@@ -157,7 +157,9 @@ export default function TestCall() {
           console.log(
             `🎤 Microphone status: RMS=${rms.toFixed(6)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
           );
-          console.log(`🎤 Audio level: ${(rms * 100).toFixed(2)}% (need >1% for detection)`);
+          console.log(
+            `🎤 Audio level: ${(rms * 100).toFixed(2)}% (need >1% for detection)`,
+          );
           lastAudioTime = now;
           audioSentCount = 0; // Reset counter
         }
@@ -222,7 +224,10 @@ export default function TestCall() {
       }
 
       // Combine multiple audio chunks for smoother playback
-      const chunksToPlay = audioQueue.splice(0, Math.min(10, audioQueue.length));
+      const chunksToPlay = audioQueue.splice(
+        0,
+        Math.min(10, audioQueue.length),
+      );
       if (chunksToPlay.length === 0) {
         isPlayingQueue = false;
         return;
@@ -234,7 +239,9 @@ export default function TestCall() {
         0,
       );
 
-      console.log(`🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples/16000).toFixed(2)}s)`);
+      console.log(
+        `🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples / 16000).toFixed(2)}s)`,
+      );
 
       // Create combined audio buffer
       const audioBuffer = ctx.createBuffer(1, totalSamples, 16000);
