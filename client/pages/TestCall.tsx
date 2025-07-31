@@ -195,66 +195,8 @@ export default function TestCall() {
     }, 1000);
   };
 
-  const playQueuedAudio = async () => {
-    if (isPlayingQueue || audioQueue.length < 2) return; // Reduced from 3 to 2 for lower latency
-
-    const ctx = globalAudioContext || audioContext;
-    if (!ctx) return;
-
-    isPlayingQueue = true;
-
-    try {
-      // Ensure audio context is running
-      if (ctx.state === "suspended") {
-        await ctx.resume();
-      }
-
-      // Combine fewer chunks for lower latency (reduced from 10 to 5)
-      const chunksToPlay = audioQueue.splice(0, Math.min(5, audioQueue.length));
-      if (chunksToPlay.length === 0) {
-        isPlayingQueue = false;
-        return;
-      }
-
-      // Calculate total samples
-      const totalSamples = chunksToPlay.reduce(
-        (sum, chunk) => sum + chunk.length,
-        0,
-      );
-
-      console.log(
-        `🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples / 16000).toFixed(2)}s) | Queue: ${audioQueue.length} remaining`,
-      );
-
-      // Create combined audio buffer
-      const audioBuffer = ctx.createBuffer(1, totalSamples, 16000);
-      const bufferData = audioBuffer.getChannelData(0);
-
-      let offset = 0;
-      for (const chunk of chunksToPlay) {
-        bufferData.set(chunk, offset);
-        offset += chunk.length;
-      }
-
-      // Play the combined audio
-      const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(ctx.destination);
-
-      source.onended = () => {
-        isPlayingQueue = false;
-        // Schedule next playback immediately if more audio is queued
-        if (audioQueue.length > 0) {
-          setTimeout(playQueuedAudio, 10); // Reduced delay for better continuity
-        }
-      };
-
-      source.start();
-    } catch (error) {
-      console.error("❌ Error playing queued audio:", error);
-      isPlayingQueue = false;
-    }
-  };
+  // Simplified direct audio playback - no complex buffering
+  let lastPlayTime = 0;
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     const ctx = globalAudioContext || audioContext;
