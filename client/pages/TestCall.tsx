@@ -128,12 +128,21 @@ export default function TestCall() {
               </div>
 
               {/* Check for iframe URL or session URL */}
-              {(callSession.session_url || callSession.iframe_url || callSession.web_url) && (
+              {(callSession.session_url ||
+                callSession.iframe_url ||
+                callSession.web_url) && (
                 <div className="space-y-2">
                   <h4 className="font-semibold">Web Call Interface:</h4>
-                  <div className="border rounded-lg overflow-hidden" style={{ height: '400px' }}>
+                  <div
+                    className="border rounded-lg overflow-hidden"
+                    style={{ height: "400px" }}
+                  >
                     <iframe
-                      src={callSession.session_url || callSession.iframe_url || callSession.web_url}
+                      src={
+                        callSession.session_url ||
+                        callSession.iframe_url ||
+                        callSession.web_url
+                      }
                       className="w-full h-full border-0"
                       allow="microphone; camera; autoplay"
                       title="SynthFlow WebRTC Call"
@@ -143,17 +152,23 @@ export default function TestCall() {
               )}
 
               {/* Check for external URL that needs to be opened */}
-              {callSession.call_url && !callSession.session_url && !callSession.iframe_url && (
-                <div className="text-center space-y-4">
-                  <p className="text-gray-600">Click below to join the web call:</p>
-                  <Button
-                    onClick={() => window.open(callSession.call_url, '_blank')}
-                    className="bg-green-500 hover:bg-green-600 text-white"
-                  >
-                    Join Web Call
-                  </Button>
-                </div>
-              )}
+              {callSession.call_url &&
+                !callSession.session_url &&
+                !callSession.iframe_url && (
+                  <div className="text-center space-y-4">
+                    <p className="text-gray-600">
+                      Click below to join the web call:
+                    </p>
+                    <Button
+                      onClick={() =>
+                        window.open(callSession.call_url, "_blank")
+                      }
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Join Web Call
+                    </Button>
+                  </div>
+                )}
 
               <div className="flex gap-2 justify-center">
                 <Button
@@ -181,9 +196,7 @@ export default function TestCall() {
                 <h3 className="text-xl font-semibold text-blue-600">
                   Connecting...
                 </h3>
-                <p className="text-gray-600">
-                  Setting up WebRTC session...
-                </p>
+                <p className="text-gray-600">Setting up WebRTC session...</p>
               </div>
             </div>
           ) : (
@@ -191,7 +204,10 @@ export default function TestCall() {
             <div className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="userName"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Your Name
                   </label>
                   <input
@@ -219,8 +235,13 @@ export default function TestCall() {
               </div>
 
               <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
-                <div><strong>Agent ID:</strong> 63e56c5a-2a00-447a-906a-131e89aa7ccd</div>
-                <div><strong>Endpoint:</strong> /v2/calls/web</div>
+                <div>
+                  <strong>Agent ID:</strong>{" "}
+                  63e56c5a-2a00-447a-906a-131e89aa7ccd
+                </div>
+                <div>
+                  <strong>Endpoint:</strong> /v2/calls/web
+                </div>
               </div>
             </div>
           )}
