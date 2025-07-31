@@ -9,26 +9,39 @@ export default function TestCall() {
   const startSynthflowCall = async () => {
     setIsCallInProgress(true);
 
+    const requestBody = {
+      agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
+    };
+
+    console.log("🚀 Starting SynthFlow call with:");
+    console.log("📍 Endpoint: https://api.synthflow.ai/v2/calls");
+    console.log("📋 Request Body:", requestBody);
+
     try {
-      const response = await fetch("https://api.synthflow.ai/v1/calls", {
+      const response = await fetch("https://api.synthflow.ai/v2/calls", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer FlT1-eljHprcbqvlL5AeHQDkm-MaWPTvIF-YURu0aF0",
+          Authorization: "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
         },
-        body: JSON.stringify({
-          agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-        }),
+        body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) throw new Error("Call initiation failed");
+      console.log("📡 Response Status:", response.status, response.statusText);
+      console.log("📡 Response Headers:", Object.fromEntries(response.headers.entries()));
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ API Error Response:", errorText);
+        throw new Error(`Call initiation failed: ${response.status} - ${errorText}`);
+      }
 
       const data = await response.json();
-      console.log("Call started:", data);
+      console.log("✅ API Success Response:", data);
       alert("Call started successfully!");
     } catch (error) {
-      console.error("Error starting call:", error);
-      alert("Failed to start call.");
+      console.error("💥 Error starting call:", error);
+      alert(`Failed to start call: ${error.message}`);
       setIsCallInProgress(false);
     }
   };
