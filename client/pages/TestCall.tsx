@@ -172,7 +172,7 @@ export default function TestCall() {
     };
 
     source.connect(processor);
-    processor.connect(audioCtx.destination);
+    // No destination connection to avoid feedback and improve quality
     setIsRecording(true);
 
     console.log(
