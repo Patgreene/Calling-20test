@@ -156,7 +156,8 @@ export default function TestCall() {
           audioSentCount = 0; // Reset counter
         }
 
-        if (hasAudio && rms > 0.01) { // Only log significant audio
+        if (hasAudio && rms > 0.01) {
+          // Only log significant audio
           console.log(
             `🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`,
           );
@@ -213,7 +214,10 @@ export default function TestCall() {
       }
 
       // Calculate total samples
-      const totalSamples = chunksToPlay.reduce((sum, chunk) => sum + chunk.length, 0);
+      const totalSamples = chunksToPlay.reduce(
+        (sum, chunk) => sum + chunk.length,
+        0,
+      );
 
       // Create combined audio buffer
       const audioBuffer = ctx.createBuffer(1, totalSamples, 16000);
@@ -237,7 +241,6 @@ export default function TestCall() {
       };
 
       source.start();
-
     } catch (error) {
       console.error("❌ Error playing queued audio:", error);
       isPlayingQueue = false;
@@ -266,7 +269,9 @@ export default function TestCall() {
 
       // Only log significant audio (reduce spam)
       if (maxSample > 0.01) {
-        console.log(`🔊 Agent audio: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}`);
+        console.log(
+          `🔊 Agent audio: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}`,
+        );
       }
 
       // Add to queue for smooth playback
@@ -276,7 +281,6 @@ export default function TestCall() {
       if (!isPlayingQueue) {
         playQueuedAudio();
       }
-
     } catch (error) {
       console.error("❌ Error processing agent audio:", error);
     }
@@ -361,7 +365,8 @@ export default function TestCall() {
           }
 
           // Only log every 50th audio packet to reduce spam
-          if (Math.random() < 0.02) { // 2% chance = ~1 in 50
+          if (Math.random() < 0.02) {
+            // 2% chance = ~1 in 50
             console.log(`🎵 Agent audio received: ${dataSize} bytes`);
           }
 
@@ -436,7 +441,7 @@ export default function TestCall() {
     isPlayingQueue = false;
 
     // Close audio contexts safely
-    if (audioContext && audioContext.state !== 'closed') {
+    if (audioContext && audioContext.state !== "closed") {
       try {
         audioContext.close();
       } catch (error) {
@@ -445,7 +450,7 @@ export default function TestCall() {
       setAudioContext(null);
     }
 
-    if (globalAudioContext && globalAudioContext.state !== 'closed') {
+    if (globalAudioContext && globalAudioContext.state !== "closed") {
       try {
         globalAudioContext.close();
       } catch (error) {
