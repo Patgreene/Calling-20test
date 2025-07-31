@@ -29,7 +29,7 @@ export default function TestCall() {
       const response = await fetch("https://api.synthflow.ai/v2/calls/web", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
+          Authorization: "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
