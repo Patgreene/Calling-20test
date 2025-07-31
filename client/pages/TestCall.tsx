@@ -183,11 +183,11 @@ export default function TestCall() {
     setIsRecording(true);
 
     console.log(
-      "🎵 Audio capture started with",
+      "🎵 High-quality audio capture started with",
       processor.bufferSize,
-      "buffer size for low latency",
+      "buffer size",
     );
-    console.log("🎤 Microphone connected with 1.5x gain. Speak now to test!");
+    console.log("🎤 Microphone connected with natural gain. Speak loudly to test!");
 
     // Test microphone immediately
     setTimeout(() => {
