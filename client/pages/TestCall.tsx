@@ -187,7 +187,9 @@ export default function TestCall() {
       processor.bufferSize,
       "buffer size",
     );
-    console.log("🎤 Microphone connected with natural gain. Speak loudly to test!");
+    console.log(
+      "🎤 Microphone connected with natural gain. Speak loudly to test!",
+    );
 
     // Test microphone immediately
     setTimeout(() => {
@@ -240,8 +242,7 @@ export default function TestCall() {
       source.start(startTime);
 
       // Update timing for next audio
-      lastPlayTime = startTime + (sampleCount / 16000);
-
+      lastPlayTime = startTime + sampleCount / 16000;
     } catch (error) {
       console.error("❌ Error playing agent audio:", error);
     }
