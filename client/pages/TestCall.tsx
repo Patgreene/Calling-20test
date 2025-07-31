@@ -124,18 +124,25 @@ export default function TestCall() {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
         // Calculate audio levels
-        const rms = Math.sqrt(inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) / inputBuffer.length);
+        const rms = Math.sqrt(
+          inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) /
+            inputBuffer.length,
+        );
         const hasAudio = rms > 0.001;
 
         // Log audio activity every 2 seconds
         const now = Date.now();
         if (now - lastAudioTime > 2000) {
-          console.log(`🎤 Audio status: RMS=${rms.toFixed(4)}, Active=${hasAudio}, Sent=${audioSentCount} packets`);
+          console.log(
+            `🎤 Audio status: RMS=${rms.toFixed(4)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
+          );
           lastAudioTime = now;
         }
 
         if (hasAudio) {
-          console.log(`🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`);
+          console.log(
+            `🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`,
+          );
         }
 
         // Convert Float32Array to PCM16 (Little Endian)
@@ -174,13 +181,17 @@ export default function TestCall() {
     }
 
     try {
-      console.log(`🔊 AudioContext state: ${audioContext.state}, sampleRate: ${audioContext.sampleRate}`);
+      console.log(
+        `🔊 AudioContext state: ${audioContext.state}, sampleRate: ${audioContext.sampleRate}`,
+      );
 
       // Ensure audio context is running
       if (audioContext.state === "suspended") {
         console.log("🔊 Resuming suspended audio context...");
         await audioContext.resume();
-        console.log(`🔊 Audio context resumed, new state: ${audioContext.state}`);
+        console.log(
+          `🔊 Audio context resumed, new state: ${audioContext.state}`,
+        );
       }
 
       // Parse PCM16 data (Little Endian)
@@ -195,10 +206,14 @@ export default function TestCall() {
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      console.log(`🔊 Processing ${sampleCount} samples, max amplitude: ${maxSample.toFixed(4)}`);
+      console.log(
+        `🔊 Processing ${sampleCount} samples, max amplitude: ${maxSample.toFixed(4)}`,
+      );
 
       if (maxSample < 0.001) {
-        console.warn("🔊 Audio data appears to be silent (max amplitude < 0.001)");
+        console.warn(
+          "🔊 Audio data appears to be silent (max amplitude < 0.001)",
+        );
       }
 
       // Create audio buffer (16kHz mono from agent)
@@ -215,9 +230,10 @@ export default function TestCall() {
         console.log("🔊 Audio playback finished");
       };
 
-      console.log(`🔊 Starting audio playback: ${sampleCount} samples at 16kHz (${(sampleCount/16000).toFixed(2)}s duration)`);
+      console.log(
+        `🔊 Starting audio playback: ${sampleCount} samples at 16kHz (${(sampleCount / 16000).toFixed(2)}s duration)`,
+      );
       source.start();
-
     } catch (error) {
       console.error("❌ Error playing audio:", error);
       console.error("❌ Audio context state:", audioContext?.state);
@@ -254,9 +270,15 @@ export default function TestCall() {
         // Set up periodic health check
         const healthCheck = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
-            console.log("💓 WebSocket health check: OPEN, bufferedAmount:", ws.bufferedAmount);
+            console.log(
+              "💓 WebSocket health check: OPEN, bufferedAmount:",
+              ws.bufferedAmount,
+            );
           } else {
-            console.log("💓 WebSocket health check: NOT OPEN, state:", ws.readyState);
+            console.log(
+              "💓 WebSocket health check: NOT OPEN, state:",
+              ws.readyState,
+            );
             clearInterval(healthCheck);
           }
         }, 10000); // Every 10 seconds
@@ -274,7 +296,7 @@ export default function TestCall() {
             "🎵 AGENT AUDIO RECEIVED! Size:",
             event.data.byteLength,
             "bytes, Type:",
-            event.data.constructor.name
+            event.data.constructor.name,
           );
 
           // Detailed analysis of received audio
@@ -282,7 +304,9 @@ export default function TestCall() {
             const view = new DataView(event.data);
             const firstSample = view.getInt16(0, true);
             const lastSample = view.getInt16(event.data.byteLength - 2, true);
-            console.log(`🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${event.data.byteLength/2} samples`);
+            console.log(
+              `🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${event.data.byteLength / 2} samples`,
+            );
 
             playAgentAudio(event.data);
           } else {
@@ -304,7 +328,7 @@ export default function TestCall() {
           "Reason:",
           event.reason || "No reason provided",
           "Clean close:",
-          event.wasClean
+          event.wasClean,
         );
 
         // Log detailed close codes
@@ -315,7 +339,9 @@ export default function TestCall() {
         } else if (event.code === 1006) {
           console.log("🔌 Abnormal closure (no close frame)");
         } else {
-          console.log(`🔌 Close code ${event.code} - check WebSocket close code documentation`);
+          console.log(
+            `🔌 Close code ${event.code} - check WebSocket close code documentation`,
+          );
         }
 
         setWsStatus("disconnected");
