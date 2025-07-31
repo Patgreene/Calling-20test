@@ -248,7 +248,8 @@ export default function TestCall() {
                   <strong>Method:</strong> GET /v2/calls
                 </div>
                 <div>
-                  <strong>Parameters:</strong> agent_id, name, form_id, call_type=web
+                  <strong>Parameters:</strong> agent_id, name, form_id,
+                  call_type=web
                 </div>
               </div>
             </div>
