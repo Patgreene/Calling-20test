@@ -230,14 +230,14 @@ export default function TestCall() {
 
               <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <strong>Agent ID:</strong>{" "}
+                  <strong>Assistant ID:</strong>{" "}
                   63e56c5a-2a00-447a-906a-131e89aa7ccd
                 </div>
                 <div>
-                  <strong>Method:</strong> POST /v2/calls
+                  <strong>Method:</strong> GET /websocket/token/{"{assistant_id}"}
                 </div>
                 <div>
-                  <strong>Body:</strong> agent_id, name, form_id, call_type=web
+                  <strong>Endpoint:</strong> widget.synthflow.ai
                 </div>
               </div>
             </div>
