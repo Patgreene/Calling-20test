@@ -3,6 +3,9 @@ import { useState } from "react";
 import { ArrowLeft, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
+// Global audio context to ensure it's available across all functions
+let globalAudioContext: AudioContext | null = null;
+
 export default function TestCall() {
   const [isCallInProgress, setIsCallInProgress] = useState(false);
   const [callSession, setCallSession] = useState<any>(null);
