@@ -199,7 +199,7 @@ export default function TestCall() {
         ws.send(JSON.stringify({ type: "status_client_ready" }));
 
         // Start audio capture
-        startAudioCapture(ws, stream);
+        await startAudioCapture(ws, stream);
       };
 
       ws.onmessage = (event) => {
