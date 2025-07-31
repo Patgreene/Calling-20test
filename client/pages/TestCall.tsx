@@ -209,7 +209,7 @@ export default function TestCall() {
         await ctx.resume();
       }
 
-      // Parse PCM16 data with enhanced quality processing
+      // Parse PCM16 data with noise filtering
       const view = new DataView(audioData);
       const sampleCount = audioData.byteLength / 2;
       const float32 = new Float32Array(sampleCount);
@@ -217,32 +217,34 @@ export default function TestCall() {
       let maxSample = 0;
       for (let i = 0; i < sampleCount; i++) {
         const intSample = view.getInt16(i * 2, true);
-        // Better precision and slight volume boost for clarity
-        float32[i] = (intSample / 32767) * 1.3; // 30% volume boost for clarity
-        maxSample = Math.max(maxSample, Math.abs(float32[i]));
+        // Clean conversion without artificial boost to avoid fuzz
+        let sample = intSample / 32768;
+
+        // Simple noise gate to remove background fuzz
+        if (Math.abs(sample) < 0.001) {
+          sample = 0; // Remove very quiet noise
+        }
+
+        float32[i] = sample;
+        maxSample = Math.max(maxSample, Math.abs(sample));
       }
 
-      // Reduced logging for cleaner console
-      if (Math.random() < 0.003 && maxSample > 0.02) {
+      // Minimal logging
+      if (Math.random() < 0.002 && maxSample > 0.02) {
         console.log(`🔊 Agent: ${(maxSample * 100).toFixed(0)}%`);
       }
 
-      // IMMEDIATE playback for lowest latency - no timing delays
+      // IMMEDIATE playback with clean audio path
       const audioBuffer = ctx.createBuffer(1, sampleCount, 16000);
       audioBuffer.getChannelData(0).set(float32);
 
-      // Create optimized audio chain for better quality
+      // Direct connection - no processing to avoid artifacts
       const source = ctx.createBufferSource();
-      const gainNode = ctx.createGain();
-
       source.buffer = audioBuffer;
-      gainNode.gain.value = 0.85; // Prevent clipping from volume boost
+      source.connect(ctx.destination);
 
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      // Start IMMEDIATELY - no scheduling for fastest response
-      source.start(0);
+      // INSTANT start - absolute zero delay
+      source.start();
     } catch (error) {
       console.error("❌ Error playing agent audio:", error);
     }
