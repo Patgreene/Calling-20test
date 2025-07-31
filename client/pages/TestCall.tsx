@@ -15,31 +15,26 @@ export default function TestCall() {
     const storedFormId = localStorage.getItem("form_id");
     const formId = storedFormId || `test-form-${Date.now()}`;
 
-    // Build URL with query parameters - try /v2/calls instead of /v2/calls/web
-    const baseUrl = "https://api.synthflow.ai/v2/calls";
-    const queryParams = new URLSearchParams({
+    // Try POST to create a new web call
+    const requestBody = {
       agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
       name: userName || "Test User",
       form_id: formId,
       call_type: "web", // Specify this is a web call
-    });
-    const fullUrl = `${baseUrl}?${queryParams.toString()}`;
+    };
 
     console.log("🚀 Starting SynthFlow WebRTC call with:");
-    console.log("📍 Full URL:", fullUrl);
-    console.log("📋 Query Parameters:", {
-      agent_id: "63e56c5a-2a00-447a-906a-131e89aa7ccd",
-      name: userName || "Test User",
-      form_id: formId,
-      call_type: "web",
-    });
+    console.log("📍 URL: https://api.synthflow.ai/v2/calls");
+    console.log("📋 Request Body:", requestBody);
 
     try {
-      const response = await fetch(fullUrl, {
-        method: "GET",
+      const response = await fetch("https://api.synthflow.ai/v2/calls", {
+        method: "POST",
         headers: {
           Authorization: "Bearer 8RXXy1DFjppf7W1wzgSds6NAm03cM_Xu6MW9PfT9U9E",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(requestBody),
       });
 
       console.log("📡 Response Status:", response.status, response.statusText);
