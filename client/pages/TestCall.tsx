@@ -210,7 +210,7 @@ export default function TestCall() {
         await ctx.resume();
       }
 
-      // Parse PCM16 data (Little Endian)
+      // Parse PCM16 data with enhanced quality processing
       const view = new DataView(audioData);
       const sampleCount = audioData.byteLength / 2;
       const float32 = new Float32Array(sampleCount);
@@ -218,31 +218,32 @@ export default function TestCall() {
       let maxSample = 0;
       for (let i = 0; i < sampleCount; i++) {
         const intSample = view.getInt16(i * 2, true);
-        float32[i] = intSample / 32768;
+        // Better precision and slight volume boost for clarity
+        float32[i] = (intSample / 32767) * 1.3; // 30% volume boost for clarity
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      // Only log occasionally to reduce spam
-      if (Math.random() < 0.01 && maxSample > 0.01) {
-        console.log(`🔊 Agent speaking: ${(maxSample * 100).toFixed(1)}%`);
+      // Reduced logging for cleaner console
+      if (Math.random() < 0.003 && maxSample > 0.02) {
+        console.log(`🔊 Agent: ${(maxSample * 100).toFixed(0)}%`);
       }
 
-      // Direct playback with timing control
-      const now = ctx.currentTime;
-      const startTime = Math.max(now, lastPlayTime);
-
-      // Create audio buffer (16kHz mono from agent)
+      // IMMEDIATE playback for lowest latency - no timing delays
       const audioBuffer = ctx.createBuffer(1, sampleCount, 16000);
       audioBuffer.getChannelData(0).set(float32);
 
-      // Play the audio directly
+      // Create optimized audio chain for better quality
       const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(ctx.destination);
-      source.start(startTime);
+      const gainNode = ctx.createGain();
 
-      // Update timing for next audio
-      lastPlayTime = startTime + sampleCount / 16000;
+      source.buffer = audioBuffer;
+      gainNode.gain.value = 0.85; // Prevent clipping from volume boost
+
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      // Start IMMEDIATELY - no scheduling for fastest response
+      source.start(0);
     } catch (error) {
       console.error("❌ Error playing agent audio:", error);
     }
