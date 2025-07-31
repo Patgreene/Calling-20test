@@ -278,18 +278,18 @@ export default function TestCall() {
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
+      // Add to queue for smooth playback (always add, even silence for continuity)
+      audioQueue.push(float32);
+
       // Only log significant audio (reduce spam)
       if (maxSample > 0.01) {
         console.log(
-          `🔊 Agent audio: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}`,
+          `🔊 Agent audio queued: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}, queue: ${audioQueue.length}`,
         );
       }
 
-      // Add to queue for smooth playback
-      audioQueue.push(float32);
-
-      // Start playing if not already playing
-      if (!isPlayingQueue) {
+      // Start playing if not already playing and we have enough chunks
+      if (!isPlayingQueue && audioQueue.length >= 3) {
         playQueuedAudio();
       }
     } catch (error) {
