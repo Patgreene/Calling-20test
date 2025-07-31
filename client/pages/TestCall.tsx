@@ -183,12 +183,12 @@ export default function TestCall() {
     setIsRecording(true);
 
     console.log(
-      "🎵 High-quality audio capture started with",
+      "🎵 Optimized audio capture started with",
       processor.bufferSize,
-      "buffer size",
+      "buffer (low latency)",
     );
     console.log(
-      "🎤 Microphone connected with natural gain. Speak loudly to test!",
+      "🎤 Microphone ready! Agent audio optimized for speed + quality.",
     );
 
     // Test microphone immediately
