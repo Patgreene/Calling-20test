@@ -200,12 +200,14 @@ export default function TestCall() {
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     const ctx = globalAudioContext || audioContext;
-    if (!ctx) {
-      console.warn("❌ No audio context available for playback");
-      return;
-    }
+    if (!ctx) return;
 
     try {
+      // Ensure audio context is running
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+
       // Parse PCM16 data (Little Endian)
       const view = new DataView(audioData);
       const sampleCount = audioData.byteLength / 2;
@@ -218,28 +220,30 @@ export default function TestCall() {
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      // Prevent excessive queue buildup (max 15 chunks = ~300ms latency)
-      if (audioQueue.length > 15) {
-        audioQueue.splice(0, 5); // Remove oldest 5 chunks
-        console.log("🔊 Queue overflow! Dropped old audio to reduce latency");
+      // Only log occasionally to reduce spam
+      if (Math.random() < 0.01 && maxSample > 0.01) {
+        console.log(`🔊 Agent speaking: ${(maxSample * 100).toFixed(1)}%`);
       }
 
-      // Add to queue for smooth playback
-      audioQueue.push(float32);
+      // Direct playback with timing control
+      const now = ctx.currentTime;
+      const startTime = Math.max(now, lastPlayTime);
 
-      // Only log significant audio (reduce spam)
-      if (maxSample > 0.01) {
-        console.log(
-          `🔊 Agent audio queued: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}, queue: ${audioQueue.length}`,
-        );
-      }
+      // Create audio buffer (16kHz mono from agent)
+      const audioBuffer = ctx.createBuffer(1, sampleCount, 16000);
+      audioBuffer.getChannelData(0).set(float32);
 
-      // Start playing if not already playing and we have enough chunks (reduced to 2)
-      if (!isPlayingQueue && audioQueue.length >= 2) {
-        playQueuedAudio();
-      }
+      // Play the audio directly
+      const source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(ctx.destination);
+      source.start(startTime);
+
+      // Update timing for next audio
+      lastPlayTime = startTime + (sampleCount / 16000);
+
     } catch (error) {
-      console.error("❌ Error processing agent audio:", error);
+      console.error("❌ Error playing agent audio:", error);
     }
   };
 
