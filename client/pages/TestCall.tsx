@@ -260,9 +260,9 @@ export default function TestCall() {
 
       source.onended = () => {
         isPlayingQueue = false;
-        // Schedule next playback if more audio is queued
+        // Schedule next playback immediately if more audio is queued
         if (audioQueue.length > 0) {
-          setTimeout(playQueuedAudio, 50); // Small delay between chunks
+          setTimeout(playQueuedAudio, 10); // Reduced delay for better continuity
         }
       };
 
