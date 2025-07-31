@@ -126,7 +126,7 @@ export default function TestCall() {
     console.log("🎵 Audio context set in state:", !!audioContext);
 
     const source = audioCtx.createMediaStreamSource(stream);
-    const processor = audioCtx.createScriptProcessor(1024, 1, 1); // Even smaller buffer for lower latency
+    const processor = audioCtx.createScriptProcessor(4096, 1, 1); // Larger buffer for better quality
 
     let audioSentCount = 0;
     let lastAudioTime = Date.now();
@@ -135,48 +135,38 @@ export default function TestCall() {
       if (ws.readyState === WebSocket.OPEN) {
         const inputBuffer = event.inputBuffer.getChannelData(0);
 
-        // Calculate audio levels with better sensitivity
-        let rms = Math.sqrt(
+        // Calculate audio levels without gain distortion
+        const rms = Math.sqrt(
           inputBuffer.reduce((sum, sample) => sum + sample * sample, 0) /
             inputBuffer.length,
         );
 
-        // Apply moderate gain to boost microphone signal (reduced from 2.0 to 1.5)
-        const gain = 1.5;
-        rms *= gain;
+        const hasAudio = rms > 0.001; // Lower threshold
 
-        const hasAudio = rms > 0.01; // Threshold for detection (1%)
-
-        // Log audio activity every 3 seconds (reduced spam)
+        // Reduced logging - only every 10 seconds
         const now = Date.now();
-        if (now - lastAudioTime > 3000) {
+        if (now - lastAudioTime > 10000) {
           console.log(
-            `🎤 Microphone status: RMS=${rms.toFixed(6)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
-          );
-          console.log(
-            `🎤 Audio level: ${(rms * 100).toFixed(2)}% (need >1% for detection)`,
+            `🎤 Mic: ${(rms * 100).toFixed(2)}% | Sent: ${audioSentCount} packets`,
           );
           lastAudioTime = now;
-          audioSentCount = 0; // Reset counter
+          audioSentCount = 0;
         }
 
-        if (hasAudio && rms > 0.01) {
-          // Only log significant audio
-          console.log(
-            `🎤 LOUD AUDIO DETECTED! RMS=${rms.toFixed(4)}, sending ${inputBuffer.length} samples`,
-          );
+        // Only log very loud audio
+        if (rms > 0.05) {
+          console.log(`🎤 SPEAKING! Level: ${(rms * 100).toFixed(1)}%`);
         }
 
-        // Always send audio data (including silence) to keep connection alive
+        // Send high-quality audio without distortion
         const pcm16 = new ArrayBuffer(inputBuffer.length * 2);
         const view = new DataView(pcm16);
 
         for (let i = 0; i < inputBuffer.length; i++) {
-          // Apply gain and clamp
-          let sample = inputBuffer[i] * gain;
-          sample = Math.max(-1, Math.min(1, sample));
+          // No gain - preserve original quality
+          const sample = Math.max(-1, Math.min(1, inputBuffer[i]));
           const intSample = Math.round(sample * 32767);
-          view.setInt16(i * 2, intSample, true); // true = little endian
+          view.setInt16(i * 2, intSample, true);
         }
 
         try {
