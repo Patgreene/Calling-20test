@@ -9,6 +9,9 @@ export default function TestCall() {
   const [userName, setUserName] = useState("Patrick");
   const [wsConnection, setWsConnection] = useState<WebSocket | null>(null);
   const [wsStatus, setWsStatus] = useState<string>("disconnected");
+  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
   const startSynthflowCall = async () => {
     setIsCallInProgress(true);
