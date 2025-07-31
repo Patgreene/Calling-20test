@@ -209,6 +209,19 @@ export default function TestCall() {
       setWsConnection(null);
       setWsStatus("disconnected");
     }
+
+    // Clean up audio resources
+    if (audioStream) {
+      audioStream.getTracks().forEach(track => track.stop());
+      setAudioStream(null);
+    }
+
+    if (audioContext) {
+      audioContext.close();
+      setAudioContext(null);
+    }
+
+    setIsRecording(false);
   };
 
   const endCall = () => {
