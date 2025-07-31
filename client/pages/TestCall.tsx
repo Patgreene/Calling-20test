@@ -126,7 +126,7 @@ export default function TestCall() {
     console.log("🎵 Audio context set in state:", !!audioContext);
 
     const source = audioCtx.createMediaStreamSource(stream);
-    const processor = audioCtx.createScriptProcessor(4096, 1, 1); // Larger buffer for better quality
+    const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Optimized buffer size for balance of quality and latency
 
     let audioSentCount = 0;
     let lastAudioTime = Date.now();
@@ -307,7 +307,7 @@ export default function TestCall() {
           console.log("📩 Received JSON message:", event.data);
           const message = JSON.parse(event.data);
           if (message.type === "status_agent_ready") {
-            console.log("🤖 Agent is ready to receive audio");
+            console.log("�� Agent is ready to receive audio");
           }
         } else {
           // Handle binary audio data
