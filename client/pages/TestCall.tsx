@@ -82,7 +82,12 @@ export default function TestCall() {
         },
       });
       setAudioStream(stream);
-      console.log("��� Microphone access granted");
+      // Test that the stream is active
+      const tracks = stream.getAudioTracks();
+      console.log("🎤 Microphone access granted, tracks:", tracks.length);
+      if (tracks.length > 0) {
+        console.log("🎤 Audio track:", tracks[0].label, tracks[0].getSettings());
+      }
       return stream;
     } catch (error) {
       console.error("❌ Microphone access denied:", error);
