@@ -68,7 +68,67 @@ export default function TestCall() {
     }
   };
 
+  const connectToWebSocket = () => {
+    if (!callSession?.sessionURL) {
+      alert("No WebSocket URL available");
+      return;
+    }
+
+    try {
+      setWsStatus("connecting");
+      const ws = new WebSocket(callSession.sessionURL);
+
+      ws.onopen = () => {
+        console.log("✅ WebSocket connected successfully");
+        setWsStatus("connected");
+        setWsConnection(ws);
+
+        // Send client ready status
+        ws.send(JSON.stringify({ type: "status_client_ready" }));
+      };
+
+      ws.onmessage = (event) => {
+        if (typeof event.data === "string") {
+          console.log("📩 Received JSON message:", event.data);
+          const message = JSON.parse(event.data);
+          if (message.type === "status_agent_ready") {
+            console.log("🤖 Agent is ready to receive audio");
+          }
+        } else {
+          console.log("🎵 Received audio data:", event.data);
+          // Handle binary audio data here
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error("❌ WebSocket error:", error);
+        setWsStatus("error");
+        alert("WebSocket connection failed");
+      };
+
+      ws.onclose = () => {
+        console.log("🔌 WebSocket disconnected");
+        setWsStatus("disconnected");
+        setWsConnection(null);
+      };
+
+    } catch (error) {
+      console.error("💥 Error creating WebSocket:", error);
+      setWsStatus("error");
+      alert(`Failed to connect: ${error.message}`);
+    }
+  };
+
+  const disconnectWebSocket = () => {
+    if (wsConnection) {
+      wsConnection.close();
+      setWsConnection(null);
+      setWsStatus("disconnected");
+    }
+  };
+
   const endCall = () => {
+    disconnectWebSocket();
     setIsCallInProgress(false);
     setCallSession(null);
   };
