@@ -227,21 +227,39 @@ export default function TestCall() {
                   </div>
 
                   <div className="text-center space-y-2">
-                    <Button
-                      onClick={() => navigator.clipboard.writeText(callSession.sessionURL)}
-                      className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
-                    >
-                      Copy WebSocket URL
-                    </Button>
-                    <Button
-                      onClick={connectToWebSocket}
-                      className="bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Connect to WebSocket
-                    </Button>
-                    <p className="text-xs text-gray-600 mt-2">
-                      WebSocket URLs can't be opened directly in browser. Use the connect button or copy URL for your WebSocket client.
-                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      <Button
+                        onClick={() => navigator.clipboard.writeText(callSession.sessionURL)}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                      >
+                        Copy URL
+                      </Button>
+
+                      {wsStatus === "connected" ? (
+                        <Button
+                          onClick={disconnectWebSocket}
+                          className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                          Disconnect
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={connectToWebSocket}
+                          disabled={wsStatus === "connecting"}
+                          className="bg-green-500 hover:bg-green-600 text-white disabled:opacity-50"
+                        >
+                          {wsStatus === "connecting" ? "Connecting..." : "Connect to Agent"}
+                        </Button>
+                      )}
+                    </div>
+
+                    {wsStatus === "disconnected" && (
+                      <p className="text-xs text-gray-600 mt-2">
+                        Click "Connect to Agent" to establish real-time voice connection with SynthFlow AI.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
