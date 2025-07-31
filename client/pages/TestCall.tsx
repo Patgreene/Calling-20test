@@ -240,10 +240,23 @@ export default function TestCall() {
           }
         } else {
           console.log(
-            "🎵 Received audio data from agent, size:",
+            "🎵 AGENT AUDIO RECEIVED! Size:",
             event.data.byteLength,
+            "bytes, Type:",
+            event.data.constructor.name
           );
-          playAgentAudio(event.data);
+
+          // Detailed analysis of received audio
+          if (event.data.byteLength > 0) {
+            const view = new DataView(event.data);
+            const firstSample = view.getInt16(0, true);
+            const lastSample = view.getInt16(event.data.byteLength - 2, true);
+            console.log(`🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${event.data.byteLength/2} samples`);
+
+            playAgentAudio(event.data);
+          } else {
+            console.warn("🎵 Received empty audio data");
+          }
         }
       };
 
