@@ -82,7 +82,7 @@ export default function TestCall() {
         }
       });
       setAudioStream(stream);
-      console.log("🎤 Microphone access granted");
+      console.log("��� Microphone access granted");
       return stream;
     } catch (error) {
       console.error("❌ Microphone access denied:", error);
@@ -312,9 +312,14 @@ export default function TestCall() {
                           🎉 Connected to SynthFlow AI Agent!
                         </p>
                         <p>
-                          You can now speak and the AI will respond in
-                          real-time.
+                          You can now speak and the AI will respond in real-time.
                         </p>
+                        {isRecording && (
+                          <div className="flex items-center gap-2 mt-2 text-red-600">
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                            <span className="text-xs font-medium">Recording audio...</span>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
