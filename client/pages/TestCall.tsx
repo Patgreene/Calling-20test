@@ -78,8 +78,8 @@ export default function TestCall() {
           sampleRate: 48000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true
-        }
+          noiseSuppression: true,
+        },
       });
       setAudioStream(stream);
       console.log("��� Microphone access granted");
@@ -92,8 +92,9 @@ export default function TestCall() {
   };
 
   const startAudioCapture = (ws: WebSocket, stream: MediaStream) => {
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)({
-      sampleRate: 48000
+    const audioCtx = new (window.AudioContext ||
+      (window as any).webkitAudioContext)({
+      sampleRate: 48000,
     });
     setAudioContext(audioCtx);
 
@@ -179,7 +180,10 @@ export default function TestCall() {
             console.log("🤖 Agent is ready to receive audio");
           }
         } else {
-          console.log("🎵 Received audio data from agent, size:", event.data.byteLength);
+          console.log(
+            "🎵 Received audio data from agent, size:",
+            event.data.byteLength,
+          );
           playAgentAudio(event.data);
         }
       };
@@ -191,7 +195,12 @@ export default function TestCall() {
       };
 
       ws.onclose = (event) => {
-        console.log("🔌 WebSocket disconnected. Code:", event.code, "Reason:", event.reason);
+        console.log(
+          "🔌 WebSocket disconnected. Code:",
+          event.code,
+          "Reason:",
+          event.reason,
+        );
         setWsStatus("disconnected");
         setWsConnection(null);
         setIsRecording(false);
@@ -212,7 +221,7 @@ export default function TestCall() {
 
     // Clean up audio resources
     if (audioStream) {
-      audioStream.getTracks().forEach(track => track.stop());
+      audioStream.getTracks().forEach((track) => track.stop());
       setAudioStream(null);
     }
 
@@ -312,12 +321,15 @@ export default function TestCall() {
                           🎉 Connected to SynthFlow AI Agent!
                         </p>
                         <p>
-                          You can now speak and the AI will respond in real-time.
+                          You can now speak and the AI will respond in
+                          real-time.
                         </p>
                         {isRecording && (
                           <div className="flex items-center gap-2 mt-2 text-red-600">
                             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                            <span className="text-xs font-medium">Recording audio...</span>
+                            <span className="text-xs font-medium">
+                              Recording audio...
+                            </span>
                           </div>
                         )}
                       </div>
