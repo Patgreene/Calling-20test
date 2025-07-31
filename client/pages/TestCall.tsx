@@ -240,7 +240,7 @@ export default function TestCall() {
       );
 
       console.log(
-        `🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples / 16000).toFixed(2)}s)`,
+        `🔊 Playing ${chunksToPlay.length} chunks (${totalSamples} samples, ${(totalSamples / 16000).toFixed(2)}s) | Queue: ${audioQueue.length} remaining`,
       );
 
       // Create combined audio buffer
