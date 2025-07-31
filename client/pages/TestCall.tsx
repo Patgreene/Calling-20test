@@ -191,29 +191,67 @@ export default function TestCall() {
     );
   };
 
+  const playQueuedAudio = async () => {
+    if (isPlayingQueue || audioQueue.length === 0) return;
+
+    const ctx = globalAudioContext || audioContext;
+    if (!ctx) return;
+
+    isPlayingQueue = true;
+
+    try {
+      // Ensure audio context is running
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+
+      // Combine multiple audio chunks for smoother playback
+      const chunksToPlay = audioQueue.splice(0, Math.min(5, audioQueue.length));
+      if (chunksToPlay.length === 0) {
+        isPlayingQueue = false;
+        return;
+      }
+
+      // Calculate total samples
+      const totalSamples = chunksToPlay.reduce((sum, chunk) => sum + chunk.length, 0);
+
+      // Create combined audio buffer
+      const audioBuffer = ctx.createBuffer(1, totalSamples, 16000);
+      const bufferData = audioBuffer.getChannelData(0);
+
+      let offset = 0;
+      for (const chunk of chunksToPlay) {
+        bufferData.set(chunk, offset);
+        offset += chunk.length;
+      }
+
+      // Play the combined audio
+      const source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(ctx.destination);
+
+      source.onended = () => {
+        isPlayingQueue = false;
+        // Schedule next playback if more audio is queued
+        setTimeout(playQueuedAudio, 10);
+      };
+
+      source.start();
+
+    } catch (error) {
+      console.error("❌ Error playing queued audio:", error);
+      isPlayingQueue = false;
+    }
+  };
+
   const playAgentAudio = async (audioData: ArrayBuffer) => {
     const ctx = globalAudioContext || audioContext;
     if (!ctx) {
-      console.warn(
-        "❌ No audio context available for playback (global or state)",
-      );
-      console.warn("❌ globalAudioContext:", !!globalAudioContext);
-      console.warn("❌ audioContext state:", !!audioContext);
+      console.warn("❌ No audio context available for playback");
       return;
     }
 
     try {
-      console.log(
-        `🔊 AudioContext state: ${ctx.state}, sampleRate: ${ctx.sampleRate}`,
-      );
-
-      // Ensure audio context is running
-      if (ctx.state === "suspended") {
-        console.log("🔊 Resuming suspended audio context...");
-        await ctx.resume();
-        console.log(`🔊 Audio context resumed, new state: ${ctx.state}`);
-      }
-
       // Parse PCM16 data (Little Endian)
       const view = new DataView(audioData);
       const sampleCount = audioData.byteLength / 2;
@@ -221,43 +259,26 @@ export default function TestCall() {
 
       let maxSample = 0;
       for (let i = 0; i < sampleCount; i++) {
-        const intSample = view.getInt16(i * 2, true); // true = little endian
+        const intSample = view.getInt16(i * 2, true);
         float32[i] = intSample / 32768;
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      console.log(
-        `🔊 Processing ${sampleCount} samples, max amplitude: ${maxSample.toFixed(4)}`,
-      );
-
-      if (maxSample < 0.001) {
-        console.warn(
-          "🔊 Audio data appears to be silent (max amplitude < 0.001)",
-        );
+      // Only log significant audio (reduce spam)
+      if (maxSample > 0.01) {
+        console.log(`🔊 Agent audio: ${sampleCount} samples, amplitude: ${maxSample.toFixed(3)}`);
       }
 
-      // Create audio buffer (16kHz mono from agent)
-      const audioBuffer = ctx.createBuffer(1, sampleCount, 16000);
-      audioBuffer.getChannelData(0).set(float32);
+      // Add to queue for smooth playback
+      audioQueue.push(float32);
 
-      // Play the audio
-      const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(ctx.destination);
+      // Start playing if not already playing
+      if (!isPlayingQueue) {
+        playQueuedAudio();
+      }
 
-      // Add event listeners for debugging
-      source.onended = () => {
-        console.log("🔊 Audio playback finished");
-      };
-
-      console.log(
-        `🔊 Starting audio playback: ${sampleCount} samples at 16kHz (${(sampleCount / 16000).toFixed(2)}s duration)`,
-      );
-      source.start();
     } catch (error) {
-      console.error("❌ Error playing audio:", error);
-      console.error("❌ Audio context state:", ctx?.state);
-      console.error("❌ Audio data size:", audioData.byteLength);
+      console.error("❌ Error processing agent audio:", error);
     }
   };
 
