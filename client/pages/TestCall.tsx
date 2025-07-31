@@ -325,10 +325,10 @@ export default function TestCall() {
             return;
           }
 
-          // Only log every 50th audio packet to reduce spam
-          if (Math.random() < 0.02) {
-            // 2% chance = ~1 in 50
-            console.log(`🎵 Agent audio received: ${dataSize} bytes`);
+          // Only log very occasionally to reduce spam
+          if (Math.random() < 0.001) {
+            // 0.1% chance = ~1 in 1000
+            console.log(`🎵 Agent audio: ${dataSize} bytes`);
           }
 
           // Process audio if we have data
