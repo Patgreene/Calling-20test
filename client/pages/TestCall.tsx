@@ -7,6 +7,8 @@ export default function TestCall() {
   const [isCallInProgress, setIsCallInProgress] = useState(false);
   const [callSession, setCallSession] = useState<any>(null);
   const [userName, setUserName] = useState("Patrick");
+  const [wsConnection, setWsConnection] = useState<WebSocket | null>(null);
+  const [wsStatus, setWsStatus] = useState<string>("disconnected");
 
   const startSynthflowCall = async () => {
     setIsCallInProgress(true);
