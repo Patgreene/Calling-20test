@@ -91,32 +91,50 @@ export default function TestCall() {
     }
   };
 
-  const startAudioCapture = (ws: WebSocket, stream: MediaStream) => {
+  const startAudioCapture = async (ws: WebSocket, stream: MediaStream) => {
     const audioCtx = new (window.AudioContext ||
       (window as any).webkitAudioContext)({
       sampleRate: 48000,
     });
+
+    // Resume audio context if needed (browser policy)
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+
     setAudioContext(audioCtx);
 
     const source = audioCtx.createMediaStreamSource(stream);
-    const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+    const processor = audioCtx.createScriptProcessor(2048, 1, 1); // Smaller buffer for lower latency
 
     processor.onaudioprocess = (event) => {
-      if (ws.readyState === WebSocket.OPEN && isRecording) {
+      if (ws.readyState === WebSocket.OPEN) {
         const inputBuffer = event.inputBuffer.getChannelData(0);
-        // Convert Float32Array to PCM16
-        const pcm16 = new Int16Array(inputBuffer.length);
-        for (let i = 0; i < inputBuffer.length; i++) {
-          pcm16[i] = Math.max(-32768, Math.min(32767, inputBuffer[i] * 32768));
+
+        // Check for actual audio input
+        const hasAudio = inputBuffer.some(sample => Math.abs(sample) > 0.001);
+        if (hasAudio) {
+          console.log("🎤 Sending audio data, samples:", inputBuffer.length);
         }
-        ws.send(pcm16.buffer);
+
+        // Convert Float32Array to PCM16 (Little Endian)
+        const pcm16 = new ArrayBuffer(inputBuffer.length * 2);
+        const view = new DataView(pcm16);
+
+        for (let i = 0; i < inputBuffer.length; i++) {
+          const sample = Math.max(-1, Math.min(1, inputBuffer[i]));
+          const intSample = Math.round(sample * 32767);
+          view.setInt16(i * 2, intSample, true); // true = little endian
+        }
+
+        ws.send(pcm16);
       }
     };
 
     source.connect(processor);
-    processor.connect(audioCtx.destination);
+    // Don't connect to destination to avoid feedback
     setIsRecording(true);
-    console.log("🎵 Audio capture started");
+    console.log("🎵 Audio capture started with", processor.bufferSize, "buffer size");
   };
 
   const playAgentAudio = (audioData: ArrayBuffer) => {
