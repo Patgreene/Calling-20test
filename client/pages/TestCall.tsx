@@ -297,23 +297,39 @@ export default function TestCall() {
             console.log("🤖 Agent is ready to receive audio");
           }
         } else {
+          // Handle binary audio data
+          let audioData = event.data;
+          let dataSize = 0;
+
+          // Check if it's an ArrayBuffer or Blob
+          if (audioData instanceof ArrayBuffer) {
+            dataSize = audioData.byteLength;
+          } else if (audioData instanceof Blob) {
+            dataSize = audioData.size;
+            console.log("🎵 Converting Blob to ArrayBuffer...");
+            audioData = await audioData.arrayBuffer();
+          } else {
+            console.error("🎵 Unknown audio data type:", typeof audioData, audioData);
+            return;
+          }
+
           console.log(
             "🎵 AGENT AUDIO RECEIVED! Size:",
-            event.data.byteLength,
+            dataSize,
             "bytes, Type:",
-            event.data.constructor.name,
+            audioData.constructor.name,
           );
 
           // Detailed analysis of received audio
-          if (event.data.byteLength > 0) {
-            const view = new DataView(event.data);
+          if (dataSize > 0) {
+            const view = new DataView(audioData);
             const firstSample = view.getInt16(0, true);
-            const lastSample = view.getInt16(event.data.byteLength - 2, true);
+            const lastSample = view.getInt16(dataSize - 2, true);
             console.log(
-              `🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${event.data.byteLength / 2} samples`,
+              `🎵 Audio samples: first=${firstSample}, last=${lastSample}, total=${dataSize / 2} samples`,
             );
 
-            playAgentAudio(event.data);
+            playAgentAudio(audioData);
           } else {
             console.warn("🎵 Received empty audio data");
           }
