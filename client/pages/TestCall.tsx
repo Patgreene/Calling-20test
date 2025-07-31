@@ -424,6 +424,11 @@ export default function TestCall() {
       setAudioContext(null);
     }
 
+    if (globalAudioContext) {
+      globalAudioContext.close();
+      globalAudioContext = null;
+    }
+
     setIsRecording(false);
   };
 
