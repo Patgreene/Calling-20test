@@ -105,17 +105,15 @@ export default function TestCall() {
 
   const startAudioCapture = async (ws: WebSocket, stream: MediaStream) => {
     // Create or reuse audio context - ensure we have a global reference
-    let audioCtx = audioContext;
+    let audioCtx = globalAudioContext || audioContext;
     if (!audioCtx) {
       audioCtx = new (window.AudioContext ||
         (window as any).webkitAudioContext)({
         sampleRate: 48000,
       });
       console.log("🎵 Created new audio context:", audioCtx.state);
+      globalAudioContext = audioCtx;
       setAudioContext(audioCtx);
-
-      // Add a small delay to ensure state is updated
-      await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     // Resume audio context if needed (browser policy)
