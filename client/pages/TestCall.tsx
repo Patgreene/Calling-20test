@@ -176,12 +176,12 @@ export default function TestCall() {
     setIsRecording(true);
 
     console.log(
-      "🎵 Optimized audio capture started with",
+      "🎵 ULTRA-FAST audio capture:",
       processor.bufferSize,
-      "buffer (low latency)",
+      "buffer (maximum speed)",
     );
     console.log(
-      "🎤 Microphone ready! Agent audio optimized for speed + quality.",
+      "🎤 Ready! Zero-delay microphone + clean agent audio.",
     );
 
     // Test microphone immediately
