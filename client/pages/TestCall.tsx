@@ -187,8 +187,11 @@ export default function TestCall() {
   };
 
   const playAgentAudio = async (audioData: ArrayBuffer) => {
-    if (!audioContext) {
-      console.warn("❌ No audio context available for playback");
+    const ctx = globalAudioContext || audioContext;
+    if (!ctx) {
+      console.warn("❌ No audio context available for playback (global or state)");
+      console.warn("❌ globalAudioContext:", !!globalAudioContext);
+      console.warn("❌ audioContext state:", !!audioContext);
       return;
     }
 
