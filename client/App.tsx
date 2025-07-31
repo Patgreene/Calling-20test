@@ -9,11 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import Interview from "./pages/Interview";
-<<<<<<< HEAD
 import TestCall from "./pages/TestCall";
-=======
-import SynthFlowTest from "./pages/SynthFlowTest";
->>>>>>> 3840c16f7b52d4604b412fb7af0a41168e1f7b3d
 import Summary from "./pages/Summary";
 import Verify from "./pages/Verify";
 import Review from "./pages/Review";
@@ -32,11 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/interview" element={<Interview />} />
-<<<<<<< HEAD
           <Route path="/test-call" element={<TestCall />} />
-=======
-          <Route path="/synthflow-test" element={<SynthFlowTest />} />
->>>>>>> 3840c16f7b52d4604b412fb7af0a41168e1f7b3d
           <Route path="/summary" element={<Summary />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/review" element={<Review />} />
