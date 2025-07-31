@@ -319,7 +319,11 @@ export default function TestCall() {
             console.log("🎵 Converting Blob to ArrayBuffer...");
             audioData = await audioData.arrayBuffer();
           } else {
-            console.error("🎵 Unknown audio data type:", typeof audioData, audioData);
+            console.error(
+              "🎵 Unknown audio data type:",
+              typeof audioData,
+              audioData,
+            );
             return;
           }
 
@@ -370,7 +374,9 @@ export default function TestCall() {
         } else if (event.code === 1001) {
           console.log("🔌 Going away");
         } else if (event.code === 1005) {
-          console.log("🔌 Code 1005: No status code received - possible network issue or server problem");
+          console.log(
+            "🔌 Code 1005: No status code received - possible network issue or server problem",
+          );
         } else if (event.code === 1006) {
           console.log("🔌 Abnormal closure (no close frame)");
         } else {
