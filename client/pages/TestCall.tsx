@@ -321,18 +321,28 @@ export default function TestCall() {
           let audioData = event.data;
           let dataSize = 0;
 
+          console.log("🎵 Raw audio data received, type:", typeof audioData, audioData.constructor?.name);
+
           // Check if it's an ArrayBuffer or Blob
           if (audioData instanceof ArrayBuffer) {
             dataSize = audioData.byteLength;
+            console.log("🎵 ArrayBuffer detected, size:", dataSize);
           } else if (audioData instanceof Blob) {
             dataSize = audioData.size;
-            console.log("🎵 Converting Blob to ArrayBuffer...");
+            console.log("🎵 Blob detected, size:", dataSize, "- converting to ArrayBuffer...");
             audioData = await audioData.arrayBuffer();
+            console.log("🎵 Converted to ArrayBuffer, new size:", audioData.byteLength);
+          } else if (audioData && audioData.byteLength !== undefined) {
+            // Some other binary data type
+            dataSize = audioData.byteLength;
+            console.log("🎵 Binary data with byteLength:", dataSize);
           } else {
             console.error(
               "🎵 Unknown audio data type:",
               typeof audioData,
-              audioData,
+              audioData?.constructor?.name,
+              "Data:",
+              audioData
             );
             return;
           }
@@ -340,8 +350,8 @@ export default function TestCall() {
           console.log(
             "🎵 AGENT AUDIO RECEIVED! Size:",
             dataSize,
-            "bytes, Type:",
-            audioData.constructor.name,
+            "bytes, Final type:",
+            audioData.constructor?.name,
           );
 
           // Detailed analysis of received audio
