@@ -291,8 +291,22 @@ export default function TestCall() {
           "🔌 WebSocket disconnected. Code:",
           event.code,
           "Reason:",
-          event.reason,
+          event.reason || "No reason provided",
+          "Clean close:",
+          event.wasClean
         );
+
+        // Log detailed close codes
+        if (event.code === 1000) {
+          console.log("🔌 Normal closure");
+        } else if (event.code === 1001) {
+          console.log("🔌 Going away");
+        } else if (event.code === 1006) {
+          console.log("🔌 Abnormal closure (no close frame)");
+        } else {
+          console.log(`🔌 Close code ${event.code} - check WebSocket close code documentation`);
+        }
+
         setWsStatus("disconnected");
         setWsConnection(null);
         setIsRecording(false);
