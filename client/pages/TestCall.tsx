@@ -146,12 +146,13 @@ export default function TestCall() {
         );
         const hasAudio = rms > 0.0001; // Lower threshold for better detection
 
-        // Log audio activity every 5 seconds (reduced spam)
+        // Log audio activity every 3 seconds (reduced spam)
         const now = Date.now();
-        if (now - lastAudioTime > 5000) {
+        if (now - lastAudioTime > 3000) {
           console.log(
-            `🎤 Audio status: RMS=${rms.toFixed(6)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
+            `🎤 Microphone status: RMS=${rms.toFixed(6)}, Active=${hasAudio}, Sent=${audioSentCount} packets`,
           );
+          console.log(`🎤 Audio level: ${(rms * 100).toFixed(2)}% (need >1% for detection)`);
           lastAudioTime = now;
           audioSentCount = 0; // Reset counter
         }
