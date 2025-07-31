@@ -293,7 +293,13 @@ export default function TestCall() {
         maxSample = Math.max(maxSample, Math.abs(float32[i]));
       }
 
-      // Add to queue for smooth playback (always add, even silence for continuity)
+      // Prevent excessive queue buildup (max 15 chunks = ~300ms latency)
+      if (audioQueue.length > 15) {
+        audioQueue.splice(0, 5); // Remove oldest 5 chunks
+        console.log("🔊 Queue overflow! Dropped old audio to reduce latency");
+      }
+
+      // Add to queue for smooth playback
       audioQueue.push(float32);
 
       // Only log significant audio (reduce spam)
@@ -303,8 +309,8 @@ export default function TestCall() {
         );
       }
 
-      // Start playing if not already playing and we have enough chunks
-      if (!isPlayingQueue && audioQueue.length >= 3) {
+      // Start playing if not already playing and we have enough chunks (reduced to 2)
+      if (!isPlayingQueue && audioQueue.length >= 2) {
         playQueuedAudio();
       }
     } catch (error) {
