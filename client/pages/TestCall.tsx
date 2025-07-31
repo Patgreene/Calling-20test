@@ -28,12 +28,17 @@ export default function TestCall() {
       });
 
       console.log("📡 Response Status:", response.status, response.statusText);
-      console.log("📡 Response Headers:", Object.fromEntries(response.headers.entries()));
+      console.log(
+        "📡 Response Headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error("❌ API Error Response:", errorText);
-        throw new Error(`Call initiation failed: ${response.status} - ${errorText}`);
+        throw new Error(
+          `Call initiation failed: ${response.status} - ${errorText}`,
+        );
       }
 
       const data = await response.json();
