@@ -61,17 +61,27 @@ export default function EditSummary() {
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Supabase error response:", errorText);
-          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+          throw new Error(
+            `HTTP error! status: ${response.status} - ${errorText}`,
+          );
         }
 
         const data = await response.json();
         console.log("Loaded data:", data);
-        console.log("Available columns:", data.length > 0 ? Object.keys(data[0]) : "No data");
+        console.log(
+          "Available columns:",
+          data.length > 0 ? Object.keys(data[0]) : "No data",
+        );
 
         if (data && data.length > 0) {
           // Prioritize 'Transcript' with capital T since that's what's in Supabase
           const record = data[0];
-          const transcript = record.Transcript || record.transcript || record.summary || record.Summary || "";
+          const transcript =
+            record.Transcript ||
+            record.transcript ||
+            record.summary ||
+            record.Summary ||
+            "";
           console.log("Found transcript data:", transcript ? "Yes" : "No");
           console.log("Transcript length:", transcript ? transcript.length : 0);
           setSummary(transcript);
@@ -119,7 +129,9 @@ export default function EditSummary() {
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Save error response:", errorText);
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        throw new Error(
+          `HTTP error! status: ${response.status} - ${errorText}`,
+        );
       }
 
       alert("Updated transcript saved successfully!");
