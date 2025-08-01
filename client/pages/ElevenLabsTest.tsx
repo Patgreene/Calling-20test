@@ -8,34 +8,38 @@ import { Link } from "react-router-dom";
 export default function ElevenLabsTest() {
   useEffect(() => {
     // Load ElevenLabs widget script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
     script.async = true;
-    script.type = 'text/javascript';
+    script.type = "text/javascript";
     document.body.appendChild(script);
 
     // Add form event listener
-    const form = document.getElementById('vouch-form');
+    const form = document.getElementById("vouch-form");
     const handleSubmit = (e: Event) => {
       e.preventDefault();
 
-      const voucherFirst = (document.getElementById('voucherFirst') as HTMLInputElement).value;
-      const voucheeFirst = (document.getElementById('voucheeFirst') as HTMLInputElement).value;
+      const voucherFirst = (
+        document.getElementById("voucherFirst") as HTMLInputElement
+      ).value;
+      const voucheeFirst = (
+        document.getElementById("voucheeFirst") as HTMLInputElement
+      ).value;
 
       // Clear previous widget if any
-      const container = document.getElementById('widget-container');
+      const container = document.getElementById("widget-container");
       if (container) {
-        container.innerHTML = '';
+        container.innerHTML = "";
 
         // Inject the ElevenLabs AI widget
-        const widget = document.createElement('elevenlabs-convai');
-        widget.setAttribute('agent-id', 'agent_7101k1jdynr4ewv8e9vnxs2fbtew');
+        const widget = document.createElement("elevenlabs-convai");
+        widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
         widget.setAttribute(
-          'dynamic-variables',
+          "dynamic-variables",
           JSON.stringify({
             voucher_first: voucherFirst,
             vouchee_first: voucheeFirst,
-          })
+          }),
         );
 
         container.appendChild(widget);
@@ -43,13 +47,13 @@ export default function ElevenLabsTest() {
     };
 
     if (form) {
-      form.addEventListener('submit', handleSubmit);
+      form.addEventListener("submit", handleSubmit);
     }
 
     // Cleanup
     return () => {
       if (form) {
-        form.removeEventListener('submit', handleSubmit);
+        form.removeEventListener("submit", handleSubmit);
       }
       if (script.parentNode) {
         script.parentNode.removeChild(script);
