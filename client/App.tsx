@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
+import AICall from "./pages/AICall";
 import Summary from "./pages/Summary";
 import Verify from "./pages/Verify";
 import Review from "./pages/Review";
