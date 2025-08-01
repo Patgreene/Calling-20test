@@ -94,7 +94,7 @@ export default function Review() {
 
       if (!vouchSummary) {
         console.warn(
-          "No vouch summary found - this might be expected if user skipped interview",
+          "No vouch summary found - this might be expected if user skipped AI call",
         );
       }
 
