@@ -44,9 +44,9 @@ export default function EditSummary() {
       try {
         console.log("Loading summary for form_id:", formId);
 
-        // First, let's try to get all columns to see what's available
+        // Query specifically for the Transcript column (with capital T)
         const response = await fetch(
-          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
+          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`,
           {
             headers: {
               apikey:
