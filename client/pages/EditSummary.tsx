@@ -69,10 +69,11 @@ export default function EditSummary() {
         console.log("Available columns:", data.length > 0 ? Object.keys(data[0]) : "No data");
 
         if (data && data.length > 0) {
-          // Try different possible column names for the transcript
+          // Prioritize 'Transcript' with capital T since that's what's in Supabase
           const record = data[0];
-          const transcript = record.transcript || record.Transcript || record.summary || record.Summary || "";
-          console.log("Found transcript:", transcript ? "Yes" : "No");
+          const transcript = record.Transcript || record.transcript || record.summary || record.Summary || "";
+          console.log("Found transcript data:", transcript ? "Yes" : "No");
+          console.log("Transcript length:", transcript ? transcript.length : 0);
           setSummary(transcript);
         } else {
           console.log("No data found for form_id:", formId);
