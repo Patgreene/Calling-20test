@@ -1,41 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Form() {
-  const [formData, setFormData] = useState({
-    voucherFirst: "Patrick",
-    voucherLast: "Greene",
-    voucheeFirst: "Dominic",
-    voucheeLast: "Smith",
-    voucherEmail: "patrick@vouchprofile.com",
-    formId: "123-test-id",
-  });
+  const navigate = useNavigate();
 
-  const widgetContainerRef = useRef<HTMLDivElement>(null);
-  const scriptLoadedRef = useRef(false);
-
-  useEffect(() => {
-    // Load ElevenLabs script
-    if (!scriptLoadedRef.current) {
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
-      script.async = true;
-      script.type = "text/javascript";
-      document.body.appendChild(script);
-      scriptLoadedRef.current = true;
-
-      return () => {
-        // Cleanup script on unmount
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
-        }
-      };
-    }
-  }, []);
+  // Generate a new form ID each time the component loads
+  const [formData, setFormData] = useState(() => ({
+    voucherFirst: "",
+    voucherLast: "",
+    voucheeFirst: "",
+    voucheeLast: "",
+    voucherEmail: "",
+    formId: crypto.randomUUID(),
+  }));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,27 +29,15 @@ export default function Form() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!widgetContainerRef.current) return;
+    // Validate all fields are filled
+    if (!formData.voucherFirst || !formData.voucherLast || !formData.voucherEmail ||
+        !formData.voucheeFirst || !formData.voucheeLast) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-    // Clear existing widget
-    widgetContainerRef.current.innerHTML = "";
-
-    // Create ElevenLabs ConvAI widget
-    const widget = document.createElement("elevenlabs-convai");
-    widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
-    widget.setAttribute(
-      "dynamic-variables",
-      JSON.stringify({
-        voucher_first: formData.voucherFirst,
-        voucher_last: formData.voucherLast,
-        voucher_email: formData.voucherEmail,
-        vouchee_first: formData.voucheeFirst,
-        vouchee_last: formData.voucheeLast,
-        form_id: formData.formId,
-      }),
-    );
-
-    widgetContainerRef.current.appendChild(widget);
+    // Navigate to AI call page with form data
+    navigate("/ai-call", { state: { formData } });
   };
 
   return (
@@ -185,25 +154,7 @@ export default function Form() {
                 value={formData.voucherEmail}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
-
-            {/* Form ID */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="formId"
-                className="text-sm font-medium text-gray-700"
-              >
-                Form ID
-              </Label>
-              <Input
-                id="formId"
-                name="formId"
-                type="text"
-                required
-                value={formData.formId}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                placeholder="Enter your email address"
               />
             </div>
 
@@ -215,17 +166,6 @@ export default function Form() {
               Start AI Call
             </Button>
           </form>
-
-          {/* Widget Container */}
-          <div className="mt-8">
-            <div
-              id="widget-container"
-              ref={widgetContainerRef}
-              className="min-h-[200px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500"
-            >
-              <p>AI widget will appear here after clicking "Start AI Call"</p>
-            </div>
-          </div>
         </div>
       </div>
 
