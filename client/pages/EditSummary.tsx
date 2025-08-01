@@ -89,7 +89,7 @@ export default function EditSummary() {
 
     setIsSaving(true);
     try {
-      console.log("Saving summary for form_id:", formId);
+      console.log("Saving updated transcript for form_id:", formId);
 
       const response = await fetch(
         `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
