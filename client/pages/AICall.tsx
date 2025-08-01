@@ -45,9 +45,17 @@ export default function AICall() {
       }
     }
 
+    // Add beforeunload cleanup
+    const handleBeforeUnload = () => {
+      cleanupWidget();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     // Cleanup function for when component unmounts
     return () => {
       cleanupWidget();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [formData]);
 
