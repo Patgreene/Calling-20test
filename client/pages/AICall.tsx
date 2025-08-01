@@ -31,7 +31,8 @@ export default function AICall() {
       scriptLoadedRef.current = true;
 
       return () => {
-        // Cleanup script on unmount
+        // Cleanup widget and script on unmount
+        cleanupWidget();
         if (document.body.contains(script)) {
           document.body.removeChild(script);
         }
@@ -43,6 +44,11 @@ export default function AICall() {
         createWidget();
       }
     }
+
+    // Cleanup function for when component unmounts
+    return () => {
+      cleanupWidget();
+    };
   }, [formData]);
 
   const createWidget = () => {
