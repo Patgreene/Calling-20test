@@ -1,22 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Form() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    voucherFirst: "",
-    voucherLast: "",
-    voucherEmail: "",
-    voucheeFirst: "",
-    voucheeLast: "",
+    voucherFirst: "Patrick",
+    voucherLast: "Greene",
+    voucheeFirst: "Dominic",
+    voucheeLast: "Smith",
+    voucherEmail: "patrick@vouchprofile.com",
+    formId: "123-test-id",
   });
-  const [consentToRecording, setConsentToRecording] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
+  const scriptLoadedRef = useRef(false);
+
+  useEffect(() => {
+    // Load ElevenLabs script
+    if (!scriptLoadedRef.current) {
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
+      script.async = true;
+      script.type = "text/javascript";
+      document.body.appendChild(script);
+      scriptLoadedRef.current = true;
+
+      return () => {
+        // Cleanup script on unmount
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,89 +45,30 @@ export default function Form() {
     }));
   };
 
-  const handleBack = () => {
-    navigate("/");
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    try {
-      // Check if all fields are filled
-      if (
-        !formData.voucherFirst ||
-        !formData.voucherLast ||
-        !formData.voucherEmail ||
-        !formData.voucheeFirst ||
-        !formData.voucheeLast
-      ) {
-        alert("Please fill in all required fields.");
-        setIsSubmitting(false);
-        return;
-      }
+    if (!widgetContainerRef.current) return;
 
-      // Check if recording consent is given
-      if (!consentToRecording) {
-        alert(
-          "Please confirm that you consent to the call being recorded and shared.",
-        );
-        setIsSubmitting(false);
-        return;
-      }
+    // Clear existing widget
+    widgetContainerRef.current.innerHTML = "";
 
-      // Generate unique form_id
-      const formId = crypto.randomUUID();
-
-      // Prepare Supabase payload
-      const supabasePayload = {
-        form_id: formId,
+    // Create ElevenLabs ConvAI widget
+    const widget = document.createElement("elevenlabs-convai");
+    widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
+    widget.setAttribute(
+      "dynamic-variables",
+      JSON.stringify({
         voucher_first: formData.voucherFirst,
         voucher_last: formData.voucherLast,
         voucher_email: formData.voucherEmail,
         vouchee_first: formData.voucheeFirst,
         vouchee_last: formData.voucheeLast,
-      };
+        form_id: formData.formId,
+      }),
+    );
 
-      // Send to Supabase
-      const response = await fetch(
-        "https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form",
-        {
-          method: "POST",
-          headers: {
-            apikey:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(supabasePayload),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(`Supabase API error: ${response.status}`);
-      }
-
-      // Store form_id in localStorage
-      localStorage.setItem("form_id", formId);
-
-      // Save form data to localStorage (for backwards compatibility)
-      const formDataWithConsent = {
-        ...formData,
-        recordingConsent: consentToRecording ? "Yes" : "No",
-        formId: formId,
-      };
-      localStorage.setItem("vouchForm", JSON.stringify(formDataWithConsent));
-
-      // Navigate to interview page
-      navigate("/interview");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("There was an error submitting your form. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    widgetContainerRef.current.appendChild(widget);
   };
 
   return (
@@ -132,54 +92,90 @@ export default function Form() {
             Let's get started
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Voucher First and Last Name */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="voucherFirst"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Your Name *
-                </Label>
-                <Input
-                  id="voucherFirst"
-                  name="voucherFirst"
-                  type="text"
-                  required
-                  value={formData.voucherFirst}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="First name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="voucherLast"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Your Last Name *
-                </Label>
-                <Input
-                  id="voucherLast"
-                  name="voucherLast"
-                  type="text"
-                  required
-                  value={formData.voucherLast}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mt-8"
-                  placeholder="Last name"
-                />
-              </div>
+          <form id="vouch-form" onSubmit={handleSubmit} className="space-y-6">
+            {/* Voucher First Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucherFirst"
+                className="text-sm font-medium text-gray-700"
+              >
+                Voucher First Name
+              </Label>
+              <Input
+                id="voucherFirst"
+                name="voucherFirst"
+                type="text"
+                required
+                value={formData.voucherFirst}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
             </div>
 
-            {/* Your Email */}
+            {/* Voucher Last Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucherLast"
+                className="text-sm font-medium text-gray-700"
+              >
+                Voucher Last Name
+              </Label>
+              <Input
+                id="voucherLast"
+                name="voucherLast"
+                type="text"
+                required
+                value={formData.voucherLast}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+
+            {/* Vouchee First Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucheeFirst"
+                className="text-sm font-medium text-gray-700"
+              >
+                Vouchee First Name
+              </Label>
+              <Input
+                id="voucheeFirst"
+                name="voucheeFirst"
+                type="text"
+                required
+                value={formData.voucheeFirst}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+
+            {/* Vouchee Last Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucheeLast"
+                className="text-sm font-medium text-gray-700"
+              >
+                Vouchee Last Name
+              </Label>
+              <Input
+                id="voucheeLast"
+                name="voucheeLast"
+                type="text"
+                required
+                value={formData.voucheeLast}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+
+            {/* Voucher Email */}
             <div className="space-y-2">
               <Label
                 htmlFor="voucherEmail"
                 className="text-sm font-medium text-gray-700"
               >
-                Your Email *
+                Voucher Email
               </Label>
               <Input
                 id="voucherEmail"
@@ -189,84 +185,61 @@ export default function Form() {
                 value={formData.voucherEmail}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter your email address"
               />
             </div>
 
-            {/* Vouchee First and Last Name */}
+            {/* Form ID */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700">
-                Who are you vouching for? *
+              <Label
+                htmlFor="formId"
+                className="text-sm font-medium text-gray-700"
+              >
+                Form ID
               </Label>
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  id="voucheeFirst"
-                  name="voucheeFirst"
-                  type="text"
-                  required
-                  value={formData.voucheeFirst}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="First name"
-                />
-                <Input
-                  id="voucheeLast"
-                  name="voucheeLast"
-                  type="text"
-                  required
-                  value={formData.voucheeLast}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="Last name"
-                />
-              </div>
-            </div>
-
-            {/* Recording Consent Checkbox */}
-            <div className="space-y-3 pt-4">
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="recordingConsent"
-                  checked={consentToRecording}
-                  onCheckedChange={(checked) =>
-                    setConsentToRecording(checked === true)
-                  }
-                  className="mt-1"
-                />
-                <Label
-                  htmlFor="recordingConsent"
-                  className="text-sm text-gray-700 leading-relaxed cursor-pointer"
-                >
-                  <strong>
-                    I consent to this call being recorded and shared for
-                    verification purposes.
-                  </strong>
-                </Label>
-              </div>
+              <Input
+                id="formId"
+                name="formId"
+                type="text"
+                required
+                value={formData.formId}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={!consentToRecording || isSubmitting}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
             >
-              {isSubmitting ? "Submitting..." : "Next"}
+              Start AI Call
             </Button>
           </form>
+
+          {/* Widget Container */}
+          <div className="mt-8">
+            <div
+              id="widget-container"
+              ref={widgetContainerRef}
+              className="min-h-[200px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500"
+            >
+              <p>AI widget will appear here after clicking "Start AI Call"</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Back Button - Bottom Left */}
       <div className="absolute bottom-6 left-6">
-        <Button
-          onClick={handleBack}
-          variant="ghost"
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
+        <Link to="/">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+        </Link>
       </div>
     </div>
   );
