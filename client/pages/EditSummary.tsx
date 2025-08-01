@@ -180,7 +180,7 @@ export default function EditSummary() {
                 htmlFor="summaryInput"
                 className="text-sm font-medium text-gray-700"
               >
-                Summary
+                Transcript
               </Label>
               <textarea
                 id="summaryInput"
@@ -188,7 +188,7 @@ export default function EditSummary() {
                 onChange={(e) => setSummary(e.target.value)}
                 rows={15}
                 className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
-                placeholder="AI-generated summary will appear here..."
+                placeholder="AI-generated transcript will appear here..."
               />
             </div>
 
