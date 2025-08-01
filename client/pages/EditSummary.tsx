@@ -71,8 +71,8 @@ export default function EditSummary() {
           setSummary("");
         }
       } catch (error) {
-        console.error("Error loading summary:", error);
-        alert("Failed to load summary. Check console for details.");
+        console.error("Error loading transcript:", error);
+        alert("Failed to load transcript. Check console for details.");
       } finally {
         setIsLoading(false);
       }
