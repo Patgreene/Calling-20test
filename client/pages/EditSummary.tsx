@@ -111,10 +111,10 @@ export default function EditSummary() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      alert("Summary saved successfully!");
+      alert("Updated transcript saved successfully!");
     } catch (error) {
-      console.error("Error saving summary:", error);
-      alert("Failed to save summary. Check console for details.");
+      console.error("Error saving updated transcript:", error);
+      alert("Failed to save updated transcript. Check console for details.");
     } finally {
       setIsSaving(false);
     }
