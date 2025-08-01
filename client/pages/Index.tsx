@@ -48,11 +48,7 @@ export default function Index() {
               <Button
                 variant="outline"
                 size="lg"
-<<<<<<< HEAD
-                className="border-2 border-green-500 text-green-600 hover:bg-green-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-=======
                 className="border-2 border-purple-500 text-purple-600 hover:bg-purple-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
               >
                 Test ElevenLabs AI
               </Button>
