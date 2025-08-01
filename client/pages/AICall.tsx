@@ -17,7 +17,7 @@ export default function AICall() {
       script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
       script.async = true;
       script.type = "text/javascript";
-      
+
       script.onload = () => {
         setIsLoading(false);
         // Create widget after script loads
@@ -25,7 +25,7 @@ export default function AICall() {
           createWidget();
         }
       };
-      
+
       document.body.appendChild(script);
       scriptLoadedRef.current = true;
 
@@ -119,10 +119,20 @@ export default function AICall() {
               Call Details:
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
-              <p><strong>Voucher:</strong> {formData.voucherFirst} {formData.voucherLast}</p>
-              <p><strong>Email:</strong> {formData.voucherEmail}</p>
-              <p><strong>Vouchee:</strong> {formData.voucheeFirst} {formData.voucheeLast}</p>
-              <p><strong>Form ID:</strong> {formData.formId}</p>
+              <p>
+                <strong>Voucher:</strong> {formData.voucherFirst}{" "}
+                {formData.voucherLast}
+              </p>
+              <p>
+                <strong>Email:</strong> {formData.voucherEmail}
+              </p>
+              <p>
+                <strong>Vouchee:</strong> {formData.voucheeFirst}{" "}
+                {formData.voucheeLast}
+              </p>
+              <p>
+                <strong>Form ID:</strong> {formData.formId}
+              </p>
             </div>
           </div>
 
@@ -139,16 +149,14 @@ export default function AICall() {
             <div
               id="widget-container"
               ref={widgetContainerRef}
-              className={`min-h-[400px] rounded-lg ${isLoading ? 'hidden' : ''}`}
+              className={`min-h-[400px] rounded-lg ${isLoading ? "hidden" : ""}`}
             />
           </div>
 
           {/* Navigation */}
           <div className="mt-8 flex justify-center">
             <Link to="/summary">
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              >
+              <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
                 Call Complete - Continue
               </Button>
             </Link>

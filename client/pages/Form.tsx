@@ -30,8 +30,13 @@ export default function Form() {
     e.preventDefault();
 
     // Validate all fields are filled
-    if (!formData.voucherFirst || !formData.voucherLast || !formData.voucherEmail ||
-        !formData.voucheeFirst || !formData.voucheeLast) {
+    if (
+      !formData.voucherFirst ||
+      !formData.voucherLast ||
+      !formData.voucherEmail ||
+      !formData.voucheeFirst ||
+      !formData.voucheeLast
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
