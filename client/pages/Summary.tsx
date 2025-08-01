@@ -23,7 +23,7 @@ export default function Summary() {
   };
 
   const handleBack = () => {
-    navigate("/interview");
+    navigate("/form");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
