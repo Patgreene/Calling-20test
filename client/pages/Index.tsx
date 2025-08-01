@@ -32,18 +32,6 @@ export default function Index() {
               Vouch for someone
             </Button>
           </Link>
-
-          <div className="flex justify-center">
-            <Link to="/elevenlabs-test">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-purple-500 text-purple-600 hover:bg-purple-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                ElevenLabs AI Test
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
     </div>
