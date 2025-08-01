@@ -193,7 +193,7 @@ export default function EditSummary() {
 
           {/* Form */}
           <div className="space-y-6">
-            {/* Textarea */}
+            {/* Textarea with Loading State */}
             <div className="space-y-3">
               <Label
                 htmlFor="summaryInput"
@@ -201,21 +201,31 @@ export default function EditSummary() {
               >
                 Transcript
               </Label>
-              <textarea
-                id="summaryInput"
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                rows={15}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
-                placeholder="AI-generated transcript will appear here..."
-              />
+
+              {isLoading ? (
+                <div className="w-full min-h-[400px] border border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading transcript...</p>
+                  </div>
+                </div>
+              ) : (
+                <textarea
+                  id="summaryInput"
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  rows={15}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
+                  placeholder="AI-generated transcript will appear here..."
+                />
+              )}
             </div>
 
             {/* Save Button */}
             <div className="flex justify-center pt-6">
               <Button
                 onClick={saveSummary}
-                disabled={isSaving || !formId}
+                disabled={isSaving || !formId || isLoading}
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
