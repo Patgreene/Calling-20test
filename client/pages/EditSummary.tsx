@@ -66,9 +66,14 @@ export default function EditSummary() {
 
         const data = await response.json();
         console.log("Loaded data:", data);
+        console.log("Available columns:", data.length > 0 ? Object.keys(data[0]) : "No data");
 
         if (data && data.length > 0) {
-          setSummary(data[0].transcript || "");
+          // Try different possible column names for the transcript
+          const record = data[0];
+          const transcript = record.transcript || record.Transcript || record.summary || record.Summary || "";
+          console.log("Found transcript:", transcript ? "Yes" : "No");
+          setSummary(transcript);
         } else {
           console.log("No data found for form_id:", formId);
           setSummary("");
