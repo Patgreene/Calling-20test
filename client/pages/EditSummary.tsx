@@ -44,8 +44,9 @@ export default function EditSummary() {
       try {
         console.log("Loading summary for form_id:", formId);
 
+        // First, let's try to get all columns to see what's available
         const response = await fetch(
-          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=transcript`,
+          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
           {
             headers: {
               apikey:
@@ -58,7 +59,9 @@ export default function EditSummary() {
         );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          console.error("Supabase error response:", errorText);
+          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
