@@ -103,7 +103,7 @@ export default function EditSummary() {
             "Content-Type": "application/json",
             Prefer: "return=minimal",
           },
-          body: JSON.stringify({ summary: summary }),
+          body: JSON.stringify({ updated_transcript: summary }),
         },
       );
 
