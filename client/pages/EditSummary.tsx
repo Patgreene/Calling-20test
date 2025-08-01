@@ -45,7 +45,7 @@ export default function EditSummary() {
         console.log("Loading summary for form_id:", formId);
 
         const response = await fetch(
-          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=summary`,
+          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=transcript`,
           {
             headers: {
               apikey:
