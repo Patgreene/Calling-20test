@@ -65,7 +65,7 @@ export default function EditSummary() {
         console.log("Loaded data:", data);
 
         if (data && data.length > 0) {
-          setSummary(data[0].summary || "");
+          setSummary(data[0].transcript || "");
         } else {
           console.log("No data found for form_id:", formId);
           setSummary("");
