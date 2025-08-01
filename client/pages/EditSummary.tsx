@@ -15,11 +15,11 @@ export default function EditSummary() {
   // Get form_id from URL params or location state or localStorage
   useEffect(() => {
     let id = searchParams.get("form_id");
-    
+
     if (!id && location.state?.formData?.formId) {
       id = location.state.formData.formId;
     }
-    
+
     if (!id) {
       // Try to get from localStorage as fallback
       const storedFormId = localStorage.getItem("form_id");
@@ -27,7 +27,7 @@ export default function EditSummary() {
         id = storedFormId;
       }
     }
-    
+
     console.log("Form ID found:", id);
     setFormId(id);
   }, [searchParams, location.state]);
@@ -43,16 +43,18 @@ export default function EditSummary() {
 
       try {
         console.log("Loading summary for form_id:", formId);
-        
+
         const response = await fetch(
           `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=summary`,
           {
             headers: {
-              apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+              apikey:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (!response.ok) {
@@ -88,19 +90,21 @@ export default function EditSummary() {
     setIsSaving(true);
     try {
       console.log("Saving summary for form_id:", formId);
-      
+
       const response = await fetch(
         `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
         {
           method: "PATCH",
           headers: {
-            apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            apikey:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
             "Content-Type": "application/json",
-            "Prefer": "return=minimal"
+            Prefer: "return=minimal",
           },
           body: JSON.stringify({ summary: summary }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -156,7 +160,8 @@ export default function EditSummary() {
           {!formId && (
             <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-yellow-800">
-                <strong>Debug:</strong> No form_id found. Please navigate here from the AI call page or add ?form_id=your_id to the URL.
+                <strong>Debug:</strong> No form_id found. Please navigate here
+                from the AI call page or add ?form_id=your_id to the URL.
               </p>
             </div>
           )}

@@ -50,12 +50,12 @@ export default function AICall() {
       cleanupWidget();
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     // Cleanup function for when component unmounts
     return () => {
       cleanupWidget();
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [formData]);
 
@@ -88,10 +88,10 @@ export default function AICall() {
     if (widgetRef.current) {
       // Try to properly disconnect/cleanup the widget
       try {
-        if (typeof (widgetRef.current as any).disconnect === 'function') {
+        if (typeof (widgetRef.current as any).disconnect === "function") {
           (widgetRef.current as any).disconnect();
         }
-        if (typeof (widgetRef.current as any).destroy === 'function') {
+        if (typeof (widgetRef.current as any).destroy === "function") {
           (widgetRef.current as any).destroy();
         }
       } catch (error) {
@@ -183,10 +183,7 @@ export default function AICall() {
 
       {/* Next Button - Bottom Right */}
       <div className="absolute bottom-6 right-6">
-        <Link
-          to="/edit-summary"
-          state={{ formData }}
-        >
+        <Link to="/edit-summary" state={{ formData }}>
           <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
             Next
           </Button>
