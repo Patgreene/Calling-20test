@@ -33,7 +33,7 @@ export default function Index() {
             </Button>
           </Link>
 
-          <div className="flex justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/test-call">
               <Button
                 variant="outline"
@@ -41,6 +41,16 @@ export default function Index() {
                 className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 Test SynthFlow Call
+              </Button>
+            </Link>
+
+            <Link to="/elevenlabs-test">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-green-500 text-green-600 hover:bg-green-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Test ElevenLabs AI
               </Button>
             </Link>
           </div>
