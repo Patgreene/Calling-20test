@@ -9,9 +9,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import AICall from "./pages/AICall";
-import Summary from "./pages/Summary";
+import EditSummary from "./pages/EditSummary";
 import Verify from "./pages/Verify";
-import Review from "./pages/Review";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 
@@ -27,9 +26,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/ai-call" element={<AICall />} />
-          <Route path="/summary" element={<Summary />} />
+          <Route path="/edit-summary" element={<EditSummary />} />
           <Route path="/verify" element={<Verify />} />
-          <Route path="/review" element={<Review />} />
           <Route path="/thank-you" element={<ThankYou />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
