@@ -196,7 +196,7 @@ export default function Verify() {
   };
 
   const handleBack = () => {
-    navigate("/summary");
+    navigate("/edit-summary");
   };
 
   const handleFinish = () => {
@@ -205,8 +205,8 @@ export default function Verify() {
       localStorage.setItem("vouchID", uploadedImage);
     }
 
-    // Navigate to review page instead of submitting directly
-    navigate("/review");
+    // Navigate to thank you page
+    navigate("/thank-you");
   };
 
   return (
