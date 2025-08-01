@@ -189,11 +189,7 @@ export default function EditSummary() {
             </div>
           )}
 
-          {formId && (
-            <div className="mb-4 p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
-              <strong>Form ID:</strong> {formId}
-            </div>
-          )}
+
 
           {/* Form */}
           <div className="space-y-6">
