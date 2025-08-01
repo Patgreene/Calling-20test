@@ -8,6 +8,7 @@ export default function AICall() {
   const formData = location.state?.formData;
   const widgetContainerRef = useRef<HTMLDivElement>(null);
   const scriptLoadedRef = useRef(false);
+  const widgetRef = useRef<HTMLElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
