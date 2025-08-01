@@ -1,19 +1,9 @@
 import { Button } from "@/components/ui/button";
-<<<<<<< HEAD
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useEffect } from "react";
-=======
 import { useState, useEffect } from "react";
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function ElevenLabsTest() {
-<<<<<<< HEAD
-  useEffect(() => {
-    // Load ElevenLabs widget script
-=======
   const [hasPermissions, setHasPermissions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,65 +36,17 @@ export default function ElevenLabsTest() {
 
   useEffect(() => {
     // Load the ElevenLabs script
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
     const script = document.createElement("script");
     script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
     script.async = true;
     script.type = "text/javascript";
-<<<<<<< HEAD
-    document.body.appendChild(script);
-
-    // Add form event listener
-    const form = document.getElementById("vouch-form");
-    const handleSubmit = (e: Event) => {
-      e.preventDefault();
-
-      const voucherFirst = (
-        document.getElementById("voucherFirst") as HTMLInputElement
-      ).value;
-      const voucheeFirst = (
-        document.getElementById("voucheeFirst") as HTMLInputElement
-      ).value;
-
-      // Clear previous widget if any
-      const container = document.getElementById("widget-container");
-      if (container) {
-        container.innerHTML = "";
-
-        // Inject the ElevenLabs AI widget
-        const widget = document.createElement("elevenlabs-convai");
-        widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
-        widget.setAttribute(
-          "dynamic-variables",
-          JSON.stringify({
-            voucher_first: voucherFirst,
-            vouchee_first: voucheeFirst,
-          }),
-        );
-
-        container.appendChild(widget);
-      }
-    };
-
-    if (form) {
-      form.addEventListener("submit", handleSubmit);
-    }
-
-    // Cleanup
-    return () => {
-      if (form) {
-        form.removeEventListener("submit", handleSubmit);
-      }
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-=======
     document.head.appendChild(script);
 
     return () => {
       // Cleanup script on unmount
-      document.head.removeChild(script);
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
+      if (script.parentNode) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
 
@@ -113,11 +55,7 @@ export default function ElevenLabsTest() {
       className="min-h-screen flex items-center justify-center px-4 py-8 relative"
       style={{ backgroundColor: "#F8F8F8" }}
     >
-<<<<<<< HEAD
-      <div className="w-full max-w-md space-y-8">
-=======
       <div className="w-full max-w-2xl space-y-8">
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <img
@@ -127,69 +65,6 @@ export default function ElevenLabsTest() {
           />
         </div>
 
-<<<<<<< HEAD
-        {/* Form */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
-            ElevenLabs AI Call Test
-          </h2>
-
-          <form id="vouch-form" className="space-y-6">
-            {/* Voucher First Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucherFirst"
-                className="text-sm font-medium text-gray-700"
-              >
-                Voucher First Name
-              </Label>
-              <Input
-                id="voucherFirst"
-                name="voucherFirst"
-                type="text"
-                defaultValue="Patrick"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter voucher first name"
-              />
-            </div>
-
-            {/* Vouchee First Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucheeFirst"
-                className="text-sm font-medium text-gray-700"
-              >
-                Vouchee First Name
-              </Label>
-              <Input
-                id="voucheeFirst"
-                name="voucheeFirst"
-                type="text"
-                defaultValue="Dominic"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Enter vouchee first name"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              Start AI Call
-            </Button>
-          </form>
-        </div>
-
-        {/* Widget Container */}
-        <div
-          id="widget-container"
-          className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 min-h-[200px] flex items-center justify-center"
-        >
-          <p className="text-gray-500 text-center">
-            Click "Start AI Call" to load the ElevenLabs widget
-          </p>
-=======
         {/* Main Content */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
@@ -268,7 +143,6 @@ export default function ElevenLabsTest() {
               </div>
             </div>
           )}
->>>>>>> 1124150c344470381513c67223c72d96b63415e5
         </div>
       </div>
 
