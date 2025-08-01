@@ -48,8 +48,8 @@ export default function AICall() {
   const createWidget = () => {
     if (!widgetContainerRef.current || !formData) return;
 
-    // Clear existing widget
-    widgetContainerRef.current.innerHTML = "";
+    // Clean up existing widget first
+    cleanupWidget();
 
     // Create ElevenLabs ConvAI widget
     const widget = document.createElement("elevenlabs-convai");
@@ -67,6 +67,34 @@ export default function AICall() {
     );
 
     widgetContainerRef.current.appendChild(widget);
+    widgetRef.current = widget;
+  };
+
+  const cleanupWidget = () => {
+    if (widgetRef.current) {
+      // Try to properly disconnect/cleanup the widget
+      try {
+        if (typeof (widgetRef.current as any).disconnect === 'function') {
+          (widgetRef.current as any).disconnect();
+        }
+        if (typeof (widgetRef.current as any).destroy === 'function') {
+          (widgetRef.current as any).destroy();
+        }
+      } catch (error) {
+        console.log("Widget cleanup method not available");
+      }
+
+      // Remove from DOM
+      if (widgetRef.current.parentNode) {
+        widgetRef.current.parentNode.removeChild(widgetRef.current);
+      }
+      widgetRef.current = null;
+    }
+
+    // Clear container
+    if (widgetContainerRef.current) {
+      widgetContainerRef.current.innerHTML = "";
+    }
   };
 
   // Redirect to form if no form data
