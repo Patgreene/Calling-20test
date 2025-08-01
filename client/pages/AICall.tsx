@@ -183,7 +183,10 @@ export default function AICall() {
 
       {/* Next Button - Bottom Right */}
       <div className="absolute bottom-6 right-6">
-        <Link to="/edit-summary">
+        <Link
+          to="/edit-summary"
+          state={{ formData }}
+        >
           <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
             Next
           </Button>
