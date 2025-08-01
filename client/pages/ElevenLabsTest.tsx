@@ -11,22 +11,24 @@ export default function ElevenLabsTest() {
     setIsLoading(true);
     try {
       // Request microphone and audio permissions
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
-        } 
+          autoGainControl: true,
+        },
       });
-      
+
       console.log("🎤 Microphone access granted for ElevenLabs");
       setHasPermissions(true);
-      
+
       // Stop the stream since we just needed permission
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
       console.error("❌ Failed to get microphone permission:", error);
-      alert("Microphone access is required for voice conversations. Please allow access and try again.");
+      alert(
+        "Microphone access is required for voice conversations. Please allow access and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -34,10 +36,10 @@ export default function ElevenLabsTest() {
 
   useEffect(() => {
     // Load the ElevenLabs script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
     script.async = true;
-    script.type = 'text/javascript';
+    script.type = "text/javascript";
     document.head.appendChild(script);
 
     return () => {
@@ -75,8 +77,9 @@ export default function ElevenLabsTest() {
                   Microphone Access Required
                 </h3>
                 <p className="text-blue-800 text-sm">
-                  This ElevenLabs voice assistant needs microphone access to have conversations with you.
-                  Click the button below to grant permission.
+                  This ElevenLabs voice assistant needs microphone access to
+                  have conversations with you. Click the button below to grant
+                  permission.
                 </p>
               </div>
 
@@ -85,12 +88,18 @@ export default function ElevenLabsTest() {
                 disabled={isLoading}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Requesting Access..." : "🎤 Enable Microphone Access"}
+                {isLoading
+                  ? "Requesting Access..."
+                  : "🎤 Enable Microphone Access"}
               </Button>
 
               <div className="text-xs text-gray-500 mt-4 p-3 bg-gray-50 rounded-lg">
-                <p><strong>Agent ID:</strong> agent_7101k1jdynr4ewv8e9vnxs2fbtew</p>
-                <p><strong>Provider:</strong> ElevenLabs ConvAI</p>
+                <p>
+                  <strong>Agent ID:</strong> agent_7101k1jdynr4ewv8e9vnxs2fbtew
+                </p>
+                <p>
+                  <strong>Provider:</strong> ElevenLabs ConvAI
+                </p>
               </div>
             </div>
           ) : (
@@ -109,21 +118,25 @@ export default function ElevenLabsTest() {
                 {/* ElevenLabs ConvAI Widget */}
                 <div className="bg-gray-50 rounded-lg p-6 min-h-[300px] flex items-center justify-center">
                   <div className="text-center">
-                    <elevenlabs-convai 
+                    <elevenlabs-convai
                       agent-id="agent_7101k1jdynr4ewv8e9vnxs2fbtew"
                       style={{
-                        width: '100%',
-                        minHeight: '250px',
-                        border: 'none',
-                        borderRadius: '8px'
+                        width: "100%",
+                        minHeight: "250px",
+                        border: "none",
+                        borderRadius: "8px",
                       }}
                     ></elevenlabs-convai>
                   </div>
                 </div>
 
                 <div className="text-xs text-gray-500 mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p><strong>Status:</strong> ElevenLabs ConvAI Widget Active</p>
-                  <p><strong>Agent:</strong> agent_7101k1jdynr4ewv8e9vnxs2fbtew</p>
+                  <p>
+                    <strong>Status:</strong> ElevenLabs ConvAI Widget Active
+                  </p>
+                  <p>
+                    <strong>Agent:</strong> agent_7101k1jdynr4ewv8e9vnxs2fbtew
+                  </p>
                 </div>
               </div>
             </div>
