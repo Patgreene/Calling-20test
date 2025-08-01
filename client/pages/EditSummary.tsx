@@ -189,8 +189,6 @@ export default function EditSummary() {
             </div>
           )}
 
-
-
           {/* Form */}
           <div className="space-y-6">
             {/* Textarea with Loading State */}
