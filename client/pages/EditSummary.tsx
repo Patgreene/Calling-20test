@@ -346,8 +346,18 @@ export default function EditSummary() {
               </div>
             </div>
 
-            {/* Save Button */}
-            <div className="flex justify-center pt-6">
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-4 pt-6">
+              {!isLoading && !summary && hasAttemptedLoad && (
+                <Button
+                  onClick={retryLoad}
+                  variant="outline"
+                  className="border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold px-6 py-3 rounded-lg"
+                >
+                  Retry Loading
+                </Button>
+              )}
+
               <Button
                 onClick={saveSummary}
                 disabled={isSaving || !formId || isLoading}
