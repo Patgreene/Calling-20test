@@ -149,6 +149,10 @@ export default function AICall() {
 
   const createWidget = () => {
     try {
+      console.log("Creating ElevenLabs widget...");
+      console.log("Container ref:", !!widgetContainerRef.current);
+      console.log("Form data:", !!formData);
+
       if (!widgetContainerRef.current || !formData) {
         console.log("Cannot create widget: missing container or form data");
         return;
@@ -157,30 +161,46 @@ export default function AICall() {
       // Clean up existing widget first
       cleanupWidget();
 
+      // Check if the custom element is available
+      if (typeof customElements === 'undefined' || !customElements.get('elevenlabs-convai')) {
+        console.error("ElevenLabs custom element not available");
+        setIsLoading(false);
+        return;
+      }
+
       // Create ElevenLabs ConvAI widget
       const widget = document.createElement("elevenlabs-convai");
+      console.log("Created widget element:", widget);
+
       widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
 
       try {
-        widget.setAttribute(
-          "dynamic-variables",
-          JSON.stringify({
-            voucher_first: formData.voucherFirst,
-            voucher_last: formData.voucherLast,
-            voucher_email: formData.voucherEmail,
-            vouchee_first: formData.voucheeFirst,
-            vouchee_last: formData.voucheeLast,
-            form_id: formData.formId,
-          }),
-        );
+        const dynamicVars = {
+          voucher_first: formData.voucherFirst,
+          voucher_last: formData.voucherLast,
+          voucher_email: formData.voucherEmail,
+          vouchee_first: formData.voucheeFirst,
+          vouchee_last: formData.voucheeLast,
+          form_id: formData.formId,
+        };
+        console.log("Setting dynamic variables:", dynamicVars);
+
+        widget.setAttribute("dynamic-variables", JSON.stringify(dynamicVars));
       } catch (error) {
         console.error("Error setting widget variables:", error);
         return;
       }
 
+      console.log("Appending widget to container...");
       widgetContainerRef.current.appendChild(widget);
       widgetRef.current = widget;
-      console.log("Widget created successfully");
+      console.log("Widget created and appended successfully");
+
+      // Add a listener for widget errors
+      widget.addEventListener('error', (e) => {
+        console.error("Widget error:", e);
+      });
+
     } catch (error) {
       console.error("Error creating widget:", error);
       setIsLoading(false);
