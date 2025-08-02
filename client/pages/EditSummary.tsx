@@ -130,11 +130,14 @@ export default function EditSummary() {
 
           if (data && data.length > 0) {
             const record = data[0];
+            console.log("Searching for transcript in record:", Object.keys(record));
             const transcript =
               record.Transcript ||
               record.transcript ||
               record.summary ||
               record.Summary ||
+              record.text ||
+              record.content ||
               "";
             console.log(
               "Fallback transcript found:",
@@ -144,13 +147,18 @@ export default function EditSummary() {
               "Fallback transcript length:",
               transcript ? transcript.length : 0,
             );
-            setSummary(transcript);
+            if (transcript) {
+              console.log("Setting summary with fallback data");
+              setSummary(transcript);
+            } else {
+              console.log("No transcript data in any column");
+              setSummary("");
+            }
           } else {
             console.log("No fallback data available");
             setSummary("");
           }
           console.log("=== SUPABASE DEBUG END ===");
-          setIsLoading(false);
           return;
         }
 
