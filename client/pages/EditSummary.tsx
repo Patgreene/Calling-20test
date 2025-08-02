@@ -154,6 +154,7 @@ export default function EditSummary() {
           return;
         }
 
+        setLoadingMessage("Processing transcript...");
         const data = await response.json();
         console.log("Transcript query SUCCESS");
         console.log("Transcript data:", data);
@@ -172,6 +173,10 @@ export default function EditSummary() {
             "Transcript preview:",
             transcript ? transcript.substring(0, 100) + "..." : "empty",
           );
+
+          setLoadingMessage("Finalizing...");
+          // Add a small delay to ensure the UI updates properly
+          await new Promise(resolve => setTimeout(resolve, 500));
           setSummary(transcript);
         } else {
           console.log("No transcript data found for form_id:", formId);
@@ -181,13 +186,19 @@ export default function EditSummary() {
         console.log("=== SUPABASE DEBUG END ===");
       } catch (error) {
         console.error("Error loading transcript:", error);
+        setLoadingMessage("Error loading transcript");
         alert("Failed to load transcript. Check console for details.");
       } finally {
-        setIsLoading(false);
+        // Ensure loading state ends after everything is complete
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 200);
       }
     };
 
-    loadSummary();
+    if (formId) {
+      loadSummary();
+    }
   }, [formId]);
 
   const saveSummary = async () => {
