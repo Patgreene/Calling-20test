@@ -43,8 +43,12 @@ export default function AICall() {
       return () => {
         // Cleanup widget and script on unmount
         cleanupWidget();
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
+        try {
+          if (document.body.contains(script)) {
+            document.body.removeChild(script);
+          }
+        } catch (error) {
+          console.log("Script already removed or error during cleanup:", error);
         }
       };
     } else {
