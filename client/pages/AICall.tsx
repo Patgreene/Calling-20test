@@ -23,8 +23,18 @@ export default function AICall() {
         setIsLoading(false);
         // Create widget after script loads
         if (formData && widgetContainerRef.current) {
-          createWidget();
+          try {
+            createWidget();
+          } catch (error) {
+            console.error("Error creating widget:", error);
+            setIsLoading(false);
+          }
         }
+      };
+
+      script.onerror = (error) => {
+        console.error("Error loading ElevenLabs script:", error);
+        setIsLoading(false);
       };
 
       document.body.appendChild(script);
