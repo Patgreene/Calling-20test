@@ -86,8 +86,8 @@ export default function NPS() {
 
       console.log("NPS data saved successfully");
 
-      // Navigate to next page
-      navigate("/verify");
+      // Navigate to thank you page
+      navigate("/thank-you");
 
     } catch (error) {
       console.error("Error saving NPS data:", error);
