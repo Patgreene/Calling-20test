@@ -109,11 +109,23 @@ export default function AICall() {
         }
       };
     } else {
+      console.log("ElevenLabs script already loaded, creating widget...");
       setIsLoading(false);
       // Create widget immediately if script already loaded
       if (formData && widgetContainerRef.current) {
         try {
-          createWidget();
+          // Check if ElevenLabs custom element is defined
+          if (typeof customElements !== 'undefined' && customElements.get('elevenlabs-convai')) {
+            createWidget();
+          } else {
+            console.log("ElevenLabs custom element not yet defined, waiting...");
+            // Wait a bit and try again
+            setTimeout(() => {
+              if (formData && widgetContainerRef.current) {
+                createWidget();
+              }
+            }, 1000);
+          }
         } catch (error) {
           console.error("Error creating widget:", error);
           setIsLoading(false);
