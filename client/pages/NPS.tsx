@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 
 export default function NPS() {
@@ -71,7 +76,7 @@ export default function NPS() {
           },
           body: JSON.stringify({
             nps_score: selectedScore,
-            nps_comment: feedback || null
+            nps_comment: feedback || null,
           }),
         },
       );
@@ -88,7 +93,6 @@ export default function NPS() {
 
       // Navigate to thank you page
       navigate("/thank-you");
-
     } catch (error) {
       console.error("Error saving NPS data:", error);
       alert("Failed to save NPS data. Check console for details.");
@@ -131,7 +135,7 @@ export default function NPS() {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center font-sans">
             How did we do?
           </h1>
-          
+
           <p className="text-xl text-gray-600 mb-8 text-center leading-relaxed">
             How likely would you be to recommend this to a friend?
           </p>
@@ -140,7 +144,8 @@ export default function NPS() {
           {!formId && (
             <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-yellow-800">
-                <strong>Debug:</strong> No form_id found. Please navigate here from the edit summary page.
+                <strong>Debug:</strong> No form_id found. Please navigate here
+                from the edit summary page.
               </p>
             </div>
           )}
@@ -152,7 +157,7 @@ export default function NPS() {
                 <span>Not at all likely</span>
                 <span>Extremely likely</span>
               </div>
-              
+
               <div className="grid grid-cols-11 gap-2">
                 {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
                   <button
@@ -161,9 +166,10 @@ export default function NPS() {
                     onClick={() => handleScoreSelect(score)}
                     className={`
                       aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
-                      ${selectedScore === score 
-                        ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-orange-300 scale-110` 
-                        : 'bg-gray-300 hover:bg-gray-400'
+                      ${
+                        selectedScore === score
+                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-orange-300 scale-110`
+                          : "bg-gray-300 hover:bg-gray-400"
                       }
                     `}
                   >
@@ -171,10 +177,12 @@ export default function NPS() {
                   </button>
                 ))}
               </div>
-              
+
               {selectedScore !== null && (
                 <div className="text-center mt-4">
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white ${getScoreColor(selectedScore)}`}>
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white ${getScoreColor(selectedScore)}`}
+                  >
                     {getScoreLabel()} ({selectedScore}/10)
                   </span>
                 </div>

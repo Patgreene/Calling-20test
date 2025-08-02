@@ -115,10 +115,15 @@ export default function AICall() {
       if (formData && widgetContainerRef.current) {
         try {
           // Check if ElevenLabs custom element is defined
-          if (typeof customElements !== 'undefined' && customElements.get('elevenlabs-convai')) {
+          if (
+            typeof customElements !== "undefined" &&
+            customElements.get("elevenlabs-convai")
+          ) {
             createWidget();
           } else {
-            console.log("ElevenLabs custom element not yet defined, waiting...");
+            console.log(
+              "ElevenLabs custom element not yet defined, waiting...",
+            );
             // Wait a bit and try again
             setTimeout(() => {
               if (formData && widgetContainerRef.current) {
@@ -162,7 +167,10 @@ export default function AICall() {
       cleanupWidget();
 
       // Check if the custom element is available
-      if (typeof customElements === 'undefined' || !customElements.get('elevenlabs-convai')) {
+      if (
+        typeof customElements === "undefined" ||
+        !customElements.get("elevenlabs-convai")
+      ) {
         console.error("ElevenLabs custom element not available");
         setIsLoading(false);
         return;
@@ -197,10 +205,9 @@ export default function AICall() {
       console.log("Widget created and appended successfully");
 
       // Add a listener for widget errors
-      widget.addEventListener('error', (e) => {
+      widget.addEventListener("error", (e) => {
         console.error("Widget error:", e);
       });
-
     } catch (error) {
       console.error("Error creating widget:", error);
       setIsLoading(false);
