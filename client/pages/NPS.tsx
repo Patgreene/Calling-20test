@@ -39,23 +39,62 @@ export default function NPS() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (selectedScore === null) {
       alert("Please select a score before continuing.");
       return;
     }
 
+    if (!formId) {
+      alert("No form ID available to save NPS data");
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Here you could save the NPS data to your backend/database
-    console.log("NPS Score:", selectedScore);
-    console.log("Feedback:", feedback);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Navigate to next page (e.g., thank you or verify)
-    navigate("/verify");
+
+    try {
+      console.log("Saving NPS data for form_id:", formId);
+      console.log("NPS Score:", selectedScore);
+      console.log("NPS Comment:", feedback);
+
+      const response = await fetch(
+        `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            nps_score: selectedScore,
+            nps_comment: feedback || null
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("NPS save error response:", errorText);
+        throw new Error(
+          `HTTP error! status: ${response.status} - ${errorText}`,
+        );
+      }
+
+      console.log("NPS data saved successfully");
+
+      // Navigate to next page
+      navigate("/verify");
+
+    } catch (error) {
+      console.error("Error saving NPS data:", error);
+      alert("Failed to save NPS data. Check console for details.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getScoreColor = (score: number) => {
