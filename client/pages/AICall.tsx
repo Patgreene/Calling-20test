@@ -100,29 +100,37 @@ export default function AICall() {
   };
 
   const cleanupWidget = () => {
-    if (widgetRef.current) {
-      // Try to properly disconnect/cleanup the widget
-      try {
-        if (typeof (widgetRef.current as any).disconnect === "function") {
-          (widgetRef.current as any).disconnect();
+    try {
+      if (widgetRef.current) {
+        // Try to properly disconnect/cleanup the widget
+        try {
+          if (typeof (widgetRef.current as any).disconnect === "function") {
+            (widgetRef.current as any).disconnect();
+          }
+          if (typeof (widgetRef.current as any).destroy === "function") {
+            (widgetRef.current as any).destroy();
+          }
+        } catch (error) {
+          console.log("Widget cleanup method not available");
         }
-        if (typeof (widgetRef.current as any).destroy === "function") {
-          (widgetRef.current as any).destroy();
+
+        // Remove from DOM
+        try {
+          if (widgetRef.current.parentNode) {
+            widgetRef.current.parentNode.removeChild(widgetRef.current);
+          }
+        } catch (error) {
+          console.log("Error removing widget from DOM:", error);
         }
-      } catch (error) {
-        console.log("Widget cleanup method not available");
+        widgetRef.current = null;
       }
 
-      // Remove from DOM
-      if (widgetRef.current.parentNode) {
-        widgetRef.current.parentNode.removeChild(widgetRef.current);
+      // Clear container
+      if (widgetContainerRef.current) {
+        widgetContainerRef.current.innerHTML = "";
       }
-      widgetRef.current = null;
-    }
-
-    // Clear container
-    if (widgetContainerRef.current) {
-      widgetContainerRef.current.innerHTML = "";
+    } catch (error) {
+      console.error("Error during widget cleanup:", error);
     }
   };
 
