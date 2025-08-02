@@ -131,7 +131,10 @@ export default function EditSummary() {
 
           if (data && data.length > 0) {
             const record = data[0];
-            console.log("Searching for transcript in record:", Object.keys(record));
+            console.log(
+              "Searching for transcript in record:",
+              Object.keys(record),
+            );
             const transcript =
               record.Transcript ||
               record.transcript ||
