@@ -18,6 +18,7 @@ export default function EditSummary() {
   const [isSaving, setIsSaving] = useState(false);
   const [formId, setFormId] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("Initializing...");
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   // Get form_id from URL params or location state or localStorage
   useEffect(() => {
