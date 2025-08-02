@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function NPS() {
   const navigate = useNavigate();
