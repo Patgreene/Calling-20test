@@ -195,7 +195,7 @@ export default function AICall() {
         {/* Widget Container */}
         <div className="relative">
           {isLoading && (
-            <div className="min-h-[400px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
+            <div className="h-[300px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
                 <p>Loading AI assistant...</p>
@@ -205,7 +205,7 @@ export default function AICall() {
           <div
             id="widget-container"
             ref={widgetContainerRef}
-            className={`min-h-[400px] rounded-lg ${isLoading ? "hidden" : ""}`}
+            className={`h-[300px] rounded-lg ${isLoading ? "hidden" : ""}`}
           />
         </div>
       </div>
