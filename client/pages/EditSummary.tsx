@@ -256,6 +256,23 @@ export default function EditSummary() {
             </div>
           )}
 
+          {/* Debug Status */}
+          {formId && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="text-blue-800">
+                <strong>Debug Status:</strong>
+                <br />
+                • Form ID: {formId}
+                <br />
+                • Loading: {isLoading ? "Yes" : "No"}
+                <br />
+                • Transcript Length: {summary ? summary.length : 0} characters
+                <br />
+                • Check browser console for detailed Supabase logs
+              </div>
+            </div>
+          )}
+
           {/* Form */}
           <div className="space-y-6">
             {/* Textarea with Loading State */}
