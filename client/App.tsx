@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Form from "./pages/Form";
 import AICall from "./pages/AICall";
 import EditSummary from "./pages/EditSummary";
+import NPS from "./pages/NPS";
 import Verify from "./pages/Verify";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
