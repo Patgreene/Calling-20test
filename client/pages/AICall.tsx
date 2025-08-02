@@ -14,12 +14,16 @@ export default function AICall() {
   useEffect(() => {
     // Load ElevenLabs script
     if (!scriptLoadedRef.current) {
+      console.log("Loading ElevenLabs script...");
+
       const script = document.createElement("script");
       script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
       script.async = true;
       script.type = "text/javascript";
+      script.crossOrigin = "anonymous";
 
       script.onload = () => {
+        console.log("ElevenLabs script loaded successfully");
         setIsLoading(false);
         // Create widget after script loads
         if (formData && widgetContainerRef.current) {
@@ -34,11 +38,30 @@ export default function AICall() {
 
       script.onerror = (error) => {
         console.error("Error loading ElevenLabs script:", error);
+        console.error("Script URL:", script.src);
         setIsLoading(false);
+
+        // Show user-friendly error message
+        if (widgetContainerRef.current) {
+          widgetContainerRef.current.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
+              <div style="text-align: center; color: #666;">
+                <div style="font-size: 18px; margin-bottom: 8px;">⚠️</div>
+                <div>Unable to load AI assistant</div>
+                <div style="font-size: 12px; margin-top: 4px;">Please check your internet connection</div>
+              </div>
+            </div>
+          `;
+        }
       };
 
-      document.body.appendChild(script);
-      scriptLoadedRef.current = true;
+      try {
+        document.body.appendChild(script);
+        scriptLoadedRef.current = true;
+      } catch (error) {
+        console.error("Error appending script to document:", error);
+        setIsLoading(false);
+      }
 
       return () => {
         // Cleanup widget and script on unmount
