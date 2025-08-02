@@ -57,6 +57,7 @@ export default function EditSummary() {
       }
 
       try {
+        setLoadingMessage("Connecting to Supabase...");
         console.log("=== SUPABASE DEBUG START ===");
         console.log("Loading summary for form_id:", formId);
         console.log(
@@ -65,6 +66,7 @@ export default function EditSummary() {
         );
 
         // First, let's test connection by getting all columns for this form_id
+        setLoadingMessage("Testing database connection...");
         console.log("Testing Supabase connection with all columns...");
         const testResponse = await fetch(
           `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
