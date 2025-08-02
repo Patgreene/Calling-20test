@@ -65,11 +65,14 @@ export default function AICall() {
 
       return () => {
         // Cleanup widget and script on unmount
+        console.log("Cleaning up ElevenLabs components...");
         cleanupWidget();
         try {
           if (document.body.contains(script)) {
             document.body.removeChild(script);
+            console.log("Script removed from document");
           }
+          scriptLoadedRef.current = false;
         } catch (error) {
           console.log("Script already removed or error during cleanup:", error);
         }
