@@ -21,6 +21,8 @@ export default function EditSummary() {
 
   // Get form_id from URL params or location state or localStorage
   useEffect(() => {
+    setLoadingMessage("Finding form ID...");
+
     let id = searchParams.get("form_id");
 
     if (!id && location.state?.formData?.formId) {
@@ -37,6 +39,12 @@ export default function EditSummary() {
 
     console.log("Form ID found:", id);
     setFormId(id);
+
+    if (id) {
+      setLoadingMessage("Connecting to database...");
+    } else {
+      setIsLoading(false); // Stop loading if no form ID
+    }
   }, [searchParams, location.state]);
 
   // Load summary from Supabase
