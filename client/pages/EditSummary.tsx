@@ -307,14 +307,7 @@ export default function EditSummary() {
                 Transcript
               </Label>
 
-              {isLoading ? (
-                <div className="w-full min-h-[400px] border border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading transcript...</p>
-                  </div>
-                </div>
-              ) : (
+              <div className="relative">
                 <textarea
                   id="summaryInput"
                   value={summary}
@@ -322,8 +315,19 @@ export default function EditSummary() {
                   rows={15}
                   className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
                   placeholder="AI-generated transcript will appear here..."
+                  disabled={isLoading}
                 />
-              )}
+
+                {/* Loading overlay */}
+                {isLoading && (
+                  <div className="absolute inset-0 bg-gray-50 bg-opacity-90 border border-gray-300 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
+                      <p className="text-gray-600 text-sm">{loadingMessage}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Save Button */}
