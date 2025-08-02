@@ -204,10 +204,18 @@ export default function EditSummary() {
       }
     };
 
-    if (formId) {
+    if (formId && !hasAttemptedLoad) {
+      setHasAttemptedLoad(true);
       loadSummary();
     }
-  }, [formId]);
+  }, [formId, hasAttemptedLoad]);
+
+  const retryLoad = () => {
+    setHasAttemptedLoad(false);
+    setIsLoading(true);
+    setLoadingMessage("Retrying...");
+    setSummary("");
+  };
 
   const saveSummary = async () => {
     if (!formId) {
