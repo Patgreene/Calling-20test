@@ -248,20 +248,7 @@ export default function EditSummary() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center px-4 py-8"
-        style={{ backgroundColor: "#F8F8F8" }}
-      >
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg mb-2">Loading transcript...</p>
-          <p className="text-gray-500 text-sm">{loadingMessage}</p>
-        </div>
-      </div>
-    );
-  }
+  // Remove the full-page loading return - handle loading inline instead
 
   return (
     <div
