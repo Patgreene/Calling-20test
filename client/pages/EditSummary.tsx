@@ -91,6 +91,7 @@ export default function EditSummary() {
           );
         }
 
+        setLoadingMessage("Processing database response...");
         const testData = await testResponse.json();
         console.log("Test connection SUCCESS");
         console.log("Number of records found:", testData.length);
@@ -102,6 +103,7 @@ export default function EditSummary() {
         }
 
         // Now try the specific Transcript query
+        setLoadingMessage("Loading transcript data...");
         console.log("Querying specifically for Transcript column...");
         const response = await fetch(
           `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`,
