@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/form" element={<Form />} />
           <Route path="/ai-call" element={<AICall />} />
           <Route path="/edit-summary" element={<EditSummary />} />
+          <Route path="/nps" element={<NPS />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/thank-you" element={<ThankYou />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
