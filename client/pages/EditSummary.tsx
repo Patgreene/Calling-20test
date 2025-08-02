@@ -48,9 +48,45 @@ export default function EditSummary() {
       }
 
       try {
+        console.log("=== SUPABASE DEBUG START ===");
         console.log("Loading summary for form_id:", formId);
+        console.log("Full URL:", `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`);
 
-        // Query specifically for the Transcript column (with capital T)
+        // First, let's test connection by getting all columns for this form_id
+        console.log("Testing Supabase connection with all columns...");
+        const testResponse = await fetch(
+          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
+          {
+            headers: {
+              apikey:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        console.log("Test response status:", testResponse.status);
+
+        if (!testResponse.ok) {
+          const errorText = await testResponse.text();
+          console.error("Test connection failed:", errorText);
+          throw new Error(`Connection test failed: ${testResponse.status} - ${errorText}`);
+        }
+
+        const testData = await testResponse.json();
+        console.log("Test connection SUCCESS");
+        console.log("Number of records found:", testData.length);
+        console.log("Raw test data:", testData);
+
+        if (testData.length > 0) {
+          console.log("Available columns:", Object.keys(testData[0]));
+          console.log("Full record content:", testData[0]);
+        }
+
+        // Now try the specific Transcript query
+        console.log("Querying specifically for Transcript column...");
         const response = await fetch(
           `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`,
           {
@@ -64,23 +100,41 @@ export default function EditSummary() {
           },
         );
 
+        console.log("Transcript query response status:", response.status);
+
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Supabase error response:", errorText);
-          throw new Error(
-            `HTTP error! status: ${response.status} - ${errorText}`,
-          );
+          console.error("Transcript query error:", errorText);
+
+          // If Transcript column doesn't exist, try fallback with all columns
+          console.log("Falling back to use test data (all columns)...");
+          const data = testData;
+
+          if (data && data.length > 0) {
+            const record = data[0];
+            const transcript =
+              record.Transcript ||
+              record.transcript ||
+              record.summary ||
+              record.Summary ||
+              "";
+            console.log("Fallback transcript found:", transcript ? "Yes" : "No");
+            console.log("Fallback transcript length:", transcript ? transcript.length : 0);
+            setSummary(transcript);
+          } else {
+            console.log("No fallback data available");
+            setSummary("");
+          }
+          console.log("=== SUPABASE DEBUG END ===");
+          setIsLoading(false);
+          return;
         }
 
         const data = await response.json();
-        console.log("Loaded data:", data);
-        console.log(
-          "Available columns:",
-          data.length > 0 ? Object.keys(data[0]) : "No data",
-        );
+        console.log("Transcript query SUCCESS");
+        console.log("Transcript data:", data);
 
         if (data && data.length > 0) {
-          // Prioritize 'Transcript' with capital T since that's what's in Supabase
           const record = data[0];
           const transcript =
             record.Transcript ||
@@ -90,11 +144,14 @@ export default function EditSummary() {
             "";
           console.log("Found transcript data:", transcript ? "Yes" : "No");
           console.log("Transcript length:", transcript ? transcript.length : 0);
+          console.log("Transcript preview:", transcript ? transcript.substring(0, 100) + "..." : "empty");
           setSummary(transcript);
         } else {
-          console.log("No data found for form_id:", formId);
+          console.log("No transcript data found for form_id:", formId);
           setSummary("");
         }
+
+        console.log("=== SUPABASE DEBUG END ===");
       } catch (error) {
         console.error("Error loading transcript:", error);
         alert("Failed to load transcript. Check console for details.");
