@@ -75,28 +75,43 @@ export default function AICall() {
   }, [formData]);
 
   const createWidget = () => {
-    if (!widgetContainerRef.current || !formData) return;
+    try {
+      if (!widgetContainerRef.current || !formData) {
+        console.log("Cannot create widget: missing container or form data");
+        return;
+      }
 
-    // Clean up existing widget first
-    cleanupWidget();
+      // Clean up existing widget first
+      cleanupWidget();
 
-    // Create ElevenLabs ConvAI widget
-    const widget = document.createElement("elevenlabs-convai");
-    widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
-    widget.setAttribute(
-      "dynamic-variables",
-      JSON.stringify({
-        voucher_first: formData.voucherFirst,
-        voucher_last: formData.voucherLast,
-        voucher_email: formData.voucherEmail,
-        vouchee_first: formData.voucheeFirst,
-        vouchee_last: formData.voucheeLast,
-        form_id: formData.formId,
-      }),
-    );
+      // Create ElevenLabs ConvAI widget
+      const widget = document.createElement("elevenlabs-convai");
+      widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
 
-    widgetContainerRef.current.appendChild(widget);
-    widgetRef.current = widget;
+      try {
+        widget.setAttribute(
+          "dynamic-variables",
+          JSON.stringify({
+            voucher_first: formData.voucherFirst,
+            voucher_last: formData.voucherLast,
+            voucher_email: formData.voucherEmail,
+            vouchee_first: formData.voucheeFirst,
+            vouchee_last: formData.voucheeLast,
+            form_id: formData.formId,
+          }),
+        );
+      } catch (error) {
+        console.error("Error setting widget variables:", error);
+        return;
+      }
+
+      widgetContainerRef.current.appendChild(widget);
+      widgetRef.current = widget;
+      console.log("Widget created successfully");
+    } catch (error) {
+      console.error("Error creating widget:", error);
+      setIsLoading(false);
+    }
   };
 
   const cleanupWidget = () => {
