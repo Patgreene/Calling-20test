@@ -73,7 +73,7 @@ export default function Form() {
                 htmlFor="voucherFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Voucher First Name
+                Voucher First*
               </Label>
               <Input
                 id="voucherFirst"
@@ -92,7 +92,7 @@ export default function Form() {
                 htmlFor="voucherLast"
                 className="text-sm font-medium text-gray-700"
               >
-                Voucher Last Name
+                Voucher Last*
               </Label>
               <Input
                 id="voucherLast"
@@ -111,7 +111,7 @@ export default function Form() {
                 htmlFor="voucheeFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Vouchee First Name
+                Vouchee First*
               </Label>
               <Input
                 id="voucheeFirst"
@@ -130,7 +130,7 @@ export default function Form() {
                 htmlFor="voucheeLast"
                 className="text-sm font-medium text-gray-700"
               >
-                Vouchee Last Name
+                Vouchee Last*
               </Label>
               <Input
                 id="voucheeLast"
