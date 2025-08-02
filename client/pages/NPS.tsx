@@ -6,9 +6,32 @@ import { useState, useEffect } from "react";
 
 export default function NPS() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formId, setFormId] = useState<string | null>(null);
+
+  // Get form_id from URL params or location state or localStorage
+  useEffect(() => {
+    let id = searchParams.get("form_id");
+
+    if (!id && location.state?.formData?.formId) {
+      id = location.state.formData.formId;
+    }
+
+    if (!id) {
+      // Try to get from localStorage as fallback
+      const storedFormId = localStorage.getItem("form_id");
+      if (storedFormId) {
+        id = storedFormId;
+      }
+    }
+
+    console.log("NPS Form ID found:", id);
+    setFormId(id);
+  }, [searchParams, location.state]);
 
   const handleScoreSelect = (score: number) => {
     setSelectedScore(score);
