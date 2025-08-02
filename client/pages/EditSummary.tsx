@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 export default function EditSummary() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
