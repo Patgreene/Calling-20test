@@ -176,7 +176,7 @@ export default function EditSummary() {
 
           setLoadingMessage("Finalizing...");
           // Add a small delay to ensure the UI updates properly
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
           setSummary(transcript);
         } else {
           console.log("No transcript data found for form_id:", formId);
