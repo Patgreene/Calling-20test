@@ -182,9 +182,8 @@ export default function EditSummary() {
             transcript ? transcript.substring(0, 100) + "..." : "empty",
           );
 
-          setLoadingMessage("Finalizing...");
-          // Add a small delay to ensure the UI updates properly
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          setLoadingMessage("Loading complete");
+          console.log("Setting summary with transcript data");
           setSummary(transcript);
         } else {
           console.log("No transcript data found for form_id:", formId);
@@ -195,12 +194,12 @@ export default function EditSummary() {
       } catch (error) {
         console.error("Error loading transcript:", error);
         setLoadingMessage("Error loading transcript");
-        alert("Failed to load transcript. Check console for details.");
+        console.log("Setting empty summary due to error");
+        setSummary("");
       } finally {
-        // Ensure loading state ends after everything is complete
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 200);
+        // Always end loading state
+        console.log("Ending loading state");
+        setIsLoading(false);
       }
     };
 
