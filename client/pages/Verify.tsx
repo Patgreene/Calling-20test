@@ -196,7 +196,7 @@ export default function Verify() {
   };
 
   const handleBack = () => {
-    navigate("/edit-summary");
+    navigate("/nps");
   };
 
   const handleFinish = () => {
