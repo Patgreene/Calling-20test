@@ -55,10 +55,41 @@ export default function AICall() {
         }
       };
 
+      // Set a timeout to prevent infinite loading
+      const loadTimeout = setTimeout(() => {
+        console.error("Script loading timeout");
+        setIsLoading(false);
+        if (widgetContainerRef.current && !widgetRef.current) {
+          widgetContainerRef.current.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
+              <div style="text-align: center; color: #666;">
+                <div style="font-size: 18px; margin-bottom: 8px;">⏰</div>
+                <div>Loading timeout</div>
+                <div style="font-size: 12px; margin-top: 4px;">Please refresh the page</div>
+              </div>
+            </div>
+          `;
+        }
+      }, 10000); // 10 second timeout
+
+      // Clear timeout when script loads
+      const originalOnLoad = script.onload;
+      script.onload = (e) => {
+        clearTimeout(loadTimeout);
+        if (originalOnLoad) originalOnLoad.call(script, e);
+      };
+
+      const originalOnError = script.onerror;
+      script.onerror = (e) => {
+        clearTimeout(loadTimeout);
+        if (originalOnError) originalOnError.call(script, e);
+      };
+
       try {
         document.body.appendChild(script);
         scriptLoadedRef.current = true;
       } catch (error) {
+        clearTimeout(loadTimeout);
         console.error("Error appending script to document:", error);
         setIsLoading(false);
       }
