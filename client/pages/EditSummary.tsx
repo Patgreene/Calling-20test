@@ -255,8 +255,9 @@ export default function EditSummary() {
         style={{ backgroundColor: "#F8F8F8" }}
       >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
-          <p className="text-gray-600">Loading transcript...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg mb-2">Loading transcript...</p>
+          <p className="text-gray-500 text-sm">{loadingMessage}</p>
         </div>
       </div>
     );
