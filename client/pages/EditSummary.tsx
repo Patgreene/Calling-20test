@@ -50,7 +50,10 @@ export default function EditSummary() {
       try {
         console.log("=== SUPABASE DEBUG START ===");
         console.log("Loading summary for form_id:", formId);
-        console.log("Full URL:", `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`);
+        console.log(
+          "Full URL:",
+          `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}&select=Transcript`,
+        );
 
         // First, let's test connection by getting all columns for this form_id
         console.log("Testing Supabase connection with all columns...");
@@ -72,7 +75,9 @@ export default function EditSummary() {
         if (!testResponse.ok) {
           const errorText = await testResponse.text();
           console.error("Test connection failed:", errorText);
-          throw new Error(`Connection test failed: ${testResponse.status} - ${errorText}`);
+          throw new Error(
+            `Connection test failed: ${testResponse.status} - ${errorText}`,
+          );
         }
 
         const testData = await testResponse.json();
@@ -118,8 +123,14 @@ export default function EditSummary() {
               record.summary ||
               record.Summary ||
               "";
-            console.log("Fallback transcript found:", transcript ? "Yes" : "No");
-            console.log("Fallback transcript length:", transcript ? transcript.length : 0);
+            console.log(
+              "Fallback transcript found:",
+              transcript ? "Yes" : "No",
+            );
+            console.log(
+              "Fallback transcript length:",
+              transcript ? transcript.length : 0,
+            );
             setSummary(transcript);
           } else {
             console.log("No fallback data available");
@@ -144,7 +155,10 @@ export default function EditSummary() {
             "";
           console.log("Found transcript data:", transcript ? "Yes" : "No");
           console.log("Transcript length:", transcript ? transcript.length : 0);
-          console.log("Transcript preview:", transcript ? transcript.substring(0, 100) + "..." : "empty");
+          console.log(
+            "Transcript preview:",
+            transcript ? transcript.substring(0, 100) + "..." : "empty",
+          );
           setSummary(transcript);
         } else {
           console.log("No transcript data found for form_id:", formId);
@@ -261,14 +275,11 @@ export default function EditSummary() {
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="text-blue-800">
                 <strong>Debug Status:</strong>
-                <br />
-                • Form ID: {formId}
-                <br />
-                • Loading: {isLoading ? "Yes" : "No"}
-                <br />
-                • Transcript Length: {summary ? summary.length : 0} characters
-                <br />
-                • Check browser console for detailed Supabase logs
+                <br />• Form ID: {formId}
+                <br />• Loading: {isLoading ? "Yes" : "No"}
+                <br />• Transcript Length: {summary ? summary.length : 0}{" "}
+                characters
+                <br />• Check browser console for detailed Supabase logs
               </div>
             </div>
           )}
