@@ -136,6 +136,15 @@ export default function NPS() {
             How likely would you be to recommend this to a friend?
           </p>
 
+          {/* Debug Info */}
+          {!formId && (
+            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-yellow-800">
+                <strong>Debug:</strong> No form_id found. Please navigate here from the edit summary page.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* NPS Scale */}
             <div className="space-y-4">
