@@ -51,7 +51,12 @@ export default function AICall() {
       setIsLoading(false);
       // Create widget immediately if script already loaded
       if (formData && widgetContainerRef.current) {
-        createWidget();
+        try {
+          createWidget();
+        } catch (error) {
+          console.error("Error creating widget:", error);
+          setIsLoading(false);
+        }
       }
     }
 
