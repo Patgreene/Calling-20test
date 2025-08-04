@@ -281,9 +281,9 @@ export default function AICall() {
       className="px-4 py-4 relative overflow-hidden"
       style={{ backgroundColor: "#F8F8F8", height: "800px" }}
     >
-      <div className="w-full max-w-3xl mx-auto pt-6 space-y-3">
+      <div className="w-full max-w-3xl mx-auto pt-3 sm:pt-6 space-y-1 sm:space-y-3">
         {/* Logo */}
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center mb-1 sm:mb-3">
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
             alt="Vouch Logo"
