@@ -377,7 +377,7 @@ export default function EditSummary() {
                                 strokeWidth="8"
                                 fill="transparent"
                                 strokeDasharray={`${2 * Math.PI * 40}`}
-                                strokeDashoffset={`${2 * Math.PI * 40 * (1 - (15 - countdown) / 15)}`}
+                                strokeDashoffset={`${2 * Math.PI * 40 * (1 - (25 - countdown) / 25)}`}
                                 className="text-orange-500 transition-all duration-1000 ease-linear"
                                 strokeLinecap="round"
                               />
