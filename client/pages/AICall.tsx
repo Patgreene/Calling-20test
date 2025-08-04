@@ -63,7 +63,7 @@ export default function AICall() {
           widgetContainerRef.current.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
               <div style="text-align: center; color: #666;">
-                <div style="font-size: 18px; margin-bottom: 8px;">⏰</div>
+                <div style="font-size: 18px; margin-bottom: 8px;">��</div>
                 <div>Loading timeout</div>
                 <div style="font-size: 12px; margin-top: 4px;">Please refresh the page</div>
               </div>
@@ -329,8 +329,8 @@ export default function AICall() {
         </Link>
       </div>
 
-      {/* Next Button - Responsive Positioning */}
-      <div className="absolute top-6 right-6 sm:top-auto sm:bottom-6">
+      {/* Next Button - Bottom Right */}
+      <div className="absolute bottom-6 right-6">
         <Link to="/edit-summary" state={{ formData }}>
           <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
             Next
