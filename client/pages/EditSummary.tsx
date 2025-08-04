@@ -215,11 +215,32 @@ export default function EditSummary() {
     }
   }, [formId, hasAttemptedLoad]);
 
+  // Countdown timer effect
+  useEffect(() => {
+    if (isCountdownActive && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      setIsCountdownActive(false);
+    }
+  }, [countdown, isCountdownActive]);
+
+  // Stop countdown when data loads successfully
+  useEffect(() => {
+    if (summary && summary.length > 0) {
+      setIsCountdownActive(false);
+    }
+  }, [summary]);
+
   const retryLoad = () => {
     setHasAttemptedLoad(false);
     setIsLoading(true);
     setLoadingMessage("Retrying...");
     setSummary("");
+    setCountdown(15);
+    setIsCountdownActive(true);
   };
 
   const saveSummary = async () => {
