@@ -182,6 +182,9 @@ export default function AICall() {
 
       widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
 
+      // Set widget height to match the diff
+      widget.style.height = "800px";
+
       try {
         const dynamicVars = {
           voucher_first: formData.voucherFirst,
