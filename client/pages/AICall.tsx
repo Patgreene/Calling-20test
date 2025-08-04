@@ -275,8 +275,8 @@ export default function AICall() {
 
   return (
     <div
-      className="h-screen px-4 py-4 relative overflow-hidden"
-      style={{ backgroundColor: "#F8F8F8" }}
+      className="px-4 py-4 relative overflow-hidden"
+      style={{ backgroundColor: "#F8F8F8", height: "800px" }}
     >
       <div className="w-full max-w-3xl mx-auto pt-6 space-y-3">
         {/* Logo */}
