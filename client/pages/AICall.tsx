@@ -182,6 +182,9 @@ export default function AICall() {
 
       widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
 
+      // Set widget height to match the diff
+      widget.style.height = "800px";
+
       try {
         const dynamicVars = {
           voucher_first: formData.voucherFirst,
@@ -282,12 +285,12 @@ export default function AICall() {
 
   return (
     <div
-      className="h-screen px-4 py-4 relative overflow-hidden"
-      style={{ backgroundColor: "#F8F8F8" }}
+      className="px-4 py-4 relative overflow-hidden"
+      style={{ backgroundColor: "#F8F8F8", height: "800px" }}
     >
-      <div className="w-full max-w-3xl mx-auto pt-6 space-y-3">
+      <div className="w-full max-w-3xl mx-auto pt-3 sm:pt-6 space-y-1 sm:space-y-3">
         {/* Logo */}
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center mb-1 sm:mb-3">
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
             alt="Vouch Logo"
@@ -326,8 +329,8 @@ export default function AICall() {
         </Link>
       </div>
 
-      {/* Next Button - Bottom Right */}
-      <div className="absolute bottom-6 right-6">
+      {/* Next Button - Responsive Positioning */}
+      <div className="absolute top-6 right-6 sm:top-auto sm:bottom-6">
         <Link to="/edit-summary" state={{ formData }}>
           <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
             Next
