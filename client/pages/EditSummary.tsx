@@ -324,8 +324,6 @@ export default function EditSummary() {
             </div>
           )}
 
-
-
           {/* Form */}
           <div className="space-y-6">
             {/* Textarea with Loading State */}
@@ -356,7 +354,10 @@ export default function EditSummary() {
                         <>
                           {/* Circular Progress Bar */}
                           <div className="relative w-20 h-20 mx-auto mb-4">
-                            <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 100 100">
+                            <svg
+                              className="w-20 h-20 transform -rotate-90"
+                              viewBox="0 0 100 100"
+                            >
                               {/* Background circle */}
                               <circle
                                 cx="50"
@@ -383,15 +384,21 @@ export default function EditSummary() {
                             </svg>
                             {/* Countdown number */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-2xl font-bold text-orange-600">{countdown}</span>
+                              <span className="text-2xl font-bold text-orange-600">
+                                {countdown}
+                              </span>
                             </div>
                           </div>
-                          <p className="text-gray-600 text-sm">Loading transcript data...</p>
+                          <p className="text-gray-600 text-sm">
+                            Loading transcript data...
+                          </p>
                         </>
                       ) : (
                         <>
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
-                          <p className="text-gray-600 text-sm">{loadingMessage}</p>
+                          <p className="text-gray-600 text-sm">
+                            {loadingMessage}
+                          </p>
                         </>
                       )}
                     </div>
