@@ -200,6 +200,13 @@ export default function AICall() {
       }
 
       console.log("Appending widget to container...");
+
+      // Apply fixed positioning styles to the widget
+      widget.style.width = "100%";
+      widget.style.height = "100%";
+      widget.style.display = "block";
+      widget.style.position = "relative";
+
       widgetContainerRef.current.appendChild(widget);
       widgetRef.current = widget;
       console.log("Widget created and appended successfully");
