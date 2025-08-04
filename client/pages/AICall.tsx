@@ -63,7 +63,7 @@ export default function AICall() {
           widgetContainerRef.current.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
               <div style="text-align: center; color: #666;">
-                <div style="font-size: 18px; margin-bottom: 8px;">��</div>
+                <div style="font-size: 18px; margin-bottom: 8px;">⏰</div>
                 <div>Loading timeout</div>
                 <div style="font-size: 12px; margin-top: 4px;">Please refresh the page</div>
               </div>
@@ -263,7 +263,7 @@ export default function AICall() {
   if (!formData) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center px-4 py-8"
+        className="flex items-center justify-center px-4 py-8"
         style={{ backgroundColor: "#F8F8F8" }}
       >
         <div className="text-center space-y-4">
