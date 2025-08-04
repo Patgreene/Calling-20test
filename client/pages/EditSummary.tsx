@@ -239,7 +239,7 @@ export default function EditSummary() {
     setIsLoading(true);
     setLoadingMessage("Retrying...");
     setSummary("");
-    setCountdown(15);
+    setCountdown(25);
     setIsCountdownActive(true);
   };
 
