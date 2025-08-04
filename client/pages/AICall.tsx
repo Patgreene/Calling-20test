@@ -308,7 +308,7 @@ export default function AICall() {
           <div
             id="widget-container"
             ref={widgetContainerRef}
-            className={`fixed top-32 left-1/2 transform -translate-x-1/2 w-[600px] h-[500px] bg-white rounded-lg shadow-lg border-2 border-gray-200 z-20 ${isLoading ? "hidden" : ""}`}
+            className={`fixed top-32 left-1/2 transform -translate-x-1/2 w-[600px] h-[500px] z-20 ${isLoading ? "hidden" : ""}`}
           />
         </div>
       </div>
