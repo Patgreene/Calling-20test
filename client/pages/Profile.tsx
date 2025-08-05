@@ -92,34 +92,21 @@ export default function Profile() {
               </div>
             </div>
             
-            <div className="mb-4">
-              <p className="text-gray-700 leading-relaxed">
+            <div className="mb-4 flex items-start justify-between">
+              <p className="text-gray-700 leading-relaxed flex-1 pr-4">
                 {isExpanded ? transcript.fullTranscript : transcript.preview}
               </p>
-            </div>
-            
-            {transcript.giver && (
-              <div className="mb-3 text-xs text-gray-500">
-                From {transcript.giver}
-              </div>
-            )}
-            
-            <button
-              onClick={() => toggleTranscript(transcript.id)}
-              className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1 transition-colors"
-            >
-              {isExpanded ? (
-                <>
+              <button
+                onClick={() => toggleTranscript(transcript.id)}
+                className="text-orange-500 hover:text-orange-600 transition-colors flex-shrink-0 mt-1"
+              >
+                {isExpanded ? (
                   <ChevronUp className="w-4 h-4" />
-                  Show less
-                </>
-              ) : (
-                <>
+                ) : (
                   <ChevronDown className="w-4 h-4" />
-                  Read more
-                </>
-              )}
-            </button>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
