@@ -75,7 +75,7 @@ export default function Profile() {
     const isExpanded = expandedTranscript === transcript.id;
     
     return (
-      <div className="border-b border-gray-100 last:border-b-0 py-8 first:pt-0">
+      <div className="bg-gray-50 rounded-lg p-6 mb-4 last:mb-0">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
             <User className="w-5 h-5 text-gray-600" />
