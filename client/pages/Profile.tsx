@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink, FileText, Calendar, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronDown, ChevronUp, ExternalLink, FileText, Calendar, User } from "lucide-react";
 import { useState } from "react";
 
 interface Transcript {
@@ -76,165 +75,172 @@ export default function Profile() {
     const isExpanded = expandedTranscript === transcript.id;
     
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-              <User className="w-6 h-6 text-orange-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">{transcript.otherPersonName}</h3>
-              <p className="text-sm text-gray-600">{transcript.otherPersonTitle}</p>
-            </div>
+      <div className="border-b border-gray-100 last:border-b-0 py-8 first:pt-0">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <User className="w-5 h-5 text-gray-600" />
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Calendar className="w-4 h-4" />
-            {new Date(transcript.date).toLocaleDateString()}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="font-medium text-gray-900 text-lg">{transcript.otherPersonName}</h3>
+                <p className="text-gray-500 text-sm mt-1">{transcript.otherPersonTitle}</p>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-400">
+                <Calendar className="w-3 h-3" />
+                {new Date(transcript.date).toLocaleDateString()}
+              </div>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-gray-700 leading-relaxed">
+                {isExpanded ? transcript.fullTranscript : transcript.preview}
+              </p>
+            </div>
+            
+            {transcript.giver && (
+              <div className="mb-3 text-xs text-gray-500">
+                From {transcript.giver}
+              </div>
+            )}
+            
+            <button
+              onClick={() => toggleTranscript(transcript.id)}
+              className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1 transition-colors"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Read more
+                </>
+              )}
+            </button>
           </div>
         </div>
-        
-        <div className="mb-4">
-          <p className="text-gray-700 leading-relaxed">
-            {isExpanded ? transcript.fullTranscript : transcript.preview}
-          </p>
-        </div>
-        
-        {transcript.giver && (
-          <div className="mb-3 text-sm text-gray-600">
-            <strong>Given by:</strong> {transcript.giver}
-          </div>
-        )}
-        
-        <button
-          onClick={() => toggleTranscript(transcript.id)}
-          className="flex items-center gap-2 text-orange-600 hover:text-orange-700 text-sm font-medium transition-colors"
-        >
-          {isExpanded ? (
-            <>
-              <ChevronUp className="w-4 h-4" />
-              Show less
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-4 h-4" />
-              Read full transcript
-            </>
-          )}
-        </button>
       </div>
     );
   };
 
   return (
-    <div
-      className="min-h-screen px-4 py-8 relative"
-      style={{ backgroundColor: "#F8F8F8" }}
-    >
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
-            alt="Vouch Logo"
-            className="h-12 md:h-16 object-contain"
-          />
-        </div>
-
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Profile Header */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
+        <div className="mb-16">
+          <div className="flex flex-col items-center text-center mb-8">
             {/* Profile Photo */}
-            <div className="flex justify-center md:justify-start">
-              <div className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">PG</span>
-              </div>
+            <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mb-6">
+              <span className="text-4xl font-light text-white">PG</span>
             </div>
             
             {/* Profile Info */}
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Patrick Greene</h1>
-              <p className="text-xl text-gray-600 mb-4">Senior UX Designer</p>
-              
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <Button 
-                  variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  LinkedIn
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  CV
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Portfolio
-                </Button>
-              </div>
+            <h1 className="text-4xl font-light text-gray-900 mb-2">Patrick Greene</h1>
+            <p className="text-xl text-gray-500 mb-8">Senior UX Designer</p>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <Button 
+                variant="outline"
+                size="sm"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                LinkedIn
+              </Button>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Resume
+              </Button>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Portfolio
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="mb-12">
           {/* Tab Headers */}
-          <div className="flex border-b border-gray-200">
+          <div className="flex border-b border-gray-100 mb-8">
             <button
               onClick={() => setActiveTab("about-me")}
-              className={`flex-1 px-6 py-4 text-lg font-semibold transition-colors ${
+              className={`pb-4 px-1 text-lg font-light transition-colors relative ${
                 activeTab === "about-me"
-                  ? "text-orange-600 bg-orange-50 border-b-2 border-orange-600"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "text-gray-900"
+                  : "text-gray-400 hover:text-gray-600"
               }`}
             >
-              Transcripts about me ({transcriptsAboutMe.length})
+              About me
+              {activeTab === "about-me" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
+              )}
             </button>
             <button
               onClick={() => setActiveTab("given")}
-              className={`flex-1 px-6 py-4 text-lg font-semibold transition-colors ${
+              className={`pb-4 px-1 ml-12 text-lg font-light transition-colors relative ${
                 activeTab === "given"
-                  ? "text-orange-600 bg-orange-50 border-b-2 border-orange-600"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "text-gray-900"
+                  : "text-gray-400 hover:text-gray-600"
               }`}
             >
-              Transcripts I've given ({transcriptsGiven.length})
+              Given by me
+              {activeTab === "given" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
+              )}
             </button>
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div>
             {activeTab === "about-me" ? (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  What others say about me
-                </h2>
-                {transcriptsAboutMe.map((transcript) => (
-                  <TranscriptCard key={transcript.id} transcript={transcript} />
-                ))}
+              <div>
+                <div className="mb-8">
+                  <h2 className="text-2xl font-light text-gray-900 mb-2">
+                    Recommendations
+                  </h2>
+                  <p className="text-gray-500 text-sm">
+                    What others say about working with me
+                  </p>
+                </div>
+                <div>
+                  {transcriptsAboutMe.map((transcript) => (
+                    <TranscriptCard key={transcript.id} transcript={transcript} />
+                  ))}
+                </div>
               </div>
             ) : (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Recommendations I've given
-                </h2>
-                {transcriptsGiven.map((transcript) => (
-                  <TranscriptCard key={transcript.id} transcript={transcript} />
-                ))}
+              <div>
+                <div className="mb-8">
+                  <h2 className="text-2xl font-light text-gray-900 mb-2">
+                    My recommendations
+                  </h2>
+                  <p className="text-gray-500 text-sm">
+                    Testimonials I've provided for others
+                  </p>
+                </div>
+                <div>
+                  {transcriptsGiven.map((transcript) => (
+                    <TranscriptCard key={transcript.id} transcript={transcript} />
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Note: Profile section is standalone - no back navigation to main app */}
     </div>
   );
 }
