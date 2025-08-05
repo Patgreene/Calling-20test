@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, ExternalLink, FileText, Calendar, User } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  FileText,
+  Calendar,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 
 interface Transcript {
@@ -14,7 +21,9 @@ interface Transcript {
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<"about-me" | "given">("about-me");
-  const [expandedTranscript, setExpandedTranscript] = useState<string | null>(null);
+  const [expandedTranscript, setExpandedTranscript] = useState<string | null>(
+    null,
+  );
 
   // Dummy data for transcripts about me
   const transcriptsAboutMe: Transcript[] = [
@@ -22,29 +31,35 @@ export default function Profile() {
       id: "1",
       otherPersonName: "Sarah Johnson",
       otherPersonTitle: "Senior Product Manager",
-      preview: "Patrick is an exceptional UX designer who consistently delivers innovative solutions. His attention to detail and user-centered approach...",
-      fullTranscript: "Patrick is an exceptional UX designer who consistently delivers innovative solutions. His attention to detail and user-centered approach has transformed our product experience. He has a unique ability to translate complex user needs into intuitive interfaces. During our collaboration on the mobile app redesign, Patrick demonstrated remarkable problem-solving skills and creative thinking. His wireframes and prototypes were not only visually appealing but also highly functional. Patrick is also an excellent collaborator who communicates design decisions clearly and incorporates feedback constructively. I would highly recommend Patrick for any senior UX design role.",
+      preview:
+        "Patrick is an exceptional UX designer who consistently delivers innovative solutions. His attention to detail and user-centered approach...",
+      fullTranscript:
+        "Patrick is an exceptional UX designer who consistently delivers innovative solutions. His attention to detail and user-centered approach has transformed our product experience. He has a unique ability to translate complex user needs into intuitive interfaces. During our collaboration on the mobile app redesign, Patrick demonstrated remarkable problem-solving skills and creative thinking. His wireframes and prototypes were not only visually appealing but also highly functional. Patrick is also an excellent collaborator who communicates design decisions clearly and incorporates feedback constructively. I would highly recommend Patrick for any senior UX design role.",
       date: "2024-01-15",
-      giver: "Sarah Johnson"
+      giver: "Sarah Johnson",
     },
     {
       id: "2",
       otherPersonName: "Michael Chen",
       otherPersonTitle: "Engineering Director",
-      preview: "Working with Patrick has been a game-changer for our team. His design systems thinking and technical understanding...",
-      fullTranscript: "Working with Patrick has been a game-changer for our team. His design systems thinking and technical understanding make him an invaluable bridge between design and engineering. Patrick doesn't just create beautiful designs; he thinks about implementation, scalability, and maintainability. His component library work has improved our development velocity by 40%. He's also mentored several junior designers on our team, showing great leadership potential. Patrick's strategic thinking about user experience goes beyond individual features to consider the entire user journey.",
+      preview:
+        "Working with Patrick has been a game-changer for our team. His design systems thinking and technical understanding...",
+      fullTranscript:
+        "Working with Patrick has been a game-changer for our team. His design systems thinking and technical understanding make him an invaluable bridge between design and engineering. Patrick doesn't just create beautiful designs; he thinks about implementation, scalability, and maintainability. His component library work has improved our development velocity by 40%. He's also mentored several junior designers on our team, showing great leadership potential. Patrick's strategic thinking about user experience goes beyond individual features to consider the entire user journey.",
       date: "2024-01-08",
-      giver: "Michael Chen"
+      giver: "Michael Chen",
     },
     {
       id: "3",
       otherPersonName: "Emily Rodriguez",
       otherPersonTitle: "Head of Design",
-      preview: "Patrick brings both creative vision and practical execution to every project. His portfolio speaks volumes about his growth...",
-      fullTranscript: "Patrick brings both creative vision and practical execution to every project. His portfolio speaks volumes about his growth as a designer over the past two years. What sets Patrick apart is his research-driven approach - he always validates design decisions with user testing and data. His presentation skills are outstanding; he can explain complex design rationale to both technical and non-technical stakeholders. Patrick is proactive about staying current with design trends and tools, and he often introduces new methodologies that benefit the entire team.",
+      preview:
+        "Patrick brings both creative vision and practical execution to every project. His portfolio speaks volumes about his growth...",
+      fullTranscript:
+        "Patrick brings both creative vision and practical execution to every project. His portfolio speaks volumes about his growth as a designer over the past two years. What sets Patrick apart is his research-driven approach - he always validates design decisions with user testing and data. His presentation skills are outstanding; he can explain complex design rationale to both technical and non-technical stakeholders. Patrick is proactive about staying current with design trends and tools, and he often introduces new methodologies that benefit the entire team.",
       date: "2023-12-22",
-      giver: "Emily Rodriguez"
-    }
+      giver: "Emily Rodriguez",
+    },
   ];
 
   // Dummy data for transcripts I've given
@@ -53,18 +68,22 @@ export default function Profile() {
       id: "4",
       otherPersonName: "Alex Thompson",
       otherPersonTitle: "Frontend Developer",
-      preview: "Alex is a talented frontend developer with excellent problem-solving skills. His code quality and attention to performance...",
-      fullTranscript: "Alex is a talented frontend developer with excellent problem-solving skills. His code quality and attention to performance optimization are exceptional. During our project collaboration, Alex consistently delivered clean, maintainable code that exceeded expectations. He has a great eye for detail and ensures pixel-perfect implementation of designs. Alex is also very collaborative and provides valuable feedback during design reviews. His understanding of both React and CSS animations helped bring several complex interactions to life.",
-      date: "2024-01-10"
+      preview:
+        "Alex is a talented frontend developer with excellent problem-solving skills. His code quality and attention to performance...",
+      fullTranscript:
+        "Alex is a talented frontend developer with excellent problem-solving skills. His code quality and attention to performance optimization are exceptional. During our project collaboration, Alex consistently delivered clean, maintainable code that exceeded expectations. He has a great eye for detail and ensures pixel-perfect implementation of designs. Alex is also very collaborative and provides valuable feedback during design reviews. His understanding of both React and CSS animations helped bring several complex interactions to life.",
+      date: "2024-01-10",
     },
     {
       id: "5",
       otherPersonName: "Lisa Wang",
       otherPersonTitle: "Product Designer",
-      preview: "Lisa is a rising star in product design with strong analytical skills and creative problem-solving abilities...",
-      fullTranscript: "Lisa is a rising star in product design with strong analytical skills and creative problem-solving abilities. She approaches design challenges methodically, always starting with user research and data analysis. Lisa's prototyping skills are impressive, and she's able to quickly iterate on design concepts. Her presentation style is clear and persuasive, making it easy for stakeholders to understand and buy into her design decisions. Lisa is also very coachable and has shown remarkable growth in design systems thinking over the past year.",
-      date: "2023-12-28"
-    }
+      preview:
+        "Lisa is a rising star in product design with strong analytical skills and creative problem-solving abilities...",
+      fullTranscript:
+        "Lisa is a rising star in product design with strong analytical skills and creative problem-solving abilities. She approaches design challenges methodically, always starting with user research and data analysis. Lisa's prototyping skills are impressive, and she's able to quickly iterate on design concepts. Her presentation style is clear and persuasive, making it easy for stakeholders to understand and buy into her design decisions. Lisa is also very coachable and has shown remarkable growth in design systems thinking over the past year.",
+      date: "2023-12-28",
+    },
   ];
 
   const toggleTranscript = (id: string) => {
@@ -73,7 +92,7 @@ export default function Profile() {
 
   const TranscriptCard = ({ transcript }: { transcript: Transcript }) => {
     const isExpanded = expandedTranscript === transcript.id;
-    
+
     return (
       <div className="bg-gray-50 rounded-lg p-6 mb-4 last:mb-0">
         <div className="flex items-start gap-4">
@@ -83,15 +102,19 @@ export default function Profile() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="font-medium text-gray-900 text-lg">{transcript.otherPersonName}</h3>
-                <p className="text-gray-500 text-sm mt-1">{transcript.otherPersonTitle}</p>
+                <h3 className="font-medium text-gray-900 text-lg">
+                  {transcript.otherPersonName}
+                </h3>
+                <p className="text-gray-500 text-sm mt-1">
+                  {transcript.otherPersonTitle}
+                </p>
               </div>
               <div className="flex items-center gap-1 text-xs text-gray-400">
                 <Calendar className="w-3 h-3" />
                 {new Date(transcript.date).toLocaleDateString()}
               </div>
             </div>
-            
+
             <div className="mb-4 flex items-start justify-between">
               <p className="text-gray-700 leading-relaxed flex-1 pr-4">
                 {isExpanded ? transcript.fullTranscript : transcript.preview}
@@ -123,14 +146,16 @@ export default function Profile() {
             <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mb-6">
               <span className="text-4xl font-light text-white">PG</span>
             </div>
-            
+
             {/* Profile Info */}
-            <h1 className="text-4xl font-light text-gray-900 mb-2">Patrick Greene</h1>
+            <h1 className="text-4xl font-light text-gray-900 mb-2">
+              Patrick Greene
+            </h1>
             <p className="text-xl text-gray-500 mb-8">Senior UX Designer</p>
-            
+
             {/* Action Buttons */}
             <div className="flex gap-4">
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
@@ -138,7 +163,7 @@ export default function Profile() {
                 <ExternalLink className="w-4 h-4 mr-2" />
                 LinkedIn
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
@@ -146,7 +171,7 @@ export default function Profile() {
                 <FileText className="w-4 h-4 mr-2" />
                 Resume
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 className="border-gray-200 text-gray-600 hover:bg-gray-50 font-normal"
@@ -204,7 +229,10 @@ export default function Profile() {
                 </div>
                 <div>
                   {transcriptsAboutMe.map((transcript) => (
-                    <TranscriptCard key={transcript.id} transcript={transcript} />
+                    <TranscriptCard
+                      key={transcript.id}
+                      transcript={transcript}
+                    />
                   ))}
                 </div>
               </div>
@@ -220,7 +248,10 @@ export default function Profile() {
                 </div>
                 <div>
                   {transcriptsGiven.map((transcript) => (
-                    <TranscriptCard key={transcript.id} transcript={transcript} />
+                    <TranscriptCard
+                      key={transcript.id}
+                      transcript={transcript}
+                    />
                   ))}
                 </div>
               </div>
