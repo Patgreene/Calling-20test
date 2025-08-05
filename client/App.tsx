@@ -11,6 +11,7 @@ import Form from "./pages/Form";
 import AICall from "./pages/AICall";
 import EditSummary from "./pages/EditSummary";
 import NPS from "./pages/NPS";
+import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 
