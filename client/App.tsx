@@ -29,6 +29,7 @@ const App = () => (
           <Route path="/ai-call" element={<AICall />} />
           <Route path="/edit-summary" element={<EditSummary />} />
           <Route path="/nps" element={<NPS />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/thank-you" element={<ThankYou />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
