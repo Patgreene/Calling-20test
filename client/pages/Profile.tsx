@@ -234,18 +234,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Back Button - Bottom Left */}
-      <div className="absolute bottom-6 left-6">
-        <Link to="/">
-          <Button
-            variant="ghost"
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Button>
-        </Link>
-      </div>
+      {/* Note: Profile section is standalone - no back navigation to main app */}
     </div>
   );
 }
