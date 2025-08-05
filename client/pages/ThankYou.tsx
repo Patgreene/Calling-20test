@@ -43,9 +43,11 @@ export default function ThankYou() {
               </Button>
             </Link>
 
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-              View Your Profile
-            </Button>
+            <Link to="/profile">
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+                View Your Profile
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
