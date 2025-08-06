@@ -24,15 +24,6 @@ export default function Index() {
 
         {/* CTA Buttons */}
         <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link to="/form">
-            <Button
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
-            >
-              Vouch for someone
-            </Button>
-          </Link>
-
           <a
             href="https://profiles.vouchprofile.com/demo"
             target="_blank"
@@ -46,6 +37,15 @@ export default function Index() {
               View Demo Profile
             </Button>
           </a>
+
+          <Link to="/form">
+            <Button
+              size="lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
+            >
+              Vouch for someone
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
