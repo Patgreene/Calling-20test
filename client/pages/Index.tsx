@@ -23,7 +23,7 @@ export default function Index() {
         </h1>
 
         {/* CTA Buttons */}
-        <div className="pt-8 space-y-4">
+        <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link to="/form">
             <Button
               size="lg"
@@ -33,21 +33,19 @@ export default function Index() {
             </Button>
           </Link>
 
-          <div className="flex justify-center">
-            <a
-              href="https://profiles.vouchprofile.com/demo"
-              target="_blank"
-              rel="noopener noreferrer"
+          <a
+            href="https://profiles.vouchprofile.com/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
             >
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                View Demo Profile
-              </Button>
-            </a>
-          </div>
+              View Demo Profile
+            </Button>
+          </a>
         </div>
       </div>
     </div>
