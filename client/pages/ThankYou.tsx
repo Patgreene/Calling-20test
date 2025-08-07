@@ -33,7 +33,7 @@ export default function ThankYou() {
             submission and get back to you soon.
           </p>
 
-          <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="pt-6 flex justify-center">
             <Link to="/">
               <Button
                 variant="outline"
@@ -42,10 +42,6 @@ export default function ThankYou() {
                 Submit Another Vouch
               </Button>
             </Link>
-
-            <Button className="bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-              View Your Profile
-            </Button>
           </div>
         </div>
       </div>
