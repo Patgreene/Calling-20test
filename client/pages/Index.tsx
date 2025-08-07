@@ -49,9 +49,9 @@ export default function Index() {
 
         {/* Quote Section */}
         <div className="pt-12">
-          {/* Sticker */}
-          <div className="flex justify-center mb-4">
-            <div className="bg-[#FF7A56] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transform -rotate-2 hover:rotate-0 transition-transform duration-200">
+          {/* Text */}
+          <div className="flex justify-end pr-8 mb-4">
+            <div className="text-[#7FB5C5] text-lg font-semibold transform rotate-3">
               Finally, proof of your rep
             </div>
           </div>
