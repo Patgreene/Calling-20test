@@ -37,13 +37,13 @@ export default function ThankYou() {
             <Link to="/">
               <Button
                 variant="outline"
-                className="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                className="border-2 border-primary-blue-500 text-primary-blue-600 hover:bg-primary-blue-50 font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 Submit Another Vouch
               </Button>
             </Link>
 
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+            <Button className="bg-vibrant-orange-500 hover:bg-vibrant-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
               View Your Profile
             </Button>
           </div>
