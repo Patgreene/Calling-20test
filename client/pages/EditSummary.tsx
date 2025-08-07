@@ -278,9 +278,9 @@ export default function EditSummary() {
       }
 
       alert("Updated transcript saved successfully!");
-      // Navigate to NPS page after successful save
+      // Navigate to thank you page after successful save
       setTimeout(() => {
-        navigate("/nps");
+        navigate("/thank-you");
       }, 1500);
     } catch (error) {
       console.error("Error saving updated transcript:", error);
