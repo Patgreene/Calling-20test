@@ -19,7 +19,7 @@ export default function EditSummary() {
   const [formId, setFormId] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("Initializing...");
   const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
-  const [countdown, setCountdown] = useState(25);
+  const [countdown, setCountdown] = useState(20);
   const [isCountdownActive, setIsCountdownActive] = useState(true);
 
   // Get form_id from URL params or location state or localStorage
@@ -239,7 +239,7 @@ export default function EditSummary() {
     setIsLoading(true);
     setLoadingMessage("Retrying...");
     setSummary("");
-    setCountdown(25);
+    setCountdown(20);
     setIsCountdownActive(true);
   };
 
@@ -377,7 +377,7 @@ export default function EditSummary() {
                                 strokeWidth="8"
                                 fill="transparent"
                                 strokeDasharray={`${2 * Math.PI * 40}`}
-                                strokeDashoffset={`${2 * Math.PI * 40 * (1 - (25 - countdown) / 25)}`}
+                                strokeDashoffset={`${2 * Math.PI * 40 * (1 - (20 - countdown) / 20)}`}
                                 className="text-[#7FB5C5] transition-all duration-1000 ease-linear"
                                 strokeLinecap="round"
                               />
