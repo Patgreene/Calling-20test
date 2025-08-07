@@ -50,11 +50,9 @@ export default function Index() {
         {/* Quote Section */}
         <div className="pt-12">
           <button className="group text-center max-w-lg mx-auto block hover:scale-105 transition-transform duration-200">
-            <div className="text-5xl text-[#FF7A56] mb-2 font-bold">"</div>
             <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-colors duration-200">
-              She has one of the most creative minds I've ever worked with
+              <span className="text-3xl md:text-4xl font-bold">"</span>She has one of the most creative minds I've ever worked with<span className="text-3xl md:text-4xl font-bold">"</span>
             </p>
-            <div className="text-5xl text-[#FF7A56] mt-2 rotate-180 inline-block font-bold">"</div>
           </button>
         </div>
       </div>
