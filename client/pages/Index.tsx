@@ -12,7 +12,7 @@ export default function Index() {
   });
   const quotes = [
     {
-      text: '" She has one of the most creative minds I\'ve ever worked with "',
+      text: '" She is one of the most creative people I\'ve ever worked with. "',
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=329&e=390",
     },
     {
