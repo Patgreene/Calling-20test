@@ -8,7 +8,7 @@ export default function Index() {
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
-    comment: ""
+    comment: "",
   });
   const quotes = [
     {
@@ -35,10 +35,12 @@ export default function Index() {
     return () => clearInterval(interval);
   }, [quotes.length]);
 
-  const handleContactFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleContactFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setContactForm({
       ...contactForm,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -46,10 +48,10 @@ export default function Index() {
     e.preventDefault();
 
     try {
-      const response = await fetch('/.netlify/functions/contact', {
-        method: 'POST',
+      const response = await fetch("/.netlify/functions/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(contactForm),
       });
@@ -60,11 +62,11 @@ export default function Index() {
         setIsContactFormOpen(false);
       } else {
         const errorData = await response.json();
-        alert(`Error: ${errorData.error || 'Failed to send message'}`);
+        alert(`Error: ${errorData.error || "Failed to send message"}`);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Failed to send message. Please try again.');
+      console.error("Error submitting form:", error);
+      alert("Failed to send message. Please try again.");
     }
   };
   return (
@@ -158,7 +160,10 @@ export default function Index() {
             {/* Contact Form */}
             <form onSubmit={handleContactFormSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Name *
                 </label>
                 <input
@@ -174,7 +179,10 @@ export default function Index() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email *
                 </label>
                 <input
@@ -190,7 +198,10 @@ export default function Index() {
               </div>
 
               <div>
-                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="comment"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Message *
                 </label>
                 <textarea

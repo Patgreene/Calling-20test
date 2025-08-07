@@ -5,16 +5,19 @@ I've created a contact form that will send submissions to patrick@vouchprofile.c
 ## Option 1: Using Resend (Recommended)
 
 1. **Sign up for Resend** (free tier includes 3,000 emails/month):
+
    - Go to https://resend.com
    - Sign up for a free account
    - Verify your email domain (vouchprofile.com)
 
 2. **Get your API key**:
+
    - In your Resend dashboard, go to API Keys
    - Create a new API key
    - Copy the API key (starts with `re_`)
 
 3. **Add environment variable in Netlify**:
+
    - Go to your Netlify site dashboard
    - Navigate to Site settings > Environment variables
    - Add a new variable:
@@ -28,6 +31,7 @@ I've created a contact form that will send submissions to patrick@vouchprofile.c
 ## Option 2: Alternative Email Services
 
 If you prefer a different service, you can modify `/netlify/functions/contact.ts` to use:
+
 - SendGrid
 - Mailgun
 - AWS SES
