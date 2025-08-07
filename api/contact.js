@@ -51,34 +51,37 @@ export default async function handler(req, res) {
         });
 
         const responseText = await makeResponse.text();
-        console.log("Make.com contact response:", makeResponse.status, responseText);
+        console.log(
+          "Make.com contact response:",
+          makeResponse.status,
+          responseText,
+        );
 
         if (makeResponse.ok) {
           return res.status(200).json({ message: "Message sent successfully" });
         } else {
           console.error("Make.com error:", responseText);
           // Still return success to user, but log the error
-          return res.status(200).json({ 
+          return res.status(200).json({
             message: "Message received successfully",
-            note: "Email delivery pending"
+            note: "Email delivery pending",
           });
         }
       } catch (makeError) {
         console.error("Error sending to Make.com:", makeError);
         // Still return success to user, but log the error
-        return res.status(200).json({ 
+        return res.status(200).json({
           message: "Message received successfully",
-          note: "Email delivery pending"
+          note: "Email delivery pending",
         });
       }
     }
 
     // If no webhook URL is configured, just log and return success
-    return res.status(200).json({ 
+    return res.status(200).json({
       message: "Message received successfully",
-      note: "Contact form logged, email setup pending"
+      note: "Contact form logged, email setup pending",
     });
-
   } catch (error) {
     console.error("Error processing contact form:", error);
     return res.status(500).json({ error: "Internal server error" });

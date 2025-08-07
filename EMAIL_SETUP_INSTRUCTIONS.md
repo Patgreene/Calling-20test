@@ -5,6 +5,7 @@ I've created a contact form that will log submissions and can be extended to sen
 ## Current Status ✅
 
 The contact form is now working and will:
+
 - ✅ Validate form inputs (name, email, message)
 - ✅ Log all submissions to your server console
 - ✅ Show success message to users
@@ -25,10 +26,12 @@ The contact form is now working and will:
 Since you're already using Make.com webhooks, you can:
 
 1. **Create a new Make.com scenario**:
+
    - Webhook trigger to receive contact form data
    - Email module to send to patrick@vouchprofile.com
 
 2. **Add environment variable**:
+
    - Set `CONTACT_WEBHOOK_URL` in your Fly.dev environment
    - Point it to your new Make.com webhook URL
 
@@ -37,6 +40,7 @@ Since you're already using Make.com webhooks, you can:
 ### Option 2: Direct Email Service
 
 Alternatively, you can modify `/server/index.ts` to use:
+
 - Resend API
 - SendGrid
 - Mailgun
@@ -45,6 +49,7 @@ Alternatively, you can modify `/server/index.ts` to use:
 ## Testing
 
 The contact form is ready to test now:
+
 1. Click the contact button (bottom-right mail icon)
 2. Fill out the form
 3. Submit and check your server logs for the submission data
@@ -52,15 +57,17 @@ The contact form is ready to test now:
 ## Server Logs
 
 Check your Fly.dev logs to see contact form submissions:
+
 ```bash
 fly logs
 ```
 
 You'll see entries like:
+
 ```
 Contact form submission: {
   name: "John Doe",
-  email: "john@example.com", 
+  email: "john@example.com",
   comment: "Great product!",
   timestamp: "2024-01-15T10:30:00.000Z"
 }

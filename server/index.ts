@@ -41,7 +41,9 @@ export function createServer() {
     });
 
     // Send to Make.com webhook
-    const makeWebhookUrl = process.env.CONTACT_WEBHOOK_URL || "https://hook.eu2.make.com/6lbq65lw7xmpmwfooavbdyd9jrbcj3wg";
+    const makeWebhookUrl =
+      process.env.CONTACT_WEBHOOK_URL ||
+      "https://hook.eu2.make.com/6lbq65lw7xmpmwfooavbdyd9jrbcj3wg";
 
     if (makeWebhookUrl) {
       try {
@@ -63,11 +65,15 @@ export function createServer() {
         });
 
         const responseText = await makeResponse.text();
-        console.log("Make.com contact response:", makeResponse.status, responseText);
+        console.log(
+          "Make.com contact response:",
+          makeResponse.status,
+          responseText,
+        );
 
         if (makeResponse.ok) {
           return res.status(200).json({
-            message: "Message sent successfully! We'll get back to you soon."
+            message: "Message sent successfully! We'll get back to you soon.",
           });
         } else {
           console.error("Make.com error:", responseText);
@@ -80,7 +86,7 @@ export function createServer() {
     // Fallback response
     return res.status(200).json({
       message: "Message received successfully! We'll get back to you soon.",
-      note: "Contact form logged successfully"
+      note: "Contact form logged successfully",
     });
   });
 
