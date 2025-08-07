@@ -34,6 +34,22 @@ export default function Index() {
 
     return () => clearInterval(interval);
   }, [quotes.length]);
+
+  const handleContactFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContactForm({
+      ...contactForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleContactFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here (could send to API endpoint)
+    console.log("Contact form submitted:", contactForm);
+    alert("Thank you for your message! We'll get back to you soon.");
+    setContactForm({ name: "", email: "", comment: "" });
+    setIsContactFormOpen(false);
+  };
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
