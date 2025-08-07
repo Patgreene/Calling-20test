@@ -43,7 +43,7 @@ export function createServer() {
     // Send to Make.com webhook
     const makeWebhookUrl = process.env.CONTACT_WEBHOOK_URL || "https://hook.eu2.make.com/6lbq65lw7xmpmwfooavbdyd9jrbcj3wg";
 
-    if (makeWebhookUrl && makeWebhookUrl !== "REPLACE_WITH_YOUR_WEBHOOK_URL") {
+    if (makeWebhookUrl) {
       try {
         const payload = {
           type: "contact_form",
