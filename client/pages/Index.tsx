@@ -49,6 +49,13 @@ export default function Index() {
 
         {/* Quote Section */}
         <div className="pt-12">
+          {/* Sticker */}
+          <div className="flex justify-center mb-4">
+            <div className="bg-[#FF7A56] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transform -rotate-2 hover:rotate-0 transition-transform duration-200">
+              Finally, proof of your rep
+            </div>
+          </div>
+
           <button className="group text-center max-w-lg mx-auto block hover:scale-105 transition-transform duration-200">
             <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-colors duration-200">
               <span className="text-3xl md:text-4xl font-bold mr-1">"</span>She has one of the most creative minds I've ever worked with<span className="text-3xl md:text-4xl font-bold ml-1">"</span>
