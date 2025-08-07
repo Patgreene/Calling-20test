@@ -131,13 +131,9 @@ export default function NPS() {
         {/* Content */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
           {/* Heading */}
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center font-sans">
-            Quick Feedback
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center font-sans">
+            Interview Feedback
           </h1>
-
-          <p className="text-xl text-gray-600 mb-8 text-center leading-relaxed">
-            2 of 5 questions
-          </p>
 
           {/* Debug Info */}
           {!formId && (
@@ -161,17 +157,17 @@ export default function NPS() {
                 <span>Strongly Agree</span>
               </div>
 
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     type="button"
                     onClick={() => setQuestion1Score(score)}
                     className={`
-                      aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
+                      w-12 h-12 rounded-md text-white font-semibold text-sm transition-all duration-200
                       ${
                         question1Score === score
-                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-[#88c6d7] scale-110`
+                          ? `${getScoreColor(score)} ring-2 ring-offset-1 ring-[#88c6d7] scale-105`
                           : "bg-gray-300 hover:bg-gray-400"
                       }
                     `}
@@ -193,17 +189,17 @@ export default function NPS() {
                 <span>Strongly Agree</span>
               </div>
 
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     type="button"
                     onClick={() => setQuestion2Score(score)}
                     className={`
-                      aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
+                      w-12 h-12 rounded-md text-white font-semibold text-sm transition-all duration-200
                       ${
                         question2Score === score
-                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-[#88c6d7] scale-110`
+                          ? `${getScoreColor(score)} ring-2 ring-offset-1 ring-[#88c6d7] scale-105`
                           : "bg-gray-300 hover:bg-gray-400"
                       }
                     `}
