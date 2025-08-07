@@ -32,7 +32,7 @@ export default function Index() {
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-primary-blue-500 text-primary-blue-600 hover:bg-primary-blue-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
+              className="border-2 border-[#7FB5C5] text-[#4C7B8A] hover:bg-[#f0f8fa] font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
             >
               View Demo Profile
             </Button>
@@ -41,7 +41,7 @@ export default function Index() {
           <Link to="/form">
             <Button
               size="lg"
-              className="bg-vibrant-orange-500 hover:bg-vibrant-orange-600 text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
+              className="bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
             >
               Vouch for someone
             </Button>
