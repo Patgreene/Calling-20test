@@ -13,17 +13,21 @@ export default function NPS() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const [selectedScore, setSelectedScore] = useState<number | null>(null);
+  const [question1Score, setQuestion1Score] = useState<number | null>(null);
+  const [question2Score, setQuestion2Score] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formId, setFormId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<any>(null);
 
-  // Get form_id from URL params or location state or localStorage
+  // Get form_id and formData from URL params or location state
   useEffect(() => {
     let id = searchParams.get("form_id");
+    let data = null;
 
     if (!id && location.state?.formData?.formId) {
       id = location.state.formData.formId;
+      data = location.state.formData;
     }
 
     if (!id) {
@@ -35,32 +39,31 @@ export default function NPS() {
     }
 
     console.log("NPS Form ID found:", id);
+    console.log("Form Data:", data);
     setFormId(id);
+    setFormData(data);
   }, [searchParams, location.state]);
-
-  const handleScoreSelect = (score: number) => {
-    setSelectedScore(score);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (selectedScore === null) {
-      alert("Please select a score before continuing.");
+    if (question1Score === null || question2Score === null) {
+      alert("Please answer both questions before continuing.");
       return;
     }
 
     if (!formId) {
-      alert("No form ID available to save NPS data");
+      alert("No form ID available to save feedback data");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      console.log("Saving NPS data for form_id:", formId);
-      console.log("NPS Score:", selectedScore);
-      console.log("NPS Comment:", feedback);
+      console.log("Saving feedback data for form_id:", formId);
+      console.log("Question 1 Score:", question1Score);
+      console.log("Question 2 Score:", question2Score);
+      console.log("Comment:", feedback);
 
       const response = await fetch(
         `https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/form?form_id=eq.${formId}`,
@@ -75,44 +78,40 @@ export default function NPS() {
             Prefer: "return=minimal",
           },
           body: JSON.stringify({
-            nps_score: selectedScore,
-            nps_comment: feedback || null,
+            q1_score: question1Score,
+            q2_score: question2Score,
+            feedback_comment: feedback || null,
           }),
         },
       );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("NPS save error response:", errorText);
+        console.error("Feedback save error response:", errorText);
         throw new Error(
           `HTTP error! status: ${response.status} - ${errorText}`,
         );
       }
 
-      console.log("NPS data saved successfully");
+      console.log("Feedback data saved successfully");
 
-      // Navigate to thank you page
-      navigate("/thank-you");
+      // Navigate to edit summary page
+      navigate("/edit-summary", { state: { formData } });
     } catch (error) {
-      console.error("Error saving NPS data:", error);
-      alert("Failed to save NPS data. Check console for details.");
+      console.error("Error saving feedback data:", error);
+      alert("Failed to save feedback data. Check console for details.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const getScoreColor = (score: number) => {
-    if (score <= 6) return "bg-red-500 hover:bg-red-600";
-    if (score <= 8) return "bg-yellow-500 hover:bg-yellow-600";
+    if (score <= 2) return "bg-red-500 hover:bg-red-600";
+    if (score <= 3) return "bg-yellow-500 hover:bg-yellow-600";
     return "bg-green-500 hover:bg-green-600";
   };
 
-  const getScoreLabel = () => {
-    if (selectedScore === null) return "";
-    if (selectedScore <= 6) return "Detractor";
-    if (selectedScore <= 8) return "Passive";
-    return "Promoter";
-  };
+  const voucheeName = formData?.voucheeFirst || "this person";
 
   return (
     <div
@@ -133,11 +132,11 @@ export default function NPS() {
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
           {/* Heading */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center font-sans">
-            How did we do?
+            Quick Feedback
           </h1>
 
           <p className="text-xl text-gray-600 mb-8 text-center leading-relaxed">
-            How likely would you be to recommend this to a friend?
+            2 of 5 questions
           </p>
 
           {/* Debug Info */}
@@ -145,29 +144,33 @@ export default function NPS() {
             <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-yellow-800">
                 <strong>Debug:</strong> No form_id found. Please navigate here
-                from the edit summary page.
+                from the AI call page.
               </p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* NPS Scale */}
+            {/* Question 1 */}
             <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                I was able to share everything I needed to about {voucheeName}
+              </h3>
+              
               <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Not at all likely</span>
-                <span>Extremely likely</span>
+                <span>Strongly Disagree</span>
+                <span>Strongly Agree</span>
               </div>
 
-              <div className="grid grid-cols-11 gap-2">
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+              <div className="grid grid-cols-5 gap-3">
+                {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     type="button"
-                    onClick={() => handleScoreSelect(score)}
+                    onClick={() => setQuestion1Score(score)}
                     className={`
                       aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
                       ${
-                        selectedScore === score
+                        question1Score === score
                           ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-[#88c6d7] scale-110`
                           : "bg-gray-300 hover:bg-gray-400"
                       }
@@ -177,33 +180,55 @@ export default function NPS() {
                   </button>
                 ))}
               </div>
-
-              {selectedScore !== null && (
-                <div className="text-center mt-4">
-                  <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white ${getScoreColor(selectedScore)}`}
-                  >
-                    {getScoreLabel()} ({selectedScore}/10)
-                  </span>
-                </div>
-              )}
             </div>
 
-            {/* Optional Feedback */}
+            {/* Question 2 */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                The interview flow felt smooth and easy to follow
+              </h3>
+              
+              <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Strongly Disagree</span>
+                <span>Strongly Agree</span>
+              </div>
+
+              <div className="grid grid-cols-5 gap-3">
+                {[1, 2, 3, 4, 5].map((score) => (
+                  <button
+                    key={score}
+                    type="button"
+                    onClick={() => setQuestion2Score(score)}
+                    className={`
+                      aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
+                      ${
+                        question2Score === score
+                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-[#88c6d7] scale-110`
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }
+                    `}
+                  >
+                    {score}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Small Comment Box */}
             <div className="space-y-3">
               <Label
                 htmlFor="feedback"
                 className="text-sm font-medium text-gray-700"
               >
-                Tell us more (optional)
+                Additional comments (optional)
               </Label>
               <textarea
                 id="feedback"
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-                rows={4}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5] resize-vertical font-sans text-base"
-                placeholder="What could we improve? What did you like most?"
+                rows={2}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5] resize-vertical font-sans text-sm"
+                placeholder="Any other thoughts?"
               />
             </div>
 
@@ -211,7 +236,7 @@ export default function NPS() {
             <div className="flex justify-center pt-4">
               <Button
                 type="submit"
-                disabled={selectedScore === null || isSubmitting || !formId}
+                disabled={question1Score === null || question2Score === null || isSubmitting || !formId}
                 variant={null}
                 className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
@@ -224,7 +249,7 @@ export default function NPS() {
 
       {/* Back Button - Bottom Left */}
       <div className="absolute bottom-6 left-6">
-        <Link to="/edit-summary">
+        <Link to="/ai-call" state={{ formData }}>
           <Button
             variant="ghost"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
