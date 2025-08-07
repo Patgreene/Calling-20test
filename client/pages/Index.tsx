@@ -5,15 +5,15 @@ import { useState, useEffect } from "react";
 export default function Index() {
   const quotes = [
     {
-      text: "She has one of the most creative minds I've ever worked with",
+      text: "\"She has one of the most creative minds I've ever worked with\"",
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=329&e=390"
     },
     {
-      text: "Results came from relentless iteration, late-night testing, and a level of ownership that's incredibly rare in a contractor.",
+      text: "\"Results came from relentless iteration, late-night testing, and a level of ownership that's incredibly rare in a contractor.\"",
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-2&s=818&e=937"
     },
     {
-      text: "What really blew me away, though, was her ability to connect with people. Whether it was a developer, a stakeholder, or a user in a research session",
+      text: "\"What really blew me away, though, was her ability to connect with people. Whether it was a developer, a stakeholder, or a user in a research session\"",
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=390&e=538"
     }
   ];
@@ -23,7 +23,7 @@ export default function Index() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 7000); // 7 seconds
+    }, 10000); // 10 seconds
 
     return () => clearInterval(interval);
   }, [quotes.length]);
@@ -84,11 +84,9 @@ export default function Index() {
             className="group text-center max-w-lg mx-auto block hover:scale-105 transition-transform duration-200"
           >
             <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-all duration-500 min-h-[4rem] flex items-center justify-center">
-              <span className="text-3xl md:text-4xl font-bold mr-1">"</span>
               <span className="transition-opacity duration-500">
                 {quotes[currentQuoteIndex].text}
               </span>
-              <span className="text-3xl md:text-4xl font-bold ml-1">"</span>
             </p>
           </a>
         </div>
