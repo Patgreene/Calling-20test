@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { X, Mail } from "lucide-react";
 
 export default function Index() {
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    comment: ""
+  });
   const quotes = [
     {
       text: '" She has one of the most creative minds I\'ve ever worked with "',
