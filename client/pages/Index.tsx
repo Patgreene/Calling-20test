@@ -114,6 +114,101 @@ export default function Index() {
           </a>
         </div>
       </div>
+
+      {/* Contact Button - Fixed Position */}
+      <button
+        onClick={() => setIsContactFormOpen(true)}
+        className="fixed bottom-6 right-6 bg-[#7FB5C5] hover:bg-[#4C7B8A] text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-10"
+      >
+        <Mail className="w-5 h-5" />
+      </button>
+
+      {/* Contact Form Modal */}
+      {isContactFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Contact Us</h2>
+              <button
+                onClick={() => setIsContactFormOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Contact Form */}
+            <form onSubmit={handleContactFormSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  value={contactForm.name}
+                  onChange={handleContactFormChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={contactForm.email}
+                  onChange={handleContactFormChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+                  Message *
+                </label>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  required
+                  rows={4}
+                  value={contactForm.comment}
+                  onChange={handleContactFormChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5] resize-vertical"
+                  placeholder="Your message..."
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsContactFormOpen(false)}
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant={null}
+                  className="flex-1 !bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white"
+                >
+                  Send Message
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
