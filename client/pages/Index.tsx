@@ -28,12 +28,20 @@ export default function Index() {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 10000); // 10 seconds
+    const setupNextQuote = () => {
+      // First quote shows for 7 seconds, others for 10 seconds
+      const currentDuration = currentQuoteIndex === 0 ? 7000 : 10000;
 
-    return () => clearInterval(interval);
-  }, [quotes.length]);
+      const timeout = setTimeout(() => {
+        setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+      }, currentDuration);
+
+      return timeout;
+    };
+
+    const timeout = setupNextQuote();
+    return () => clearTimeout(timeout);
+  }, [currentQuoteIndex, quotes.length]);
 
   const handleContactFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
