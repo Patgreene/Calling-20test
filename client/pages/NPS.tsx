@@ -213,7 +213,7 @@ export default function NPS() {
                 type="submit"
                 disabled={selectedScore === null || isSubmitting || !formId}
                 variant={null}
-                className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-black font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSubmitting ? "Submitting..." : "Continue"}
               </Button>
