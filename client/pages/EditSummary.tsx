@@ -341,7 +341,7 @@ export default function EditSummary() {
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   rows={15}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500 resize-vertical min-h-[400px] font-sans text-base leading-relaxed"
                   placeholder="Transcript will appear here..."
                   disabled={isLoading}
                 />
@@ -378,13 +378,13 @@ export default function EditSummary() {
                                 fill="transparent"
                                 strokeDasharray={`${2 * Math.PI * 40}`}
                                 strokeDashoffset={`${2 * Math.PI * 40 * (1 - (25 - countdown) / 25)}`}
-                                className="text-orange-500 transition-all duration-1000 ease-linear"
+                                className="text-primary-blue-500 transition-all duration-1000 ease-linear"
                                 strokeLinecap="round"
                               />
                             </svg>
                             {/* Countdown number */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-2xl font-bold text-orange-600">
+                              <span className="text-2xl font-bold text-primary-blue-600">
                                 {countdown}
                               </span>
                             </div>
@@ -395,7 +395,7 @@ export default function EditSummary() {
                         </>
                       ) : (
                         <>
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-blue-500 mx-auto mb-2"></div>
                           <p className="text-gray-600 text-sm">
                             {loadingMessage}
                           </p>
@@ -413,7 +413,7 @@ export default function EditSummary() {
                 <Button
                   onClick={retryLoad}
                   variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold px-6 py-3 rounded-lg"
+                  className="border-primary-blue-500 text-primary-blue-600 hover:bg-primary-blue-50 font-semibold px-6 py-3 rounded-lg"
                 >
                   Retry Loading
                 </Button>
@@ -422,7 +422,7 @@ export default function EditSummary() {
               <Button
                 onClick={saveSummary}
                 disabled={isSaving || !formId || isLoading}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                className="bg-vibrant-orange-500 hover:bg-vibrant-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
