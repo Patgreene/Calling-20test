@@ -14,30 +14,42 @@ export default {
     },
     extend: {
       colors: {
-        // Soft pastel colors for voice call app
-        "pastel-blue": {
-          "50": "#f0f9ff",
-          "100": "#e0f2fe",
-          "200": "#bae6fd",
-          "300": "#7dd3fc",
-          "400": "#38bdf8",
-          "500": "#0ea5e9",
-          "600": "#0284c7",
-          "700": "#0369a1",
-          "800": "#075985",
-          "900": "#0c4a6e",
+        // New brand color palette
+        "primary-blue": {
+          "50": "#f0f8fa",
+          "100": "#daeef3",
+          "200": "#b8dde8",
+          "300": "#88c6d7",
+          "400": "#51a5be",
+          "500": "#7FB5C5", // Main Bright Blue
+          "600": "#4C7B8A", // Secondary Accent
+          "700": "#3d636f",
+          "800": "#375158",
+          "900": "#31444a",
         },
-        "soft-lavender": {
-          "50": "#faf7ff",
-          "100": "#f4edff",
-          "200": "#ede0ff",
-          "300": "#dcc7ff",
-          "400": "#c5a0ff",
-          "500": "#a973ff",
-          "600": "#9147ff",
-          "700": "#7c3aed",
-          "800": "#6b21a8",
-          "900": "#581c87",
+        "vibrant-orange": {
+          "50": "#fff7f5",
+          "100": "#ffede8",
+          "200": "#ffddd6",
+          "300": "#ffc1b5",
+          "400": "#ff9b88",
+          "500": "#FF7A56", // Vibrant Accent
+          "600": "#f15a33",
+          "700": "#cc4520",
+          "800": "#a8391a",
+          "900": "#8a3119",
+        },
+        "brand-neutral": {
+          "50": "#F5F5F5", // Light Neutral
+          "100": "#e7e7e7",
+          "200": "#cccccc",
+          "300": "#b3b3b3",
+          "400": "#999999",
+          "500": "#808080",
+          "600": "#666666",
+          "700": "#4d4d4d",
+          "800": "#3A3A3A", // Dark Neutral
+          "900": "#262626",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
