@@ -26,8 +26,6 @@ export default function Index() {
         <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="https://profiles.vouchprofile.com/demo"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <Button
               variant="outline"
