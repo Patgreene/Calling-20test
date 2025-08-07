@@ -20,8 +20,8 @@ export default function Index() {
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-2&s=781&e=905",
     },
     {
-      text: '" What really blew me away, though, was her ability to connect with people. Whether it was a developer, a stakeholder, or a user in a research session "',
-      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=390&e=538",
+      text: '" What really blew me away was her ability to connect with people. Whether it was a developer or stakeholder. "',
+      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=390&e=497",
     },
   ];
 
