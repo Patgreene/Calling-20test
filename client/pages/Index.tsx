@@ -1,7 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function Index() {
+  const quotes = [
+    {
+      text: "She has one of the most creative minds I've ever worked with",
+      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=329&e=390"
+    },
+    {
+      text: "Results came from relentless iteration, late-night testing, and a level of ownership that's incredibly rare in a contractor.",
+      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-2&s=818&e=937"
+    }
+  ];
+
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+    }, 7000); // 7 seconds
+
+    return () => clearInterval(interval);
+  }, [quotes.length]);
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
