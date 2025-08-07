@@ -11,6 +11,10 @@ export default function Index() {
     {
       text: "Results came from relentless iteration, late-night testing, and a level of ownership that's incredibly rare in a contractor.",
       link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-2&s=818&e=937"
+    },
+    {
+      text: "What really blew me away, though, was her ability to connect with people. Whether it was a developer, a stakeholder, or a user in a research session",
+      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=390&e=538"
     }
   ];
 
