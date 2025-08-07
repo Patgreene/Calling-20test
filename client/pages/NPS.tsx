@@ -168,7 +168,7 @@ export default function NPS() {
                       aspect-square rounded-lg text-white font-bold text-lg transition-all duration-200 
                       ${
                         selectedScore === score
-                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-primary-blue-300 scale-110`
+                          ? `${getScoreColor(score)} ring-4 ring-offset-2 ring-[#88c6d7] scale-110`
                           : "bg-gray-300 hover:bg-gray-400"
                       }
                     `}
@@ -202,7 +202,7 @@ export default function NPS() {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 rows={4}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500 resize-vertical font-sans text-base"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5] resize-vertical font-sans text-base"
                 placeholder="What could we improve? What did you like most?"
               />
             </div>
@@ -212,7 +212,7 @@ export default function NPS() {
               <Button
                 type="submit"
                 disabled={selectedScore === null || isSubmitting || !formId}
-                className="bg-vibrant-orange-500 hover:bg-vibrant-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                className="bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSubmitting ? "Submitting..." : "Continue"}
               </Button>
