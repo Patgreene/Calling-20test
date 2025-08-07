@@ -166,7 +166,8 @@ export default function Form() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
+              variant={null}
+              className="w-full !bg-[#FF7A56] hover:!bg-[#f15a33] !text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
             >
               Start Call
             </Button>
