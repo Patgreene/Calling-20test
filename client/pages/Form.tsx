@@ -82,7 +82,7 @@ export default function Form() {
                 required
                 value={formData.voucherFirst}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
               />
             </div>
 
@@ -101,7 +101,7 @@ export default function Form() {
                 required
                 value={formData.voucherLast}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
               />
             </div>
 
@@ -120,7 +120,7 @@ export default function Form() {
                 required
                 value={formData.voucheeFirst}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
               />
             </div>
 
@@ -139,7 +139,7 @@ export default function Form() {
                 required
                 value={formData.voucheeLast}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
               />
             </div>
 
@@ -158,7 +158,7 @@ export default function Form() {
                 required
                 value={formData.voucherEmail}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
                 placeholder="Enter your email address"
               />
             </div>
@@ -166,7 +166,7 @@ export default function Form() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-vibrant-orange-500 hover:bg-vibrant-orange-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
+              className="w-full bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
             >
               Start Call
             </Button>
