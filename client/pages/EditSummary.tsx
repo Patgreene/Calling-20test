@@ -422,7 +422,8 @@ export default function EditSummary() {
               <Button
                 onClick={saveSummary}
                 disabled={isSaving || !formId || isLoading}
-                className="bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                variant={null}
+                className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
