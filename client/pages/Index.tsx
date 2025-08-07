@@ -42,13 +42,30 @@ export default function Index() {
     });
   };
 
-  const handleContactFormSubmit = (e: React.FormEvent) => {
+  const handleContactFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here (could send to API endpoint)
-    console.log("Contact form submitted:", contactForm);
-    alert("Thank you for your message! We'll get back to you soon.");
-    setContactForm({ name: "", email: "", comment: "" });
-    setIsContactFormOpen(false);
+
+    try {
+      const response = await fetch('/.netlify/functions/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      if (response.ok) {
+        alert("Thank you for your message! We'll get back to you soon.");
+        setContactForm({ name: "", email: "", comment: "" });
+        setIsContactFormOpen(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error || 'Failed to send message'}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to send message. Please try again.');
+    }
   };
   return (
     <div
