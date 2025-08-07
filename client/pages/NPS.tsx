@@ -23,11 +23,10 @@ export default function NPS() {
   // Get form_id and formData from URL params or location state
   useEffect(() => {
     let id = searchParams.get("form_id");
-    let data = null;
+    let data = location.state?.formData || null;
 
-    if (!id && location.state?.formData?.formId) {
-      id = location.state.formData.formId;
-      data = location.state.formData;
+    if (!id && data?.formId) {
+      id = data.formId;
     }
 
     if (!id) {
