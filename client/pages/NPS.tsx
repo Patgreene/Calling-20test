@@ -157,18 +157,18 @@ export default function NPS() {
                 <span>Strongly Agree</span>
               </div>
 
-              <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
+              <div className="grid grid-cols-5 gap-4 max-w-md mx-auto">
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     type="button"
                     onClick={() => setQuestion1Score(score)}
                     className={`
-                      w-12 h-12 rounded-md text-white font-semibold text-sm transition-all duration-200
+                      w-14 h-14 rounded-lg text-white font-bold text-base transition-all duration-200 shadow-md hover:shadow-lg
                       ${
                         question1Score === score
-                          ? `${getScoreColor(score)} ring-2 ring-offset-1 ring-[#88c6d7] scale-105`
-                          : "bg-gray-300 hover:bg-gray-400"
+                          ? "bg-[#FF7A56] hover:bg-[#f15a33] ring-3 ring-offset-2 ring-[#7FB5C5] scale-110 shadow-xl"
+                          : "bg-[#7FB5C5] hover:bg-[#4C7B8A]"
                       }
                     `}
                   >
@@ -189,18 +189,18 @@ export default function NPS() {
                 <span>Strongly Agree</span>
               </div>
 
-              <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
+              <div className="grid grid-cols-5 gap-4 max-w-md mx-auto">
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     type="button"
                     onClick={() => setQuestion2Score(score)}
                     className={`
-                      w-12 h-12 rounded-md text-white font-semibold text-sm transition-all duration-200
+                      w-14 h-14 rounded-lg text-white font-bold text-base transition-all duration-200 shadow-md hover:shadow-lg
                       ${
                         question2Score === score
-                          ? `${getScoreColor(score)} ring-2 ring-offset-1 ring-[#88c6d7] scale-105`
-                          : "bg-gray-300 hover:bg-gray-400"
+                          ? "bg-[#FF7A56] hover:bg-[#f15a33] ring-3 ring-offset-2 ring-[#7FB5C5] scale-110 shadow-xl"
+                          : "bg-[#7FB5C5] hover:bg-[#4C7B8A]"
                       }
                     `}
                   >
