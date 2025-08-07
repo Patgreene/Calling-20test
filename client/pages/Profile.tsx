@@ -121,7 +121,7 @@ export default function Profile() {
               </p>
               <button
                 onClick={() => toggleTranscript(transcript.id)}
-                className="text-primary-blue-500 hover:text-primary-blue-600 transition-colors flex-shrink-0 mt-1"
+                className="text-[#7FB5C5] hover:text-[#4C7B8A] transition-colors flex-shrink-0 mt-1"
               >
                 {isExpanded ? (
                   <ChevronUp className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function Profile() {
         <div className="mb-16">
           <div className="flex flex-col items-center text-center mb-8">
             {/* Profile Photo */}
-            <div className="w-32 h-32 bg-gradient-to-br from-primary-blue-400 to-primary-blue-600 rounded-full flex items-center justify-center mb-6">
+            <div className="w-32 h-32 bg-gradient-to-br from-[#51a5be] to-[#4C7B8A] rounded-full flex items-center justify-center mb-6">
               <span className="text-4xl font-light text-white">PG</span>
             </div>
 
@@ -197,7 +197,7 @@ export default function Profile() {
             >
               About me
               {activeTab === "about-me" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-blue-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7FB5C5]" />
               )}
             </button>
             <button
@@ -210,7 +210,7 @@ export default function Profile() {
             >
               Given by me
               {activeTab === "given" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-blue-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7FB5C5]" />
               )}
             </button>
           </div>
