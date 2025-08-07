@@ -415,7 +415,7 @@ export default function EditSummary() {
                   variant="outline"
                   className="border-[#7FB5C5] text-[#4C7B8A] hover:bg-[#f0f8fa] font-semibold px-6 py-3 rounded-lg"
                 >
-                  Retry Loading
+                  Load Again
                 </Button>
               )}
 
@@ -423,7 +423,7 @@ export default function EditSummary() {
                 onClick={saveSummary}
                 disabled={isSaving || !formId || isLoading}
                 variant={null}
-                className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
