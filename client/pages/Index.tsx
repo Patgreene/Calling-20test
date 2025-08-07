@@ -40,8 +40,9 @@ export default function Index() {
 
           <Link to="/form">
             <Button
+              variant={null}
               size="lg"
-              className="bg-[#FF7A56] hover:bg-[#f15a33] text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
+              className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
             >
               Vouch for someone
             </Button>
