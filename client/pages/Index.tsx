@@ -76,12 +76,14 @@ export default function Index() {
           </div>
 
           <a
-            href="https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=329&e=390"
+            href={quotes[currentQuoteIndex].link}
             className="group text-center max-w-lg mx-auto block hover:scale-105 transition-transform duration-200"
           >
-            <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-colors duration-200">
-              <span className="text-3xl md:text-4xl font-bold mr-1">"</span>She
-              has one of the most creative minds I've ever worked with
+            <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-all duration-500 min-h-[4rem] flex items-center justify-center">
+              <span className="text-3xl md:text-4xl font-bold mr-1">"</span>
+              <span className="transition-opacity duration-500">
+                {quotes[currentQuoteIndex].text}
+              </span>
               <span className="text-3xl md:text-4xl font-bold ml-1">"</span>
             </p>
           </a>
