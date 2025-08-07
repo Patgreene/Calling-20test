@@ -40,7 +40,44 @@ export function createServer() {
       timestamp: new Date().toISOString(),
     });
 
-    // For now, just return success - you can integrate with email service later
+    // Send to Make.com webhook
+    const makeWebhookUrl = process.env.CONTACT_WEBHOOK_URL || "REPLACE_WITH_YOUR_WEBHOOK_URL";
+
+    if (makeWebhookUrl && makeWebhookUrl !== "REPLACE_WITH_YOUR_WEBHOOK_URL") {
+      try {
+        const payload = {
+          type: "contact_form",
+          name: name,
+          email: email,
+          message: comment,
+          timestamp: new Date().toISOString(),
+          recipient: "patrick@vouchprofile.com",
+        };
+
+        const makeResponse = await fetch(makeWebhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const responseText = await makeResponse.text();
+        console.log("Make.com contact response:", makeResponse.status, responseText);
+
+        if (makeResponse.ok) {
+          return res.status(200).json({
+            message: "Message sent successfully! We'll get back to you soon."
+          });
+        } else {
+          console.error("Make.com error:", responseText);
+        }
+      } catch (makeError) {
+        console.error("Error sending to Make.com:", makeError);
+      }
+    }
+
+    // Fallback response
     return res.status(200).json({
       message: "Message received successfully! We'll get back to you soon.",
       note: "Contact form logged successfully"
