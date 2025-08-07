@@ -75,7 +75,7 @@ export default function Index() {
           {/* Text */}
           <div className="flex justify-end pr-8 mb-4">
             <div className="text-[#7FB5C5] text-lg font-semibold transform rotate-3">
-              Finally, proof of your rep!
+              Comments that deserve to be saved!
             </div>
           </div>
 
