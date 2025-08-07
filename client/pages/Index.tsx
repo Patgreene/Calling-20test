@@ -123,7 +123,7 @@ export default function Index() {
         {/* Quote Section */}
         <div className="pt-12">
           {/* Text */}
-          <div className="flex justify-end pr-8 mb-4">
+          <div className="hidden sm:flex justify-end pr-8 mb-4">
             <div className="text-[#7FB5C5] text-lg font-semibold transform rotate-3">
               Comments that deserve to be saved!
             </div>
