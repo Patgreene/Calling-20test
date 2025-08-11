@@ -104,3 +104,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix ElevenLabs widget gap issues on mobile */
+@layer utilities {
+  /* Trim excess space under the ElevenLabs embed */
+  iframe[src*="elevenlabs"] {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Ensure the wrapper doesn't reserve extra space */
+  .elevenlabs-embed-wrapper,
+  [data-elevenlabs-embed],
+  elevenlabs-convai {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Additional mobile-specific fixes for iOS Safari */
+  @media (max-width: 640px) {
+    iframe[src*="elevenlabs"] {
+      max-height: 430px !important;
+      overflow: hidden !important;
+    }
+
+    #widget-container {
+      max-height: 430px !important;
+      overflow: hidden !important;
+    }
+  }
+}

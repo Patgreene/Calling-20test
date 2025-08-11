@@ -300,6 +300,7 @@ export default function AICall() {
         />
       </div>
 
+<<<<<<< HEAD
       {/* Widget Container - Flex-centered */}
       <div className="flex-1 flex items-center justify-center relative">
         {isLoading && (
@@ -315,6 +316,29 @@ export default function AICall() {
           ref={widgetContainerRef}
           className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
         />
+=======
+        {/* Widget Container - Fixed Position */}
+        <div className="relative h-auto min-h-0 pb-0 overflow-hidden">
+          {isLoading && (
+            <div className="h-[500px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
+                <p>Loading AI assistant...</p>
+              </div>
+            </div>
+          )}
+          <div
+            id="widget-container"
+            ref={widgetContainerRef}
+            className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 overflow-hidden ${isLoading ? "hidden" : ""}`}
+            style={{
+              height: "auto",
+              minHeight: "0",
+              paddingBottom: "0",
+            }}
+          />
+        </div>
+>>>>>>> 0531f72b50fe966696d9892acceeb15708571e66
       </div>
 
       {/* Back Button - Bottom Left */}
