@@ -316,9 +316,9 @@ export default function AICall() {
             ref={widgetContainerRef}
             className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 overflow-hidden ${isLoading ? "hidden" : ""}`}
             style={{
-              height: 'auto',
-              minHeight: '0',
-              paddingBottom: '0'
+              height: "auto",
+              minHeight: "0",
+              paddingBottom: "0",
             }}
           />
         </div>
