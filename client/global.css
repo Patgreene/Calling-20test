@@ -105,38 +105,66 @@
   }
 }
 
-/* Fix ElevenLabs widget gap issues on mobile */
+/* Fix ElevenLabs widget gap issues and force container bounds */
 @layer utilities {
-  /* Trim excess space under the ElevenLabs embed */
-  iframe[src*="elevenlabs"] {
-    display: block !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Ensure the wrapper doesn't reserve extra space */
-  .elevenlabs-embed-wrapper,
-  [data-elevenlabs-embed],
-  elevenlabs-convai {
-    height: auto !important;
-    min-height: 0 !important;
-    padding-bottom: 0 !important;
+  /* Force widget to stay within container */
+  #widget-container {
     overflow: hidden !important;
-    margin-bottom: 0 !important;
+    position: relative !important;
   }
 
-  /* Additional mobile-specific fixes for iOS Safari */
+  /* Force ElevenLabs widget to respect container dimensions */
+  elevenlabs-convai {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+
+  /* Force all iframe content within bounds */
+  #widget-container iframe,
+  #widget-container iframe[src*="elevenlabs"] {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border: none !important;
+  }
+
+  /* Ensure no floating or absolute positioning escapes container */
+  #widget-container * {
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
+
+  /* Mobile-specific constraints */
   @media (max-width: 640px) {
-    iframe[src*="elevenlabs"] {
-      max-height: 430px !important;
-      overflow: hidden !important;
+    #widget-container {
+      max-height: 360px !important;
+      max-width: 90vw !important;
     }
 
+    elevenlabs-convai {
+      max-height: 360px !important;
+      max-width: 90vw !important;
+    }
+  }
+
+  /* Desktop constraints */
+  @media (min-width: 641px) {
     #widget-container {
-      max-height: 430px !important;
-      overflow: hidden !important;
+      max-height: 420px !important;
+      max-width: 560px !important;
+    }
+
+    elevenlabs-convai {
+      max-height: 420px !important;
+      max-width: 560px !important;
     }
   }
 }
