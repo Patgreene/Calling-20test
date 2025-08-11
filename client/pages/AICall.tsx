@@ -1,32 +1,41 @@
-import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function AICall() {
+  const navigate = useNavigate();
   const location = useLocation();
-  const formData = location.state?.formData;
-  const widgetContainerRef = useRef<HTMLDivElement>(null);
-  const scriptLoadedRef = useRef(false);
-  const widgetRef = useRef<HTMLElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<any>(null);
+  const scriptLoadedRef = useRef(false);
+
+  // Get form data from location state
+  const formData = location.state?.formData;
+
+  const cleanupWidget = () => {
+    if (widgetRef.current) {
+      try {
+        if (widgetRef.current.remove) {
+          widgetRef.current.remove();
+        } else if (widgetRef.current.parentNode) {
+          widgetRef.current.parentNode.removeChild(widgetRef.current);
+        }
+        widgetRef.current = null;
+      } catch (error) {
+        console.error("Error cleaning up widget:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    // Load ElevenLabs script
-    if (!scriptLoadedRef.current) {
-      console.log("Loading ElevenLabs script...");
+    if (!formData) return;
 
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
-      script.async = true;
-      script.type = "text/javascript";
-      script.crossOrigin = "anonymous";
-
-      script.onload = () => {
-        console.log("ElevenLabs script loaded successfully");
-        setIsLoading(false);
-        // Create widget after script loads
-        if (formData && widgetContainerRef.current) {
+    const loadScript = () => {
+      if (scriptLoadedRef.current) {
+        console.log("Script already loaded, creating widget...");
+        if (typeof customElements !== 'undefined' && customElements.get('elevenlabs-convai')) {
           try {
             createWidget();
           } catch (error) {
@@ -34,20 +43,46 @@ export default function AICall() {
             setIsLoading(false);
           }
         }
+        return;
+      }
+
+      console.log("Loading ElevenLabs script...");
+      setIsLoading(true);
+
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
+      script.async = true;
+
+      script.onload = () => {
+        console.log("ElevenLabs script loaded successfully");
+        setIsLoading(false);
+
+        // Set up error handling for cases where the widget container is not found
+        const checkWidget = () => {
+          if (!widgetContainerRef.current) {
+            console.error("Widget container not found");
+            return;
+          }
+
+          if (widgetContainerRef.current && !widgetRef.current) {
+            console.log("Creating widget after script load...");
+            createWidget();
+          }
+        };
+
+        // Small delay to ensure DOM is ready
+        setTimeout(checkWidget, 100);
       };
 
       script.onerror = (error) => {
-        console.error("Error loading ElevenLabs script:", error);
-        console.error("Script URL:", script.src);
+        console.error("Failed to load ElevenLabs script:", error);
         setIsLoading(false);
-
-        // Show user-friendly error message
-        if (widgetContainerRef.current) {
+        if (widgetContainerRef.current && !widgetRef.current) {
           widgetContainerRef.current.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
               <div style="text-align: center; color: #666;">
                 <div style="font-size: 18px; margin-bottom: 8px;">⚠️</div>
-                <div>Unable to load AI assistant</div>
+                <div>Failed to load AI assistant</div>
                 <div style="font-size: 12px; margin-top: 4px;">Please check your internet connection</div>
               </div>
             </div>
@@ -86,7 +121,10 @@ export default function AICall() {
       };
 
       try {
-        document.body.appendChild(script);
+        // Check if script is already loaded to prevent double loading
+        if (!document.querySelector('script[src*="elevenlabs"]')) {
+          document.body.appendChild(script);
+        }
         scriptLoadedRef.current = true;
       } catch (error) {
         clearTimeout(loadTimeout);
@@ -98,164 +136,117 @@ export default function AICall() {
         // Cleanup widget and script on unmount
         console.log("Cleaning up ElevenLabs components...");
         cleanupWidget();
-        try {
-          if (document.body.contains(script)) {
-            document.body.removeChild(script);
-            console.log("Script removed from document");
-          }
-          scriptLoadedRef.current = false;
-        } catch (error) {
-          console.log("Script already removed or error during cleanup:", error);
-        }
       };
-    } else {
-      console.log("ElevenLabs script already loaded, creating widget...");
-      setIsLoading(false);
-      // Create widget immediately if script already loaded
-      if (formData && widgetContainerRef.current) {
-        try {
-          // Check if ElevenLabs custom element is defined
-          if (
-            typeof customElements !== "undefined" &&
-            customElements.get("elevenlabs-convai")
-          ) {
-            createWidget();
-          } else {
-            console.log(
-              "ElevenLabs custom element not yet defined, waiting...",
-            );
-            // Wait a bit and try again
-            setTimeout(() => {
-              if (formData && widgetContainerRef.current) {
-                createWidget();
-              }
-            }, 1000);
-          }
-        } catch (error) {
-          console.error("Error creating widget:", error);
-          setIsLoading(false);
-        }
-      }
-    }
+    };
 
-    // Add beforeunload cleanup
+    loadScript();
+
+    // Handle page unload to cleanup WebSocket connections
     const handleBeforeUnload = () => {
       cleanupWidget();
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // Cleanup function for when component unmounts
     return () => {
-      cleanupWidget();
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      cleanupWidget();
     };
   }, [formData]);
 
+  // Check if widget should be created after DOM updates
+  useEffect(() => {
+    if (
+      !isLoading &&
+      scriptLoadedRef.current &&
+      widgetContainerRef.current &&
+      !widgetRef.current
+    ) {
+      if (
+        typeof customElements !== "undefined" &&
+        customElements.get("elevenlabs-convai")
+      ) {
+        if (formData && widgetContainerRef.current) {
+          createWidget();
+        }
+      } else {
+        console.log("Custom element not yet defined, waiting...");
+        const checkCustomElement = setInterval(() => {
+          if (customElements.get("elevenlabs-convai")) {
+            clearInterval(checkCustomElement);
+            if (formData && widgetContainerRef.current) {
+              createWidget();
+            }
+          }
+        }, 100);
+
+        // Cleanup interval after 5 seconds
+        setTimeout(() => {
+          clearInterval(checkCustomElement);
+        }, 5000);
+
+        return () => clearInterval(checkCustomElement);
+      }
+    }
+  }, [isLoading, formData]);
+
   const createWidget = () => {
     try {
+      // Check if the custom element is already defined to prevent double registration
+      if (customElements.get('elevenlabs-convai')) {
+        console.log('ElevenLabs widget already registered, proceeding with creation...');
+      }
+
+      if (!widgetContainerRef.current) {
+        console.error("Widget container ref is not available");
+        return;
+      }
+
+      if (widgetRef.current) {
+        console.log("Widget already exists, cleaning up first...");
+        cleanupWidget();
+      }
+
       console.log("Creating ElevenLabs widget...");
-      console.log("Container ref:", !!widgetContainerRef.current);
-      console.log("Form data:", !!formData);
-
-      if (!widgetContainerRef.current || !formData) {
-        console.log("Cannot create widget: missing container or form data");
-        return;
-      }
-
-      // Clean up existing widget first
-      cleanupWidget();
-
-      // Check if the custom element is available
-      if (
-        typeof customElements === "undefined" ||
-        !customElements.get("elevenlabs-convai")
-      ) {
-        console.error("ElevenLabs custom element not available");
-        setIsLoading(false);
-        return;
-      }
-
-      // Create ElevenLabs ConvAI widget
       const widget = document.createElement("elevenlabs-convai");
-      console.log("Created widget element:", widget);
 
       widget.setAttribute("agent-id", "agent_7101k1jdynr4ewv8e9vnxs2fbtew");
 
-      // Set widget height to match the diff
-      widget.style.height = "800px";
-
-      try {
-        const dynamicVars = {
-          voucher_first: formData.voucherFirst,
-          voucher_last: formData.voucherLast,
-          voucher_email: formData.voucherEmail,
-          vouchee_first: formData.voucheeFirst,
-          vouchee_last: formData.voucheeLast,
-          form_id: formData.formId,
+      if (formData) {
+        const dynamicVariables = {
+          voucher_first: formData.voucherFirst || "",
+          voucher_last: formData.voucherLast || "",
+          voucher_email: formData.voucherEmail || "",
+          vouchee_first: formData.voucheeFirst || "",
+          vouchee_last: formData.voucheeLast || "",
+          form_id: formData.formId || "",
         };
-        console.log("Setting dynamic variables:", dynamicVars);
 
-        widget.setAttribute("dynamic-variables", JSON.stringify(dynamicVars));
-      } catch (error) {
-        console.error("Error setting widget variables:", error);
-        return;
+        console.log("Setting dynamic variables:", dynamicVariables);
+        widget.setAttribute("dynamic-variables", JSON.stringify(dynamicVariables));
       }
 
-      console.log("Appending widget to container...");
-
-      // Apply fixed positioning styles to the widget
-      widget.style.width = "100%";
-      widget.style.height = "100%";
-      widget.style.display = "block";
-      widget.style.position = "relative";
-
+      // Clear the container and add the widget
+      widgetContainerRef.current.innerHTML = "";
       widgetContainerRef.current.appendChild(widget);
       widgetRef.current = widget;
-      console.log("Widget created and appended successfully");
 
-      // Add a listener for widget errors
-      widget.addEventListener("error", (e) => {
-        console.error("Widget error:", e);
-      });
+      console.log("ElevenLabs widget created and appended successfully");
     } catch (error) {
       console.error("Error creating widget:", error);
       setIsLoading(false);
-    }
-  };
 
-  const cleanupWidget = () => {
-    try {
-      if (widgetRef.current) {
-        // Try to properly disconnect/cleanup the widget
-        try {
-          if (typeof (widgetRef.current as any).disconnect === "function") {
-            (widgetRef.current as any).disconnect();
-          }
-          if (typeof (widgetRef.current as any).destroy === "function") {
-            (widgetRef.current as any).destroy();
-          }
-        } catch (error) {
-          console.log("Widget cleanup method not available");
-        }
-
-        // Remove from DOM
-        try {
-          if (widgetRef.current.parentNode) {
-            widgetRef.current.parentNode.removeChild(widgetRef.current);
-          }
-        } catch (error) {
-          console.log("Error removing widget from DOM:", error);
-        }
-        widgetRef.current = null;
-      }
-
-      // Clear container
       if (widgetContainerRef.current) {
-        widgetContainerRef.current.innerHTML = "";
+        widgetContainerRef.current.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 300px; background: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px;">
+            <div style="text-align: center; color: #666;">
+              <div style="font-size: 18px; margin-bottom: 8px;">❌</div>
+              <div>Widget creation failed</div>
+              <div style="font-size: 12px; margin-top: 4px;">Please refresh the page</div>
+            </div>
+          </div>
+        `;
       }
-    } catch (error) {
-      console.error("Error during widget cleanup:", error);
     }
   };
 
@@ -300,7 +291,6 @@ export default function AICall() {
         />
       </div>
 
-<<<<<<< HEAD
       {/* Widget Container - Flex-centered */}
       <div className="flex-1 flex items-center justify-center relative">
         {isLoading && (
@@ -316,29 +306,6 @@ export default function AICall() {
           ref={widgetContainerRef}
           className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
         />
-=======
-        {/* Widget Container - Fixed Position */}
-        <div className="relative h-auto min-h-0 pb-0 overflow-hidden">
-          {isLoading && (
-            <div className="h-[500px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
-                <p>Loading AI assistant...</p>
-              </div>
-            </div>
-          )}
-          <div
-            id="widget-container"
-            ref={widgetContainerRef}
-            className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 overflow-hidden ${isLoading ? "hidden" : ""}`}
-            style={{
-              height: "auto",
-              minHeight: "0",
-              paddingBottom: "0",
-            }}
-          />
-        </div>
->>>>>>> 0531f72b50fe966696d9892acceeb15708571e66
       </div>
 
       {/* Back Button - Bottom Left */}
