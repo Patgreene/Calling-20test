@@ -316,7 +316,7 @@ export default function AICall() {
           style={{
             maxWidth: "90vw",
             maxHeight: "360px",
-            border: "1px solid transparent"
+            border: "1px solid transparent",
           }}
         />
       </div>
