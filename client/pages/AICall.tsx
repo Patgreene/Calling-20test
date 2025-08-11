@@ -302,7 +302,7 @@ export default function AICall() {
       {/* Widget Container - Normal Document Flow */}
       <div className="flex justify-center mb-8">
         {isLoading && (
-          <div className="w-[calc(90vw+12px)] sm:w-[560px] h-[372px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
+          <div className="w-[calc(90vw+20px)] sm:w-[560px] h-[380px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
               <p>Loading AI assistant...</p>
@@ -312,10 +312,10 @@ export default function AICall() {
         <div
           id="widget-container"
           ref={widgetContainerRef}
-          className={`w-[calc(90vw+12px)] sm:w-[560px] h-[372px] sm:h-[420px] overflow-hidden relative ${isLoading ? "hidden" : ""}`}
+          className={`w-[calc(90vw+20px)] sm:w-[560px] h-[380px] sm:h-[420px] overflow-hidden relative ${isLoading ? "hidden" : ""}`}
           style={{
-            maxWidth: "calc(90vw + 12px)",
-            maxHeight: "372px",
+            maxWidth: "calc(90vw + 20px)",
+            maxHeight: "380px",
             border: "1px solid transparent",
           }}
         />
