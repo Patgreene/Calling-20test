@@ -287,11 +287,11 @@ export default function AICall() {
 
   return (
     <div
-      className="h-screen flex flex-col px-4 py-4 relative"
+      className="min-h-screen px-4 py-8 relative pb-32"
       style={{ backgroundColor: "#F8F8F8" }}
     >
       {/* Logo */}
-      <div className="flex justify-center mb-6 flex-shrink-0">
+      <div className="flex justify-center mb-8">
         <img
           src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
           alt="Vouch Logo"
@@ -299,8 +299,8 @@ export default function AICall() {
         />
       </div>
 
-      {/* Widget Container - Centered Vertically */}
-      <div className="flex-1 flex items-center justify-center">
+      {/* Widget Container - Normal Document Flow */}
+      <div className="flex justify-center mb-8">
         {isLoading && (
           <div className="w-[90vw] sm:w-[560px] h-[360px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
