@@ -288,35 +288,33 @@ export default function AICall() {
 
   return (
     <div
-      className="min-h-screen px-4 py-4 relative overflow-hidden"
+      className="h-screen px-4 py-4 relative overflow-hidden flex flex-col"
       style={{ backgroundColor: "#F8F8F8" }}
     >
-      <div className="w-full max-w-3xl mx-auto pt-3 sm:pt-6 space-y-1 sm:space-y-3">
-        {/* Logo */}
-        <div className="flex justify-center mb-1 sm:mb-3">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
-            alt="Vouch Logo"
-            className="h-12 md:h-16 object-contain"
-          />
-        </div>
+      {/* Logo */}
+      <div className="flex justify-center mb-4 flex-shrink-0">
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
+          alt="Vouch Logo"
+          className="h-12 md:h-16 object-contain"
+        />
+      </div>
 
-        {/* Widget Container - Fixed Position */}
-        <div className="relative">
-          {isLoading && (
-            <div className="h-[500px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
-                <p>Loading AI assistant...</p>
-              </div>
+      {/* Widget Container - Flex-centered */}
+      <div className="flex-1 flex items-center justify-center relative">
+        {isLoading && (
+          <div className="w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
+              <p>Loading AI assistant...</p>
             </div>
-          )}
-          <div
-            id="widget-container"
-            ref={widgetContainerRef}
-            className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
-          />
-        </div>
+          </div>
+        )}
+        <div
+          id="widget-container"
+          ref={widgetContainerRef}
+          className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
+        />
       </div>
 
       {/* Back Button - Bottom Left */}
