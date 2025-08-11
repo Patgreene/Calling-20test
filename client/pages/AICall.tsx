@@ -274,7 +274,10 @@ export default function AICall() {
             Please fill out the form first to start an AI call.
           </p>
           <Link to="/form">
-            <Button variant={null} className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white">
+            <Button
+              variant={null}
+              className="!bg-[#FF7A56] hover:!bg-[#f15a33] !text-white"
+            >
               Go to Form
             </Button>
           </Link>
@@ -332,7 +335,10 @@ export default function AICall() {
       {/* Next Button - Bottom Right */}
       <div className="absolute bottom-6 right-6">
         <Link to="/nps" state={{ formData }}>
-          <Button variant={null} className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+          <Button
+            variant={null}
+            className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+          >
             Next
           </Button>
         </Link>
