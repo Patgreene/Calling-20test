@@ -145,13 +145,13 @@
   /* Mobile-specific constraints */
   @media (max-width: 640px) {
     #widget-container {
-      max-height: 360px !important;
-      max-width: 90vw !important;
+      max-height: 372px !important;
+      max-width: calc(90vw + 12px) !important;
     }
 
     elevenlabs-convai {
-      max-height: 360px !important;
-      max-width: 90vw !important;
+      max-height: 372px !important;
+      max-width: calc(90vw + 12px) !important;
     }
   }
 
