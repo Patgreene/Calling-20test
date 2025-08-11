@@ -309,7 +309,7 @@ export default function AICall() {
       </div>
 
       {/* Back Button - Bottom Left */}
-      <div className="absolute bottom-5 sm:bottom-6 left-6">
+      <div className="absolute bottom-12 sm:bottom-12 left-6">
         <Link to="/form">
           <Button
             variant="ghost"
@@ -322,7 +322,7 @@ export default function AICall() {
       </div>
 
       {/* Next Button - Bottom Right */}
-      <div className="absolute bottom-5 sm:bottom-6 right-6">
+      <div className="absolute bottom-12 sm:bottom-12 right-6">
         <Link to="/nps" state={{ formData }}>
           <Button
             variant={null}
