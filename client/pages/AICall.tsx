@@ -291,7 +291,7 @@ export default function AICall() {
       style={{ backgroundColor: "#F8F8F8" }}
     >
       {/* Logo */}
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-6 pt-4 relative z-30">
         <img
           src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
           alt="Vouch Logo"
@@ -300,7 +300,7 @@ export default function AICall() {
       </div>
 
       {/* Widget Container - Simple centered */}
-      <div className="flex justify-center items-start pt-8 pb-24">
+      <div className="flex justify-center items-start pt-2 pb-24">
         {isLoading && (
           <div className="w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
@@ -312,7 +312,7 @@ export default function AICall() {
         <div
           id="widget-container"
           ref={widgetContainerRef}
-          className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
+          className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] relative ${isLoading ? "hidden" : ""}`}
         />
       </div>
 
