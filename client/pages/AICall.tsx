@@ -287,7 +287,7 @@ export default function AICall() {
 
   return (
     <div
-      className="h-screen px-4 py-4 relative overflow-hidden flex flex-col"
+      className="min-h-screen px-4 py-4 relative overflow-hidden flex flex-col"
       style={{ backgroundColor: "#F8F8F8" }}
     >
       {/* Logo */}
@@ -300,7 +300,7 @@ export default function AICall() {
       </div>
 
       {/* Widget Container - Flex-centered */}
-      <div className="flex-1 flex items-center justify-center relative pb-20">
+      <div className="flex-1 flex items-center justify-center relative mb-20">
         {isLoading && (
           <div className="w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
