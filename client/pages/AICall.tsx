@@ -291,7 +291,11 @@ export default function AICall() {
       style={{ backgroundColor: "#F8F8F8" }}
     >
       {/* Logo */}
+<<<<<<< HEAD
       <div className="flex justify-center mb-6">
+=======
+      <div className="flex justify-center mb-6 pt-4 relative z-30">
+>>>>>>> 55444c24051638778e91fef3e0ac4e8cbc1211da
         <img
           src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
           alt="Vouch Logo"
@@ -299,8 +303,13 @@ export default function AICall() {
         />
       </div>
 
+<<<<<<< HEAD
       {/* Widget Container - Document Flow */}
       <div className="flex justify-center mb-20">
+=======
+      {/* Widget Container - Simple centered */}
+      <div className="flex justify-center items-start pt-2 pb-24">
+>>>>>>> 55444c24051638778e91fef3e0ac4e8cbc1211da
         {isLoading && (
           <div className="w-[90vw] sm:w-[560px] h-[390px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
@@ -312,12 +321,16 @@ export default function AICall() {
         <div
           id="widget-container"
           ref={widgetContainerRef}
+<<<<<<< HEAD
           className={`w-[90vw] sm:w-[560px] h-[390px] sm:h-[420px] ${isLoading ? "hidden" : ""}`}
+=======
+          className={`w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] relative ${isLoading ? "hidden" : ""}`}
+>>>>>>> 55444c24051638778e91fef3e0ac4e8cbc1211da
         />
       </div>
 
       {/* Back Button - Bottom Left */}
-      <div className="absolute bottom-5 sm:bottom-6 left-6">
+      <div className="absolute bottom-12 sm:bottom-12 left-6">
         <Link to="/form">
           <Button
             variant="ghost"
@@ -330,7 +343,7 @@ export default function AICall() {
       </div>
 
       {/* Next Button - Bottom Right */}
-      <div className="absolute bottom-5 sm:bottom-6 right-6">
+      <div className="absolute bottom-12 sm:bottom-12 right-6">
         <Link to="/nps" state={{ formData }}>
           <Button
             variant={null}
