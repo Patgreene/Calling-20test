@@ -302,7 +302,7 @@ export default function AICall() {
         </div>
 
         {/* Widget Container - Fixed Position */}
-        <div className="relative">
+        <div className="relative h-auto min-h-0 pb-0 overflow-hidden">
           {isLoading && (
             <div className="h-[500px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
               <div className="text-center">
@@ -314,7 +314,12 @@ export default function AICall() {
           <div
             id="widget-container"
             ref={widgetContainerRef}
-            className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 ${isLoading ? "hidden" : ""}`}
+            className={`absolute left-1/2 transform -translate-x-1/2 w-[90vw] sm:w-[560px] h-[430px] sm:h-[460px] z-20 overflow-hidden ${isLoading ? "hidden" : ""}`}
+            style={{
+              height: 'auto',
+              minHeight: '0',
+              paddingBottom: '0'
+            }}
           />
         </div>
       </div>
