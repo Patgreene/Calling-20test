@@ -52,7 +52,7 @@ export default function Form() {
     >
       <div className="w-full max-w-md space-y-8 -mb-1">
         {/* Logo */}
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-3 mt-3">
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2F0ae055adc12b40c09e57a54de8259fb8%2F8fb4b55c72c94a0aad03baf47c2b2e9e?format=webp&width=800"
             alt="Vouch Logo"
@@ -61,7 +61,7 @@ export default function Form() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl p-8 md:p-8 p-10 shadow-lg border border-gray-200 my-8 mb-1">
+        <div className="bg-white rounded-2xl p-8 pb-10 shadow-lg border border-gray-200 my-8 mb-1">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
             Let's get started
           </h2>
