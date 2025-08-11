@@ -35,7 +35,10 @@ export default function AICall() {
     const loadScript = () => {
       if (scriptLoadedRef.current) {
         console.log("Script already loaded, creating widget...");
-        if (typeof customElements !== 'undefined' && customElements.get('elevenlabs-convai')) {
+        if (
+          typeof customElements !== "undefined" &&
+          customElements.get("elevenlabs-convai")
+        ) {
           try {
             createWidget();
           } catch (error) {
@@ -193,8 +196,10 @@ export default function AICall() {
   const createWidget = () => {
     try {
       // Check if the custom element is already defined to prevent double registration
-      if (customElements.get('elevenlabs-convai')) {
-        console.log('ElevenLabs widget already registered, proceeding with creation...');
+      if (customElements.get("elevenlabs-convai")) {
+        console.log(
+          "ElevenLabs widget already registered, proceeding with creation...",
+        );
       }
 
       if (!widgetContainerRef.current) {
@@ -223,7 +228,10 @@ export default function AICall() {
         };
 
         console.log("Setting dynamic variables:", dynamicVariables);
-        widget.setAttribute("dynamic-variables", JSON.stringify(dynamicVariables));
+        widget.setAttribute(
+          "dynamic-variables",
+          JSON.stringify(dynamicVariables),
+        );
       }
 
       // Clear the container and add the widget
