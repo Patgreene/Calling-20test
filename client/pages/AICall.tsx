@@ -302,7 +302,7 @@ export default function AICall() {
       {/* Widget Container - Centered Vertically */}
       <div className="flex-1 flex items-center justify-center">
         {isLoading && (
-          <div className="w-[90vw] sm:w-[560px] h-[390px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
+          <div className="w-[90vw] sm:w-[560px] h-[360px] sm:h-[420px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7FB5C5] mx-auto mb-2"></div>
               <p>Loading AI assistant...</p>
@@ -312,7 +312,7 @@ export default function AICall() {
         <div
           id="widget-container"
           ref={widgetContainerRef}
-          className={`w-[90vw] sm:w-[560px] h-[390px] sm:h-[420px] ${isLoading ? "hidden" : ""}`}
+          className={`w-[90vw] sm:w-[560px] h-[360px] sm:h-[420px] ${isLoading ? "hidden" : ""}`}
         />
       </div>
 
