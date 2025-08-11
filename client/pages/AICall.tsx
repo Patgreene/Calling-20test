@@ -312,7 +312,12 @@ export default function AICall() {
         <div
           id="widget-container"
           ref={widgetContainerRef}
-          className={`w-[90vw] sm:w-[560px] h-[360px] sm:h-[420px] ${isLoading ? "hidden" : ""}`}
+          className={`w-[90vw] sm:w-[560px] h-[360px] sm:h-[420px] overflow-hidden relative ${isLoading ? "hidden" : ""}`}
+          style={{
+            maxWidth: "90vw",
+            maxHeight: "360px",
+            border: "1px solid transparent"
+          }}
         />
       </div>
 
