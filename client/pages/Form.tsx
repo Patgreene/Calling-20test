@@ -67,44 +67,6 @@ export default function Form() {
           </h2>
 
           <form id="vouch-form" onSubmit={handleSubmit} className="space-y-6">
-            {/* Voucher First Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucherFirst"
-                className="text-sm font-medium text-gray-700"
-              >
-                Your First Name*
-              </Label>
-              <Input
-                id="voucherFirst"
-                name="voucherFirst"
-                type="text"
-                required
-                value={formData.voucherFirst}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
-              />
-            </div>
-
-            {/* Voucher Last Name */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="voucherLast"
-                className="text-sm font-medium text-gray-700"
-              >
-                Your Last Name*
-              </Label>
-              <Input
-                id="voucherLast"
-                name="voucherLast"
-                type="text"
-                required
-                value={formData.voucherLast}
-                onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
-              />
-            </div>
-
             {/* Vouchee First Name */}
             <div className="space-y-2">
               <Label
@@ -138,6 +100,44 @@ export default function Form() {
                 type="text"
                 required
                 value={formData.voucheeLast}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
+              />
+            </div>
+
+            {/* Voucher First Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucherFirst"
+                className="text-sm font-medium text-gray-700"
+              >
+                Your First Name*
+              </Label>
+              <Input
+                id="voucherFirst"
+                name="voucherFirst"
+                type="text"
+                required
+                value={formData.voucherFirst}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
+              />
+            </div>
+
+            {/* Voucher Last Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="voucherLast"
+                className="text-sm font-medium text-gray-700"
+              >
+                Your Last Name*
+              </Label>
+              <Input
+                id="voucherLast"
+                name="voucherLast"
+                type="text"
+                required
+                value={formData.voucherLast}
                 onChange={handleInputChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7FB5C5] focus:border-[#7FB5C5]"
               />
