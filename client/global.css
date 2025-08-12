@@ -145,12 +145,12 @@
   /* Mobile-specific constraints */
   @media (max-width: 640px) {
     #widget-container {
-      max-height: 420px !important;
+      max-height: 450px !important;
       max-width: calc(90vw + 20px) !important;
     }
 
     elevenlabs-convai {
-      max-height: 420px !important;
+      max-height: 450px !important;
       max-width: calc(90vw + 20px) !important;
     }
   }
@@ -158,12 +158,12 @@
   /* Desktop constraints */
   @media (min-width: 641px) {
     #widget-container {
-      max-height: 420px !important;
+      max-height: 450px !important;
       max-width: 560px !important;
     }
 
     elevenlabs-convai {
-      max-height: 420px !important;
+      max-height: 450px !important;
       max-width: 560px !important;
     }
   }
