@@ -63,7 +63,7 @@ export default function Form() {
         {/* Form */}
         <div className="bg-white rounded-2xl p-8 pb-10 shadow-lg border border-gray-200 my-8 mb-1">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center font-sans">
-            Let's get started
+            Who are you Vouching for?
           </h2>
 
           <form id="vouch-form" onSubmit={handleSubmit} className="space-y-6">
@@ -73,7 +73,7 @@ export default function Form() {
                 htmlFor="voucherFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Voucher First*
+                Your First Name*
               </Label>
               <Input
                 id="voucherFirst"
@@ -92,7 +92,7 @@ export default function Form() {
                 htmlFor="voucherLast"
                 className="text-sm font-medium text-gray-700"
               >
-                Voucher Last*
+                Your Last Name*
               </Label>
               <Input
                 id="voucherLast"
@@ -111,7 +111,7 @@ export default function Form() {
                 htmlFor="voucheeFirst"
                 className="text-sm font-medium text-gray-700"
               >
-                Vouchee First*
+                Their First Name*
               </Label>
               <Input
                 id="voucheeFirst"
@@ -130,7 +130,7 @@ export default function Form() {
                 htmlFor="voucheeLast"
                 className="text-sm font-medium text-gray-700"
               >
-                Vouchee Last*
+                Their Last Name*
               </Label>
               <Input
                 id="voucheeLast"
@@ -149,7 +149,7 @@ export default function Form() {
                 htmlFor="voucherEmail"
                 className="text-sm font-medium text-gray-700"
               >
-                Voucher Email
+                Your Email
               </Label>
               <Input
                 id="voucherEmail"
