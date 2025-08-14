@@ -94,8 +94,8 @@ export default function NPS() {
 
       console.log("Feedback data saved successfully");
 
-      // Navigate to edit summary page
-      navigate("/edit-summary", { state: { formData } });
+      // Navigate to thank you page
+      navigate("/thank-you");
     } catch (error) {
       console.error("Error saving feedback data:", error);
       alert("Failed to save feedback data. Check console for details.");
