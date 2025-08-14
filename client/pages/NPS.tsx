@@ -150,7 +150,7 @@ export default function NPS() {
               <h3 className="text-lg font-semibold text-gray-900">
                 I was able to share everything I needed to about {voucheeName}
               </h3>
-              
+
               <div className="flex justify-between text-sm text-gray-600 mb-2">
                 <span>Strongly Disagree</span>
                 <span>Strongly Agree</span>
@@ -182,7 +182,7 @@ export default function NPS() {
               <h3 className="text-lg font-semibold text-gray-900">
                 The interview flow felt smooth and easy to follow
               </h3>
-              
+
               <div className="flex justify-between text-sm text-gray-600 mb-2">
                 <span>Strongly Disagree</span>
                 <span>Strongly Agree</span>
@@ -231,7 +231,12 @@ export default function NPS() {
             <div className="flex justify-center pt-4">
               <Button
                 type="submit"
-                disabled={question1Score === null || question2Score === null || isSubmitting || !formId}
+                disabled={
+                  question1Score === null ||
+                  question2Score === null ||
+                  isSubmitting ||
+                  !formId
+                }
                 variant={null}
                 className="!bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
               >
