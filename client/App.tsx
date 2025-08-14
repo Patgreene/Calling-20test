@@ -9,7 +9,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import AICall from "./pages/AICall";
-import EditSummary from "./pages/EditSummary";
 import NPS from "./pages/NPS";
 import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
@@ -27,7 +26,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/form" element={<Form />} />
           <Route path="/ai-call" element={<AICall />} />
-          <Route path="/edit-summary" element={<EditSummary />} />
           <Route path="/nps" element={<NPS />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/thank-you" element={<ThankYou />} />
