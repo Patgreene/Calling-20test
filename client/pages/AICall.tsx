@@ -303,7 +303,9 @@ export default function AICall() {
       <div className="flex justify-center mb-8">
         {/* Instruction Comment */}
         <div className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center">
-          <p className="text-gray-600 text-sm mb-4">Push green button to start call</p>
+          <p className="text-gray-600 text-sm mb-4">
+            Push green button to start call
+          </p>
         </div>
       </div>
       <div className="flex justify-center mb-8">
