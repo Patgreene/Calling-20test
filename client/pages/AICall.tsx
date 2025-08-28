@@ -301,6 +301,12 @@ export default function AICall() {
 
       {/* Widget Container - Normal Document Flow */}
       <div className="flex justify-center mb-8">
+        {/* Instruction Comment */}
+        <div className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center">
+          <p className="text-gray-600 text-sm mb-4">Push green button to start call</p>
+        </div>
+      </div>
+      <div className="flex justify-center mb-8">
         {isLoading && (
           <div className="w-[calc(90vw+20px)] sm:w-[560px] h-[450px] sm:h-[450px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-500">
             <div className="text-center">
