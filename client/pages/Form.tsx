@@ -169,7 +169,7 @@ export default function Form() {
               variant={null}
               className="w-full !bg-[#7FB5C5] hover:!bg-[#4C7B8A] !text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-8"
             >
-              Start Call
+              Next
             </Button>
           </form>
         </div>
