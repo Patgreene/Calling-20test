@@ -20,13 +20,19 @@ export default function OpenAIRealtimeTest() {
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          model: "gpt-4o-realtime-preview-2024-10-01",
+          voice: "alloy",
+          prompt_id: "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3"
+        }),
       });
 
       if (!response.ok) {
         throw new Error(`Failed to get client secret: ${response.statusText}`);
       }
 
-      const { client_secret } = await response.json();
+      const { client_secret, config } = await response.json();
+      console.log("Received config from server:", config);
       setStatus("Getting microphone access...");
 
       // Step 2: Get microphone access
@@ -60,29 +66,40 @@ export default function OpenAIRealtimeTest() {
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
 
-      setStatus("Connecting to OpenAI...");
-      
-      // Send SDP offer to OpenAI Realtime API
+      setStatus("Connecting to OpenAI Realtime API...");
+
+      // Send SDP offer to OpenAI Realtime API with configuration
       const offerResponse = await fetch('https://api.openai.com/v1/realtime', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${client_secret}`,
-          'Content-Type': 'application/sdp',
+          'Content-Type': 'application/json',
         },
-        body: offer.sdp,
+        body: JSON.stringify({
+          type: 'offer',
+          sdp: offer.sdp,
+          model: config?.model || "gpt-4o-realtime-preview-2024-10-01",
+          voice: config?.voice || "alloy",
+          instructions: config?.instructions || "You are a helpful AI assistant.",
+        }),
       });
 
       if (!offerResponse.ok) {
-        throw new Error(`OpenAI API error: ${offerResponse.statusText}`);
+        const errorText = await offerResponse.text();
+        throw new Error(`OpenAI API error: ${offerResponse.statusText} - ${errorText}`);
       }
 
-      const answerSdp = await offerResponse.text();
-      
-      // Set remote description
-      await peerConnection.setRemoteDescription({
-        type: 'answer',
-        sdp: answerSdp,
-      });
+      const responseData = await offerResponse.json();
+
+      // Set remote description from the answer
+      if (responseData.sdp) {
+        await peerConnection.setRemoteDescription({
+          type: 'answer',
+          sdp: responseData.sdp,
+        });
+      } else {
+        throw new Error('No SDP answer received from OpenAI API');
+      }
 
       setIsConnected(true);
       setIsConnecting(false);
