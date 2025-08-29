@@ -81,14 +81,15 @@ export default function OpenAIRealtimeTest() {
         body: offer.sdp,
       });
 
+      let answerSdp;
       if (!offerResponse.ok) {
         const errorText = await offerResponse.text();
         throw new Error(
           `OpenAI API error: ${offerResponse.statusText} - ${errorText}`,
         );
+      } else {
+        answerSdp = await offerResponse.text();
       }
-
-      const answerSdp = await offerResponse.text();
 
       // Set remote description from the answer
       await peerConnection.setRemoteDescription({
