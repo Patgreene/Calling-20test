@@ -39,6 +39,7 @@ export default function OpenAIRealtimeTest() {
 
       // Step 2: Get microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
       setStatus("Setting up WebRTC connection...");
 
       // Step 3: Set up RTCPeerConnection
@@ -126,6 +127,11 @@ export default function OpenAIRealtimeTest() {
         peerConnectionRef.current = null;
       }
 
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.srcObject = null;
@@ -133,12 +139,23 @@ export default function OpenAIRealtimeTest() {
 
       setIsConnected(false);
       setIsConnecting(false);
+      setIsMuted(false);
       setStatus("Call ended. Ready to start new test call.");
     } catch (error) {
       console.error("Error stopping call:", error);
       setStatus(
         `Error stopping call: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
+    }
+  };
+
+  const toggleMute = () => {
+    if (streamRef.current) {
+      const audioTrack = streamRef.current.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMuted(!audioTrack.enabled);
+      }
     }
   };
 
