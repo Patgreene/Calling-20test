@@ -68,21 +68,17 @@ export default function OpenAIRealtimeTest() {
 
       setStatus("Connecting to OpenAI Realtime API...");
 
-      // Send SDP offer to OpenAI Realtime API with configuration
+      // Send SDP offer to OpenAI Realtime API
       const offerResponse = await fetch("https://api.openai.com/v1/realtime", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${client_secret}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/sdp",
+          "OpenAI-Model": config?.model || "gpt-4o-realtime-preview-2024-10-01",
+          "OpenAI-Voice": config?.voice || "alloy",
+          "OpenAI-Instructions": config?.instructions || "You are a helpful AI assistant.",
         },
-        body: JSON.stringify({
-          type: "offer",
-          sdp: offer.sdp,
-          model: config?.model || "gpt-4o-realtime-preview-2024-10-01",
-          voice: config?.voice || "alloy",
-          instructions:
-            config?.instructions || "You are a helpful AI assistant.",
-        }),
+        body: offer.sdp,
       });
 
       if (!offerResponse.ok) {
@@ -92,17 +88,13 @@ export default function OpenAIRealtimeTest() {
         );
       }
 
-      const responseData = await offerResponse.json();
+      const answerSdp = await offerResponse.text();
 
       // Set remote description from the answer
-      if (responseData.sdp) {
-        await peerConnection.setRemoteDescription({
-          type: "answer",
-          sdp: responseData.sdp,
-        });
-      } else {
-        throw new Error("No SDP answer received from OpenAI API");
-      }
+      await peerConnection.setRemoteDescription({
+        type: "answer",
+        sdp: answerSdp,
+      });
 
       setIsConnected(true);
       setIsConnecting(false);
