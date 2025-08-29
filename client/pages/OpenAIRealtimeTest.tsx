@@ -55,7 +55,7 @@ export default function OpenAIRealtimeTest() {
         peerConnection.addTrack(track, stream);
       });
 
-      // Handle incoming audio stream
+      // Handle incoming audio stream and connection state
       peerConnection.ontrack = (event) => {
         const [remoteStream] = event.streams;
         if (audioRef.current) {
@@ -64,22 +64,13 @@ export default function OpenAIRealtimeTest() {
         }
       };
 
-      // Set up data channel for sending configuration
-      const dataChannel = peerConnection.createDataChannel('config');
-      dataChannel.onopen = () => {
-        // Send configuration when data channel opens
-        const configMessage = {
-          type: 'session.update',
-          session: {
-            modalities: ['text', 'audio'],
-            instructions: config?.instructions || "You are a helpful assistant.",
-            voice: config?.voice || "alloy",
-            temperature: 0.8,
-            max_response_output_tokens: 4096
-          }
-        };
-        console.log('Sending configuration:', configMessage);
-        dataChannel.send(JSON.stringify(configMessage));
+      peerConnection.onconnectionstatechange = () => {
+        console.log('Connection state:', peerConnection.connectionState);
+        if (peerConnection.connectionState === 'connected') {
+          setStatus("Connected! Sam is ready to start the interview.");
+          // Send initial session configuration
+          sendSessionUpdate(peerConnection, config);
+        }
       };
 
       // Create and send SDP offer
@@ -174,6 +165,40 @@ export default function OpenAIRealtimeTest() {
         audioTrack.enabled = !audioTrack.enabled;
         setIsMuted(!audioTrack.enabled);
       }
+    }
+  };
+
+  const sendSessionUpdate = (peerConnection: RTCPeerConnection, config: any) => {
+    try {
+      // Create data channel for sending session configuration
+      const dataChannel = peerConnection.createDataChannel('oai-events');
+
+      dataChannel.onopen = () => {
+        console.log('Data channel opened, sending session configuration...');
+
+        const sessionUpdateMessage = {
+          type: 'session.update',
+          session: {
+            modalities: ['text', 'audio'],
+            instructions: config?.instructions || "You are a helpful assistant.",
+            voice: config?.voice || "alloy",
+            input_audio_format: 'pcm16',
+            output_audio_format: 'pcm16',
+            temperature: 0.8,
+            max_response_output_tokens: 4096
+          }
+        };
+
+        console.log('Sending session update:', sessionUpdateMessage);
+        dataChannel.send(JSON.stringify(sessionUpdateMessage));
+      };
+
+      dataChannel.onerror = (error) => {
+        console.error('Data channel error:', error);
+      };
+
+    } catch (error) {
+      console.error('Error setting up session configuration:', error);
     }
   };
 
