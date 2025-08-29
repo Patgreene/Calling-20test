@@ -69,14 +69,12 @@ export default function OpenAIRealtimeTest() {
       setStatus("Connecting to OpenAI Realtime API...");
 
       // Send SDP offer to OpenAI Realtime API
-      const offerResponse = await fetch("https://api.openai.com/v1/realtime", {
+      const model = config?.model || "gpt-4o-realtime-preview-2024-12-17";
+      const offerResponse = await fetch(`https://api.openai.com/v1/realtime?model=${model}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${client_secret}`,
           "Content-Type": "application/sdp",
-          "OpenAI-Model": config?.model || "gpt-4o-realtime-preview-2024-10-01",
-          "OpenAI-Voice": config?.voice || "alloy",
-          "OpenAI-Instructions": config?.instructions || "You are a helpful AI assistant.",
         },
         body: offer.sdp,
       });
