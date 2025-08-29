@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 export default function OpenAIRealtimeTest() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [status, setStatus] = useState("Ready to start test call");
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const startCall = async () => {
     try {
@@ -168,12 +170,20 @@ export default function OpenAIRealtimeTest() {
           )}
 
           {isConnected && (
-            <Button
-              onClick={stopCall}
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-3"
-            >
-              Stop Call
-            </Button>
+            <div className="space-y-3">
+              <Button
+                onClick={toggleMute}
+                className={`w-full py-3 ${isMuted ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
+              >
+                {isMuted ? 'Unmute' : 'Mute'}
+              </Button>
+              <Button
+                onClick={stopCall}
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-3"
+              >
+                Stop Call
+              </Button>
+            </div>
           )}
 
           {/* Hidden audio element for playing assistant responses */}
