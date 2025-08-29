@@ -220,52 +220,158 @@ export default function OpenAIRealtimeTest() {
   };
 
 
+  // Audio visualization effect
+  const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
+
+  useEffect(() => {
+    let animationFrame: number;
+
+    if (isConnected && !isMuted) {
+      const animate = () => {
+        setAudioLevels(prev =>
+          prev.map(() => Math.random() * 0.8 + 0.2)
+        );
+        animationFrame = requestAnimationFrame(animate);
+      };
+      animate();
+    } else {
+      setAudioLevels(Array(20).fill(0.1));
+    }
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isConnected, isMuted]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
-      <div className="text-center space-y-6 bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-900">
-          OpenAI Realtime Test
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-500"></div>
+      </div>
 
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600 bg-gray-100 p-3 rounded">
-            Status: {status}
+      {/* Main container */}
+      <div className="relative z-10 w-full max-w-lg">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+            Voice Interview
+          </h1>
+          <p className="text-purple-200 text-lg">
+            Meet Sam, your AI interviewer
           </p>
+        </div>
 
-          {!isConnected && !isConnecting && (
-            <Button
-              onClick={startCall}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
-            >
-              Start Test Call
-            </Button>
-          )}
+        {/* Main calling interface */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
 
-          {isConnecting && (
-            <Button disabled className="w-full bg-gray-400 text-white py-3">
-              Connecting...
-            </Button>
-          )}
+          {/* Audio Visualization */}
+          <div className="flex items-end justify-center space-x-1 h-32 mb-8">
+            {audioLevels.map((level, index) => (
+              <div
+                key={index}
+                className="bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full transition-all duration-150 ease-out"
+                style={{
+                  height: `${level * 100}%`,
+                  width: '4px',
+                  minHeight: '8px',
+                  opacity: isConnected ? 0.8 : 0.3
+                }}
+              />
+            ))}
+          </div>
 
+          {/* Status Display */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10">
+              <div className={`w-3 h-3 rounded-full ${
+                isConnected ? 'bg-green-400 animate-pulse' :
+                isConnecting ? 'bg-yellow-400 animate-pulse' : 'bg-gray-400'
+              }`}></div>
+              <span className="text-white font-medium">{status}</span>
+            </div>
+          </div>
+
+          {/* Control Buttons */}
+          <div className="flex justify-center gap-4">
+            {!isConnected && !isConnecting && (
+              <button
+                onClick={startCall}
+                className="group relative w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                <Phone className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+              </button>
+            )}
+
+            {isConnecting && (
+              <div className="w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full shadow-lg flex items-center justify-center">
+                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+
+            {isConnected && (
+              <>
+                {/* Mute Button */}
+                <button
+                  onClick={toggleMute}
+                  className={`group relative w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
+                    isMuted
+                      ? 'bg-gradient-to-r from-red-500 to-pink-600'
+                      : 'bg-gradient-to-r from-blue-500 to-cyan-600'
+                  }`}
+                >
+                  {isMuted ? (
+                    <MicOff className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  ) : (
+                    <Mic className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  )}
+                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                </button>
+
+                {/* Stop Call Button */}
+                <button
+                  onClick={stopCall}
+                  className="group relative w-20 h-20 bg-gradient-to-r from-red-500 to-rose-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <PhoneOff className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                </button>
+
+                {/* Volume Indicator */}
+                <div className="w-16 h-16 bg-white/10 rounded-full shadow-lg flex items-center justify-center border border-white/20">
+                  <Volume2 className="w-6 h-6 text-white/70" />
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Additional Info */}
           {isConnected && (
-            <div className="space-y-3">
-              <Button
-                onClick={toggleMute}
-                className={`w-full py-3 ${isMuted ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
-              >
-                {isMuted ? 'Unmute' : 'Mute'}
-              </Button>
-              <Button
-                onClick={stopCall}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-3"
-              >
-                Stop Call
-              </Button>
+            <div className="mt-8 text-center">
+              <p className="text-white/60 text-sm">
+                Speak naturally • Sam is listening
+              </p>
             </div>
           )}
 
           {/* Hidden audio element for playing assistant responses */}
-          <audio ref={audioRef} autoPlay style={{ display: "none" }} />
+          <audio
+            ref={audioRef}
+            autoPlay
+            style={{ display: 'none' }}
+          />
+        </div>
+
+        {/* Footer Info */}
+        <div className="text-center mt-6">
+          <p className="text-white/40 text-sm">
+            Powered by OpenAI Realtime API
+          </p>
         </div>
       </div>
     </div>
