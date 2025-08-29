@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Mic, MicOff, Phone, PhoneOff, Volume2 } from "lucide-react";
 
 export default function OpenAIRealtimeTest() {
   const [isConnected, setIsConnected] = useState(false);
