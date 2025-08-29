@@ -53,7 +53,7 @@ export function createServer() {
       console.log(
         "Generated client secret for OpenAI Realtime API with configuration:",
         {
-          model: "gpt-4o-realtime-preview-2024-10-01",
+          model: "gpt-4o-realtime-preview-2024-12-17",
           voice: "alloy",
           promptId: promptId,
         },
@@ -62,7 +62,7 @@ export function createServer() {
       return res.status(200).json({
         client_secret: clientSecret,
         config: {
-          model: "gpt-4o-realtime-preview-2024-10-01",
+          model: "gpt-4o-realtime-preview-2024-12-17",
           voice: "alloy",
           instructions: instructions,
         },
