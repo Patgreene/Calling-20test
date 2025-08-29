@@ -55,7 +55,57 @@ export default function OpenAIRealtimeTest() {
         peerConnection.addTrack(track, stream);
       });
 
-      // Handle incoming audio stream and connection state
+      // Set up data channel for OpenAI events
+      const dataChannel = peerConnection.createDataChannel('oai-events');
+
+      dataChannel.addEventListener('open', () => {
+        console.log('OpenAI data channel is open, sending session configuration...');
+
+        const sessionUpdateEvent = {
+          type: 'session.update',
+          session: {
+            modalities: ['text', 'audio'],
+            instructions: config?.instructions || "You are a helpful assistant.",
+            voice: config?.voice || "alloy",
+            input_audio_format: 'pcm16',
+            output_audio_format: 'pcm16',
+            input_audio_transcription: { model: 'whisper-1' },
+            turn_detection: { type: 'server_vad' },
+            temperature: 0.8,
+            max_response_output_tokens: 4096
+          }
+        };
+
+        console.log('Sending session update to OpenAI:', sessionUpdateEvent);
+        dataChannel.send(JSON.stringify(sessionUpdateEvent));
+        setStatus("Connected! Sam is configured and ready to start the interview.");
+      });
+
+      dataChannel.addEventListener('message', (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          console.log('Received from OpenAI:', message);
+
+          // Handle different event types
+          if (message.type === 'session.created') {
+            console.log('Session created successfully');
+          } else if (message.type === 'session.updated') {
+            console.log('Session updated successfully');
+          } else if (message.type === 'error') {
+            console.error('OpenAI error:', message.error);
+            setStatus(`OpenAI error: ${message.error.message}`);
+          }
+        } catch (error) {
+          console.error('Error parsing OpenAI message:', error);
+        }
+      });
+
+      dataChannel.addEventListener('error', (error) => {
+        console.error('Data channel error:', error);
+        setStatus('Data channel error - configuration may have failed');
+      });
+
+      // Handle incoming audio stream
       peerConnection.ontrack = (event) => {
         const [remoteStream] = event.streams;
         if (audioRef.current) {
@@ -67,9 +117,9 @@ export default function OpenAIRealtimeTest() {
       peerConnection.onconnectionstatechange = () => {
         console.log('Connection state:', peerConnection.connectionState);
         if (peerConnection.connectionState === 'connected') {
-          setStatus("Connected! Sam is ready to start the interview.");
-          // Send initial session configuration
-          sendSessionUpdate(peerConnection, config);
+          setStatus("WebRTC connected, configuring OpenAI session...");
+        } else if (peerConnection.connectionState === 'failed') {
+          setStatus("Connection failed");
         }
       };
 
@@ -168,39 +218,6 @@ export default function OpenAIRealtimeTest() {
     }
   };
 
-  const sendSessionUpdate = (peerConnection: RTCPeerConnection, config: any) => {
-    try {
-      // Create data channel for sending session configuration
-      const dataChannel = peerConnection.createDataChannel('oai-events');
-
-      dataChannel.onopen = () => {
-        console.log('Data channel opened, sending session configuration...');
-
-        const sessionUpdateMessage = {
-          type: 'session.update',
-          session: {
-            modalities: ['text', 'audio'],
-            instructions: config?.instructions || "You are a helpful assistant.",
-            voice: config?.voice || "alloy",
-            input_audio_format: 'pcm16',
-            output_audio_format: 'pcm16',
-            temperature: 0.8,
-            max_response_output_tokens: 4096
-          }
-        };
-
-        console.log('Sending session update:', sessionUpdateMessage);
-        dataChannel.send(JSON.stringify(sessionUpdateMessage));
-      };
-
-      dataChannel.onerror = (error) => {
-        console.error('Data channel error:', error);
-      };
-
-    } catch (error) {
-      console.error('Error setting up session configuration:', error);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
