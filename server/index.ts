@@ -24,46 +24,53 @@ export function createServer() {
 
       if (!openaiApiKey) {
         return res.status(500).json({
-          error: "OpenAI API key not configured on server"
+          error: "OpenAI API key not configured on server",
         });
       }
 
       // Load instructions from saved prompt ID
       const promptId = "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3";
-      let instructions = "You are a helpful AI assistant. Please engage in a natural conversation.";
+      let instructions =
+        "You are a helpful AI assistant. Please engage in a natural conversation.";
 
       try {
         // Attempt to load instructions from the prompt ID
         // This would typically involve a database lookup or API call to your prompt storage system
         // For now, we'll use a default instruction set
         console.log(`Loading instructions from prompt ID: ${promptId}`);
-        instructions = "You are a helpful AI assistant conducting a professional vouch interview. Please ask thoughtful questions about the person being vouched for, their skills, work ethic, and character. Keep the conversation natural and engaging.";
+        instructions =
+          "You are a helpful AI assistant conducting a professional vouch interview. Please ask thoughtful questions about the person being vouched for, their skills, work ethic, and character. Keep the conversation natural and engaging.";
       } catch (promptError) {
-        console.warn("Could not load prompt, using default instructions:", promptError);
+        console.warn(
+          "Could not load prompt, using default instructions:",
+          promptError,
+        );
       }
 
       // Generate client secret with configuration
       const clientSecret = openaiApiKey;
 
-      console.log("Generated client secret for OpenAI Realtime API with configuration:", {
-        model: "gpt-4o-realtime-preview-2024-10-01",
-        voice: "alloy",
-        promptId: promptId
-      });
+      console.log(
+        "Generated client secret for OpenAI Realtime API with configuration:",
+        {
+          model: "gpt-4o-realtime-preview-2024-10-01",
+          voice: "alloy",
+          promptId: promptId,
+        },
+      );
 
       return res.status(200).json({
         client_secret: clientSecret,
         config: {
           model: "gpt-4o-realtime-preview-2024-10-01",
           voice: "alloy",
-          instructions: instructions
-        }
+          instructions: instructions,
+        },
       });
-
     } catch (error) {
       console.error("Error generating client secret:", error);
       return res.status(500).json({
-        error: "Failed to generate client secret"
+        error: "Failed to generate client secret",
       });
     }
   });

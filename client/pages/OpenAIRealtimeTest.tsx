@@ -5,7 +5,7 @@ export default function OpenAIRealtimeTest() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [status, setStatus] = useState("Ready to start test call");
-  
+
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -15,15 +15,15 @@ export default function OpenAIRealtimeTest() {
       setStatus("Getting client secret...");
 
       // Step 1: Fetch client secret from server
-      const response = await fetch('/api/realtime/client-secret', {
-        method: 'POST',
+      const response = await fetch("/api/realtime/client-secret", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           model: "gpt-4o-realtime-preview-2024-10-01",
           voice: "alloy",
-          prompt_id: "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3"
+          prompt_id: "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3",
         }),
       });
 
@@ -41,14 +41,14 @@ export default function OpenAIRealtimeTest() {
 
       // Step 3: Set up RTCPeerConnection
       const configuration = {
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       };
-      
+
       const peerConnection = new RTCPeerConnection(configuration);
       peerConnectionRef.current = peerConnection;
 
       // Add audio track to peer connection
-      stream.getTracks().forEach(track => {
+      stream.getTracks().forEach((track) => {
         peerConnection.addTrack(track, stream);
       });
 
@@ -69,24 +69,27 @@ export default function OpenAIRealtimeTest() {
       setStatus("Connecting to OpenAI Realtime API...");
 
       // Send SDP offer to OpenAI Realtime API with configuration
-      const offerResponse = await fetch('https://api.openai.com/v1/realtime', {
-        method: 'POST',
+      const offerResponse = await fetch("https://api.openai.com/v1/realtime", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${client_secret}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${client_secret}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: 'offer',
+          type: "offer",
           sdp: offer.sdp,
           model: config?.model || "gpt-4o-realtime-preview-2024-10-01",
           voice: config?.voice || "alloy",
-          instructions: config?.instructions || "You are a helpful AI assistant.",
+          instructions:
+            config?.instructions || "You are a helpful AI assistant.",
         }),
       });
 
       if (!offerResponse.ok) {
         const errorText = await offerResponse.text();
-        throw new Error(`OpenAI API error: ${offerResponse.statusText} - ${errorText}`);
+        throw new Error(
+          `OpenAI API error: ${offerResponse.statusText} - ${errorText}`,
+        );
       }
 
       const responseData = await offerResponse.json();
@@ -94,23 +97,24 @@ export default function OpenAIRealtimeTest() {
       // Set remote description from the answer
       if (responseData.sdp) {
         await peerConnection.setRemoteDescription({
-          type: 'answer',
+          type: "answer",
           sdp: responseData.sdp,
         });
       } else {
-        throw new Error('No SDP answer received from OpenAI API');
+        throw new Error("No SDP answer received from OpenAI API");
       }
 
       setIsConnected(true);
       setIsConnecting(false);
       setStatus("Connected! You can now speak to the AI assistant.");
-
     } catch (error) {
-      console.error('Error starting call:', error);
-      setStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Error starting call:", error);
+      setStatus(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       setIsConnecting(false);
       setIsConnected(false);
-      
+
       // Cleanup on error
       if (peerConnectionRef.current) {
         peerConnectionRef.current.close();
@@ -125,7 +129,7 @@ export default function OpenAIRealtimeTest() {
         peerConnectionRef.current.close();
         peerConnectionRef.current = null;
       }
-      
+
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.srcObject = null;
@@ -135,8 +139,10 @@ export default function OpenAIRealtimeTest() {
       setIsConnecting(false);
       setStatus("Call ended. Ready to start new test call.");
     } catch (error) {
-      console.error('Error stopping call:', error);
-      setStatus(`Error stopping call: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Error stopping call:", error);
+      setStatus(
+        `Error stopping call: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -146,45 +152,38 @@ export default function OpenAIRealtimeTest() {
         <h1 className="text-2xl font-bold text-gray-900">
           OpenAI Realtime Test
         </h1>
-        
+
         <div className="space-y-4">
           <p className="text-sm text-gray-600 bg-gray-100 p-3 rounded">
             Status: {status}
           </p>
-          
+
           {!isConnected && !isConnecting && (
-            <Button 
+            <Button
               onClick={startCall}
               className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
             >
               Start Test Call
             </Button>
           )}
-          
+
           {isConnecting && (
-            <Button 
-              disabled
-              className="w-full bg-gray-400 text-white py-3"
-            >
+            <Button disabled className="w-full bg-gray-400 text-white py-3">
               Connecting...
             </Button>
           )}
-          
+
           {isConnected && (
-            <Button 
+            <Button
               onClick={stopCall}
               className="w-full bg-red-600 hover:bg-red-700 text-white py-3"
             >
               Stop Call
             </Button>
           )}
-          
+
           {/* Hidden audio element for playing assistant responses */}
-          <audio 
-            ref={audioRef}
-            autoPlay
-            style={{ display: 'none' }}
-          />
+          <audio ref={audioRef} autoPlay style={{ display: "none" }} />
         </div>
       </div>
     </div>

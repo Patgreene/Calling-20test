@@ -30,7 +30,10 @@ const App = () => (
           <Route path="/nps" element={<NPS />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/openai-realtime-test" element={<OpenAIRealtimeTest />} />
+          <Route
+            path="/openai-realtime-test"
+            element={<OpenAIRealtimeTest />}
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
