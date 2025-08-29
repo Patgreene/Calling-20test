@@ -246,12 +246,12 @@ export default function OpenAIRealtimeTest() {
   }, [isConnected, isMuted]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-15 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-15 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-slate-400 rounded-full mix-blend-multiply filter blur-xl opacity-8 animate-pulse delay-500"></div>
       </div>
 
       {/* Main container */}
@@ -261,7 +261,7 @@ export default function OpenAIRealtimeTest() {
           <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
             Voice Interview
           </h1>
-          <p className="text-purple-200 text-lg">
+          <p className="text-blue-200 text-lg">
             Meet Sam, your AI interviewer
           </p>
         </div>
@@ -274,7 +274,7 @@ export default function OpenAIRealtimeTest() {
             {audioLevels.map((level, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-t from-cyan-500 to-purple-500 rounded-full transition-all duration-150 ease-out"
+                className="bg-gradient-to-t from-cyan-500 to-blue-500 rounded-full transition-all duration-150 ease-out"
                 style={{
                   height: `${level * 100}%`,
                   width: '4px',
@@ -370,7 +370,7 @@ export default function OpenAIRealtimeTest() {
         {/* Footer Info */}
         <div className="text-center mt-6">
           <p className="text-white/40 text-sm">
-            Powered by OpenAI Realtime API
+            Powered by Vouch
           </p>
         </div>
       </div>
