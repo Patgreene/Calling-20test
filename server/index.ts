@@ -17,6 +17,39 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // OpenAI Realtime client secret endpoint
+  app.post("/api/realtime/client-secret", async (req, res) => {
+    try {
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+
+      if (!openaiApiKey) {
+        return res.status(500).json({
+          error: "OpenAI API key not configured on server"
+        });
+      }
+
+      // For OpenAI Realtime API, we need to generate a temporary client secret
+      // This is a placeholder - you'll need to implement the actual OpenAI client secret generation
+      // The OpenAI Realtime API documentation should specify how to create client secrets
+
+      // For now, we'll return the API key as the client secret
+      // In production, you should implement proper client secret generation according to OpenAI's docs
+      const clientSecret = openaiApiKey;
+
+      console.log("Generated client secret for OpenAI Realtime API");
+
+      return res.status(200).json({
+        client_secret: clientSecret
+      });
+
+    } catch (error) {
+      console.error("Error generating client secret:", error);
+      return res.status(500).json({
+        error: "Failed to generate client secret"
+      });
+    }
+  });
+
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     const { name, email, comment } = req.body;

@@ -12,6 +12,7 @@ import AICall from "./pages/AICall";
 import NPS from "./pages/NPS";
 import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
+import OpenAIRealtimeTest from "./pages/OpenAIRealtimeTest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/nps" element={<NPS />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/openai-realtime-test" element={<OpenAIRealtimeTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
