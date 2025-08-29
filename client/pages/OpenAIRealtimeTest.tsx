@@ -64,6 +64,24 @@ export default function OpenAIRealtimeTest() {
         }
       };
 
+      // Set up data channel for sending configuration
+      const dataChannel = peerConnection.createDataChannel('config');
+      dataChannel.onopen = () => {
+        // Send configuration when data channel opens
+        const configMessage = {
+          type: 'session.update',
+          session: {
+            modalities: ['text', 'audio'],
+            instructions: config?.instructions || "You are a helpful assistant.",
+            voice: config?.voice || "alloy",
+            temperature: 0.8,
+            max_response_output_tokens: 4096
+          }
+        };
+        console.log('Sending configuration:', configMessage);
+        dataChannel.send(JSON.stringify(configMessage));
+      };
+
       // Create and send SDP offer
       setStatus("Creating SDP offer...");
       const offer = await peerConnection.createOffer();
