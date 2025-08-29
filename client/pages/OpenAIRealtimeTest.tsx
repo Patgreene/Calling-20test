@@ -70,14 +70,17 @@ export default function OpenAIRealtimeTest() {
 
       // Send SDP offer to OpenAI Realtime API
       const model = config?.model || "gpt-4o-realtime-preview-2024-12-17";
-      const offerResponse = await fetch(`https://api.openai.com/v1/realtime?model=${model}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${client_secret}`,
-          "Content-Type": "application/sdp",
+      const offerResponse = await fetch(
+        `https://api.openai.com/v1/realtime?model=${model}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${client_secret}`,
+            "Content-Type": "application/sdp",
+          },
+          body: offer.sdp,
         },
-        body: offer.sdp,
-      });
+      );
 
       let answerSdp;
       if (!offerResponse.ok) {
