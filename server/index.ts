@@ -88,7 +88,9 @@ CLOSING:
 Remember: Use dynamic variables {{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}} as provided.`;
 
       try {
-        console.log(`Loading Sam (Vouch Reference Agent) instructions from prompt ID: ${promptId}`);
+        console.log(
+          `Loading Sam (Vouch Reference Agent) instructions from prompt ID: ${promptId}`,
+        );
         // Instructions are now set above with the full Sam persona
       } catch (promptError) {
         console.warn(
