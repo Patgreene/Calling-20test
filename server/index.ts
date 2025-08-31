@@ -134,8 +134,9 @@ export function createServer() {
         client_secret: clientSecret,
         config: {
           model: "gpt-4o-realtime-preview-2024-12-17",
-          voice: "alloy",
+          voice: currentSessionConfig.voice,
           instructions: instructions,
+          sessionConfig: currentSessionConfig,
         },
       });
     } catch (error) {
