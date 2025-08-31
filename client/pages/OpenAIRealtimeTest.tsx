@@ -99,13 +99,19 @@ export default function OpenAIRealtimeTest() {
           session: {
             modalities: ['text', 'audio'],
             instructions: instructions,
-            voice: config?.voice || "alloy",
+            voice: config?.sessionConfig?.voice || config?.voice || "alloy",
+            speed: config?.sessionConfig?.speed || 1.0,
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: { model: 'whisper-1' },
-            turn_detection: { type: 'server_vad' },
-            temperature: 0.8,
-            max_response_output_tokens: 4096
+            turn_detection: config?.sessionConfig?.turn_detection || {
+              type: 'server_vad',
+              threshold: 0.5,
+              prefix_padding_ms: 300,
+              silence_duration_ms: 500
+            },
+            temperature: config?.sessionConfig?.temperature || 0.8,
+            max_response_output_tokens: config?.sessionConfig?.max_response_output_tokens || 4096
           }
         };
 
