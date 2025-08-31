@@ -23,6 +23,12 @@ export default function OpenAIRealtimeTest() {
 
   const startCall = async () => {
     try {
+      // Ensure names are prepared before starting call
+      if (!callCode || !preparedNames) {
+        setStatus("Please prepare the call with names first.");
+        return;
+      }
+
       setIsConnecting(true);
       setStatus("Getting client secret...");
 
