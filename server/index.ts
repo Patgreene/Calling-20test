@@ -61,6 +61,19 @@ CLOSING:
 
 Remember: Use dynamic variables {{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}} as provided.`;
 
+let currentSessionConfig = {
+  voice: 'alloy',
+  speed: 1.0,
+  temperature: 0.8,
+  max_response_output_tokens: 4096,
+  turn_detection: {
+    type: 'server_vad',
+    threshold: 0.5,
+    prefix_padding_ms: 300,
+    silence_duration_ms: 500
+  }
+};
+
 export function createServer() {
   const app = express();
 
