@@ -150,6 +150,7 @@ export function createServer() {
   app.get("/api/admin/prompt", (req, res) => {
     res.json({
       instructions: currentInstructions,
+      sessionConfig: currentSessionConfig,
       promptId: "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3",
       lastModified: new Date().toISOString()
     });
