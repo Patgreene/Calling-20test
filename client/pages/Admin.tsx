@@ -268,12 +268,12 @@ export default function Admin() {
               <CardContent>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="text-white/60">Voucher (person calling):</div>
-                  <div className="text-green-300">{{`{{voucher_first}}`}}</div>
-                  <div className="text-green-300">{{`{{voucher_last}}`}}</div>
-                  
+                  <div className="text-green-300">{`{{voucher_first}}`}</div>
+                  <div className="text-green-300">{`{{voucher_last}}`}</div>
+
                   <div className="text-white/60 mt-4">Vouchee (person being vouched for):</div>
-                  <div className="text-green-300">{{`{{vouchee_first}}`}}</div>
-                  <div className="text-green-300">{{`{{vouchee_last}}`}}</div>
+                  <div className="text-green-300">{`{{vouchee_first}}`}</div>
+                  <div className="text-green-300">{`{{vouchee_last}}`}</div>
                 </div>
               </CardContent>
             </Card>
