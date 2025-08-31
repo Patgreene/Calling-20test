@@ -17,6 +17,21 @@ export default function Admin() {
   const [showPreview, setShowPreview] = useState(false);
   const [promptStats, setPromptStats] = useState({ length: 0, variables: 0 });
 
+  // OpenAI Session Configuration
+  const [sessionConfig, setSessionConfig] = useState({
+    voice: 'alloy',
+    speed: 1.0,
+    temperature: 0.8,
+    max_response_output_tokens: 4096,
+    turn_detection: {
+      type: 'server_vad',
+      threshold: 0.5,
+      prefix_padding_ms: 300,
+      silence_duration_ms: 500
+    }
+  });
+  const [originalSessionConfig, setOriginalSessionConfig] = useState(sessionConfig);
+
   // Simple admin authentication
   const handleAuth = () => {
     // Simple password check - in production, use proper auth
