@@ -108,6 +108,8 @@ Remember: Use dynamic variables {{voucher_first}}, {{voucher_last}}, {{vouchee_f
           model: "gpt-4o-realtime-preview-2024-12-17",
           voice: "alloy",
           promptId: promptId,
+          instructionsLength: instructions.length,
+          containsTemplateVariables: instructions.includes('{{'),
         },
       );
 
