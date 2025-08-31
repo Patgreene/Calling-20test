@@ -209,7 +209,7 @@ export default function Admin() {
           </Alert>
         )}
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-4">
           {/* Prompt Editor */}
           <div className="lg:col-span-2">
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
