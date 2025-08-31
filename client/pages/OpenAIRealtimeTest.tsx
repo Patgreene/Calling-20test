@@ -117,8 +117,14 @@ export default function OpenAIRealtimeTest() {
 
         console.log('Sending session update to OpenAI with call code:', callCode);
         console.log('Prepared names used for substitution:', preparedNames);
-        console.log('Final instructions sent to OpenAI:', sessionUpdateEvent.session.instructions);
-        console.log('Full session config:', sessionUpdateEvent);
+        console.log('Session config from server:', config?.sessionConfig);
+        console.log('Final session being sent to OpenAI:', sessionUpdateEvent.session);
+        console.log('Voice settings:', {
+          voice: sessionUpdateEvent.session.voice,
+          speed: sessionUpdateEvent.session.speed,
+          temperature: sessionUpdateEvent.session.temperature,
+          turn_detection: sessionUpdateEvent.session.turn_detection
+        });
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus(`Connected! Sam is ready for call ${callCode}.`);
       });
