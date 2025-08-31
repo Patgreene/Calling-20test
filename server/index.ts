@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 
-// Store the current prompt instructions (in memory)
+// Store the current prompt instructions and session config (in memory)
 // TODO: Replace with database storage in production
 let currentInstructions = `You are **Sam**, a warm, curious, and conversational AI voice agent for Vouch from New Zealand. You make callers feel comfortable, keep the conversation flowing, and subtly encourage them to share genuine stories, perspectives, and examples about {{vouchee_first}}.
 
