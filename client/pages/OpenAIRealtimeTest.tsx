@@ -71,28 +71,41 @@ export default function OpenAIRealtimeTest() {
       dataChannel.addEventListener('open', () => {
         console.log('OpenAI data channel is open, sending session configuration...');
 
-        // Use prepared names with call code for session
+        // Substitute template variables in the instructions
+        let instructions = config?.instructions || "You are a helpful assistant.";
+
+        // Replace template variables with actual values from preparedNames
+        if (preparedNames) {
+          instructions = instructions
+            .replace(/{{voucher_first}}/g, preparedNames.voucher_first)
+            .replace(/{{voucher_last}}/g, preparedNames.voucher_last)
+            .replace(/{{vouchee_first}}/g, preparedNames.vouchee_first)
+            .replace(/{{vouchee_last}}/g, preparedNames.vouchee_last);
+        }
+
+        // Add English-only constraint
+        instructions += " You must respond only in English. Do not use any other language under any circumstances.";
+
+        console.log('Instructions with substituted variables:', instructions);
+
         const sessionUpdateEvent = {
           type: 'session.update',
           session: {
             modalities: ['text', 'audio'],
-            instructions: (config?.instructions || "You are a helpful assistant.") + " You must respond only in English. Do not use any other language under any circumstances.",
+            instructions: instructions,
             voice: config?.voice || "alloy",
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: { model: 'whisper-1' },
             turn_detection: { type: 'server_vad' },
             temperature: 0.8,
-            max_response_output_tokens: 4096,
-            dynamic_variables: {
-              call_code: callCode,
-              ...preparedNames
-            }
+            max_response_output_tokens: 4096
           }
         };
 
         console.log('Sending session update to OpenAI with call code:', callCode);
-        console.log('Dynamic variables being sent:', sessionUpdateEvent.session.dynamic_variables);
+        console.log('Prepared names used for substitution:', preparedNames);
+        console.log('Final instructions sent to OpenAI:', sessionUpdateEvent.session.instructions);
         console.log('Full session config:', sessionUpdateEvent);
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus(`Connected! Sam is ready for call ${callCode}.`);
