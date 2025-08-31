@@ -417,7 +417,7 @@ export default function OpenAIRealtimeTest() {
                   </div>
                 </div>
                 <div className="text-white/50 text-xs mt-2">
-                  Variables: {{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}}
+                  Variables: {`{{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}}`}
                 </div>
               </div>
             )}
