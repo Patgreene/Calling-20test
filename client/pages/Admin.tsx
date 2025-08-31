@@ -112,7 +112,8 @@ export default function Admin() {
   const resetPrompt = () => {
     setPrompt(originalPrompt);
     updateStats(originalPrompt);
-    setMessage({ type: 'success', text: 'Prompt reset to last saved version' });
+    setSessionConfig(originalSessionConfig);
+    setMessage({ type: 'success', text: 'Prompt and settings reset to last saved version' });
   };
 
   const hasChanges = prompt !== originalPrompt || JSON.stringify(sessionConfig) !== JSON.stringify(originalSessionConfig);
