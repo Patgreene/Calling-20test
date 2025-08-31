@@ -7,6 +7,8 @@ export default function OpenAIRealtimeTest() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [status, setStatus] = useState("Ready to start test call");
+  const [voucherName, setVoucherName] = useState("");
+  const [voucheeName, setVoucheeName] = useState("");
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -62,6 +64,10 @@ export default function OpenAIRealtimeTest() {
       dataChannel.addEventListener('open', () => {
         console.log('OpenAI data channel is open, sending session configuration...');
 
+        // Parse names for dynamic variables
+        const voucherParsed = parseNameToFirstLast(voucherName);
+        const voucheeParsed = parseNameToFirstLast(voucheeName);
+
         const sessionUpdateEvent = {
           type: 'session.update',
           session: {
@@ -73,7 +79,13 @@ export default function OpenAIRealtimeTest() {
             input_audio_transcription: { model: 'whisper-1' },
             turn_detection: { type: 'server_vad' },
             temperature: 0.8,
-            max_response_output_tokens: 4096
+            max_response_output_tokens: 4096,
+            dynamic_variables: {
+              voucher_first: voucherParsed.first,
+              voucher_last: voucherParsed.last,
+              vouchee_first: voucheeParsed.first,
+              vouchee_last: voucheeParsed.last
+            }
           }
         };
 
@@ -219,6 +231,15 @@ export default function OpenAIRealtimeTest() {
     }
   };
 
+  const parseNameToFirstLast = (fullName: string) => {
+    const parts = fullName.trim().split(' ');
+    if (parts.length === 0) return { first: '', last: '' };
+    if (parts.length === 1) return { first: parts[0], last: '' };
+    const first = parts[0];
+    const last = parts.slice(1).join(' ');
+    return { first, last };
+  };
+
 
   // Audio visualization effect
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
@@ -264,6 +285,40 @@ export default function OpenAIRealtimeTest() {
           <p className="text-blue-200 text-lg">
             Meet Sam, your AI interviewer
           </p>
+        </div>
+
+        {/* Input Fields */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl mb-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="voucher" className="block text-white/80 text-sm font-medium mb-2">
+                Your Name
+              </label>
+              <input
+                type="text"
+                id="voucher"
+                name="voucher"
+                value={voucherName}
+                onChange={(e) => setVoucherName(e.target.value)}
+                placeholder="Full name"
+                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            <div>
+              <label htmlFor="vouchee" className="block text-white/80 text-sm font-medium mb-2">
+                Who are you Vouching for?
+              </label>
+              <input
+                type="text"
+                id="vouchee"
+                name="vouchee"
+                value={voucheeName}
+                onChange={(e) => setVoucheeName(e.target.value)}
+                placeholder="Full name"
+                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Main calling interface */}
