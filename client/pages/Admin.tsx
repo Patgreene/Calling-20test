@@ -84,7 +84,8 @@ export default function Admin() {
 
       if (response.ok) {
         setOriginalPrompt(prompt);
-        setMessage({ type: 'success', text: 'Prompt saved successfully!' });
+        setOriginalSessionConfig(sessionConfig);
+        setMessage({ type: 'success', text: 'Prompt and settings saved successfully!' });
       } else {
         const error = await response.json();
         setMessage({ type: 'error', text: error.error || 'Failed to save prompt' });
