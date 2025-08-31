@@ -294,6 +294,167 @@ export default function Admin() {
             </Card>
           </div>
 
+          {/* OpenAI Settings */}
+          <div>
+            <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Voice & Audio Settings</CardTitle>
+                <CardDescription className="text-white/70">
+                  Configure OpenAI Realtime API parameters
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Voice Selection */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">Voice Model</label>
+                  <select
+                    value={sessionConfig.voice}
+                    onChange={(e) => updateSessionConfig('voice', e.target.value)}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    <option value="alloy">Alloy</option>
+                    <option value="echo">Echo</option>
+                    <option value="fable">Fable</option>
+                    <option value="onyx">Onyx</option>
+                    <option value="nova">Nova</option>
+                    <option value="shimmer">Shimmer</option>
+                  </select>
+                </div>
+
+                {/* Speed */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Speech Speed: {sessionConfig.speed}x
+                  </label>
+                  <input
+                    type="range"
+                    min="0.25"
+                    max="1.5"
+                    step="0.05"
+                    value={sessionConfig.speed}
+                    onChange={(e) => updateSessionConfig('speed', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>0.25x (Slow)</span>
+                    <span>1.5x (Fast)</span>
+                  </div>
+                </div>
+
+                {/* Temperature */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Creativity (Temperature): {sessionConfig.temperature}
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value={sessionConfig.temperature}
+                    onChange={(e) => updateSessionConfig('temperature', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>0.0 (Focused)</span>
+                    <span>2.0 (Creative)</span>
+                  </div>
+                </div>
+
+                {/* Max Tokens */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Max Response Tokens: {sessionConfig.max_response_output_tokens}
+                  </label>
+                  <input
+                    type="range"
+                    min="1000"
+                    max="8192"
+                    step="256"
+                    value={sessionConfig.max_response_output_tokens}
+                    onChange={(e) => updateSessionConfig('max_response_output_tokens', parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>1K (Short)</span>
+                    <span>8K (Long)</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Voice Activity Detection */}
+            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 mt-6">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Voice Activity Detection</CardTitle>
+                <CardDescription className="text-white/70">
+                  Control how the AI detects when you stop speaking
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* VAD Threshold */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Detection Sensitivity: {sessionConfig.turn_detection.threshold}
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={sessionConfig.turn_detection.threshold}
+                    onChange={(e) => updateSessionConfig('turn_detection.threshold', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>0.0 (Very Sensitive)</span>
+                    <span>1.0 (Less Sensitive)</span>
+                  </div>
+                </div>
+
+                {/* Silence Duration */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Silence Duration: {sessionConfig.turn_detection.silence_duration_ms}ms
+                  </label>
+                  <input
+                    type="range"
+                    min="200"
+                    max="2000"
+                    step="50"
+                    value={sessionConfig.turn_detection.silence_duration_ms}
+                    onChange={(e) => updateSessionConfig('turn_detection.silence_duration_ms', parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>200ms (Quick)</span>
+                    <span>2s (Patient)</span>
+                  </div>
+                </div>
+
+                {/* Prefix Padding */}
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Audio Buffer: {sessionConfig.turn_detection.prefix_padding_ms}ms
+                  </label>
+                  <input
+                    type="range"
+                    min="100"
+                    max="1000"
+                    step="50"
+                    value={sessionConfig.turn_detection.prefix_padding_ms}
+                    onChange={(e) => updateSessionConfig('turn_detection.prefix_padding_ms', parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-white/50 mt-1">
+                    <span>100ms (Minimal)</span>
+                    <span>1s (More Context)</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Template Variables */}
