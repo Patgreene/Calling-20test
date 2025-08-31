@@ -91,7 +91,9 @@ export default function OpenAIRealtimeTest() {
           }
         };
 
-        console.log('Sending session update to OpenAI with call code:', callCode, sessionUpdateEvent);
+        console.log('Sending session update to OpenAI with call code:', callCode);
+        console.log('Dynamic variables being sent:', sessionUpdateEvent.session.dynamic_variables);
+        console.log('Full session config:', sessionUpdateEvent);
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus(`Connected! Sam is ready for call ${callCode}.`);
       });
@@ -234,11 +236,24 @@ export default function OpenAIRealtimeTest() {
   };
 
   const parseNameToFirstLast = (fullName: string) => {
-    const parts = fullName.trim().split(' ');
+    const cleanName = fullName.trim();
+    console.log('Parsing name:', cleanName);
+
+    if (!cleanName) return { first: '', last: '' };
+
+    const parts = cleanName.split(/\s+/); // Split on any whitespace
+    console.log('Name parts:', parts);
+
     if (parts.length === 0) return { first: '', last: '' };
-    if (parts.length === 1) return { first: parts[0], last: '' };
+    if (parts.length === 1) {
+      console.log('Single name detected:', parts[0]);
+      return { first: parts[0], last: '' };
+    }
+
     const first = parts[0];
     const last = parts.slice(1).join(' ');
+    console.log('Parsed result:', { first, last });
+
     return { first, last };
   };
 
@@ -252,18 +267,24 @@ export default function OpenAIRealtimeTest() {
       return;
     }
 
+    console.log('Preparing call with names:', { voucherName, voucheeName });
+
     const voucherParsed = parseNameToFirstLast(voucherName);
     const voucheeParsed = parseNameToFirstLast(voucheeName);
     const newCallCode = generateCallCode();
 
-    setPreparedNames({
+    const parsedNames = {
       voucher_first: voucherParsed.first,
       voucher_last: voucherParsed.last,
       vouchee_first: voucheeParsed.first,
       vouchee_last: voucheeParsed.last
-    });
+    };
+
+    console.log('Final parsed names that will be sent to OpenAI:', parsedNames);
+
+    setPreparedNames(parsedNames);
     setCallCode(newCallCode);
-    setStatus(`Call prepared with code: ${newCallCode}. Ready to start interview.`);
+    setStatus(`Call prepared with code: ${newCallCode}. Names parsed successfully.`);
   };
 
   const resetCall = () => {
@@ -378,6 +399,28 @@ export default function OpenAIRealtimeTest() {
                 </>
               )}
             </div>
+
+            {/* Show parsed names preview when call is prepared */}
+            {callCode && preparedNames && (
+              <div className="mt-4 p-4 bg-blue-500/10 border border-blue-400/20 rounded-xl">
+                <h4 className="text-white/80 text-sm font-medium mb-2">Names prepared for OpenAI:</h4>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-white/5 p-2 rounded">
+                    <div className="text-white/60">Voucher (You):</div>
+                    <div className="text-white">First: "{preparedNames.voucher_first}"</div>
+                    <div className="text-white">Last: "{preparedNames.voucher_last}"</div>
+                  </div>
+                  <div className="bg-white/5 p-2 rounded">
+                    <div className="text-white/60">Vouchee:</div>
+                    <div className="text-white">First: "{preparedNames.vouchee_first}"</div>
+                    <div className="text-white">Last: "{preparedNames.vouchee_last}"</div>
+                  </div>
+                </div>
+                <div className="text-white/50 text-xs mt-2">
+                  Variables: {{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -489,7 +532,7 @@ export default function OpenAIRealtimeTest() {
           {!isConnected && !callCode && (
             <div className="mt-8 text-center">
               <p className="text-white/60 text-sm">
-                Enter names and prepare call first
+                Enter full names (First Last) and prepare call first
               </p>
             </div>
           )}
