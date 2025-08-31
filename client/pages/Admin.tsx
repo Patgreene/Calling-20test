@@ -77,6 +77,7 @@ export default function Admin() {
         },
         body: JSON.stringify({
           instructions: prompt,
+          sessionConfig: sessionConfig,
           password: password // Include password for additional security
         }),
       });
