@@ -157,7 +157,7 @@ export function createServer() {
   });
 
   app.put("/api/admin/prompt", (req, res) => {
-    const { instructions, password } = req.body;
+    const { instructions, sessionConfig, password } = req.body;
 
     // Simple password check - in production, use proper auth
     if (password !== "vouch2024admin") {
@@ -168,18 +168,22 @@ export function createServer() {
       return res.status(400).json({ error: "Instructions are required" });
     }
 
-    // Update the in-memory instructions
+    // Update the in-memory instructions and session config
     currentInstructions = instructions;
+    if (sessionConfig) {
+      currentSessionConfig = { ...currentSessionConfig, ...sessionConfig };
+    }
 
-    console.log("Admin updated prompt:", {
-      length: instructions.length,
+    console.log("Admin updated prompt and settings:", {
+      instructionsLength: instructions.length,
       timestamp: new Date().toISOString(),
       preview: instructions.substring(0, 100) + "...",
-      variableCount: (instructions.match(/{{[^}]+}}/g) || []).length
+      variableCount: (instructions.match(/{{[^}]+}}/g) || []).length,
+      sessionConfig: currentSessionConfig
     });
 
     res.json({
-      message: "Prompt updated successfully! Changes will take effect immediately for new calls.",
+      message: "Prompt and settings updated successfully! Changes will take effect immediately for new calls.",
       note: "Note: Changes are saved in memory. For production, consider database persistence."
     });
   });
