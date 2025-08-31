@@ -9,6 +9,13 @@ export default function OpenAIRealtimeTest() {
   const [status, setStatus] = useState("Ready to start test call");
   const [voucherName, setVoucherName] = useState("");
   const [voucheeName, setVoucheeName] = useState("");
+  const [callCode, setCallCode] = useState<string | null>(null);
+  const [preparedNames, setPreparedNames] = useState<{
+    voucher_first: string;
+    voucher_last: string;
+    vouchee_first: string;
+    vouchee_last: string;
+  } | null>(null);
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -64,15 +71,12 @@ export default function OpenAIRealtimeTest() {
       dataChannel.addEventListener('open', () => {
         console.log('OpenAI data channel is open, sending session configuration...');
 
-        // Parse names for dynamic variables
-        const voucherParsed = parseNameToFirstLast(voucherName);
-        const voucheeParsed = parseNameToFirstLast(voucheeName);
-
+        // Use prepared names with call code for session
         const sessionUpdateEvent = {
           type: 'session.update',
           session: {
             modalities: ['text', 'audio'],
-            instructions: config?.instructions || "You are a helpful assistant.",
+            instructions: (config?.instructions || "You are a helpful assistant.") + " You must respond only in English. Do not use any other language under any circumstances.",
             voice: config?.voice || "alloy",
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
@@ -81,17 +85,15 @@ export default function OpenAIRealtimeTest() {
             temperature: 0.8,
             max_response_output_tokens: 4096,
             dynamic_variables: {
-              voucher_first: voucherParsed.first,
-              voucher_last: voucherParsed.last,
-              vouchee_first: voucheeParsed.first,
-              vouchee_last: voucheeParsed.last
+              call_code: callCode,
+              ...preparedNames
             }
           }
         };
 
-        console.log('Sending session update to OpenAI:', sessionUpdateEvent);
+        console.log('Sending session update to OpenAI with call code:', callCode, sessionUpdateEvent);
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
-        setStatus("Connected! Sam is configured and ready to start the interview.");
+        setStatus(`Connected! Sam is ready for call ${callCode}.`);
       });
 
       dataChannel.addEventListener('message', (event) => {
@@ -212,7 +214,7 @@ export default function OpenAIRealtimeTest() {
       setIsConnected(false);
       setIsConnecting(false);
       setIsMuted(false);
-      setStatus("Call ended. Ready to start new test call.");
+      setStatus(callCode ? `Call ${callCode} ended. Names still prepared.` : "Call ended. Ready to start new test call.");
     } catch (error) {
       console.error("Error stopping call:", error);
       setStatus(
@@ -238,6 +240,38 @@ export default function OpenAIRealtimeTest() {
     const first = parts[0];
     const last = parts.slice(1).join(' ');
     return { first, last };
+  };
+
+  const generateCallCode = () => {
+    return 'CALL-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  };
+
+  const prepareCall = () => {
+    if (!voucherName.trim() || !voucheeName.trim()) {
+      alert('Please enter both names before preparing the call.');
+      return;
+    }
+
+    const voucherParsed = parseNameToFirstLast(voucherName);
+    const voucheeParsed = parseNameToFirstLast(voucheeName);
+    const newCallCode = generateCallCode();
+
+    setPreparedNames({
+      voucher_first: voucherParsed.first,
+      voucher_last: voucherParsed.last,
+      vouchee_first: voucheeParsed.first,
+      vouchee_last: voucheeParsed.last
+    });
+    setCallCode(newCallCode);
+    setStatus(`Call prepared with code: ${newCallCode}. Ready to start interview.`);
+  };
+
+  const resetCall = () => {
+    setCallCode(null);
+    setPreparedNames(null);
+    setVoucherName('');
+    setVoucheeName('');
+    setStatus('Ready to start test call');
   };
 
 
@@ -301,7 +335,8 @@ export default function OpenAIRealtimeTest() {
                 value={voucherName}
                 onChange={(e) => setVoucherName(e.target.value)}
                 placeholder="Full name"
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                disabled={!!callCode}
+                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? 'opacity-50 cursor-not-allowed' : ''}`}
               />
             </div>
             <div>
@@ -315,8 +350,33 @@ export default function OpenAIRealtimeTest() {
                 value={voucheeName}
                 onChange={(e) => setVoucheeName(e.target.value)}
                 placeholder="Full name"
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                disabled={!!callCode}
+                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? 'opacity-50 cursor-not-allowed' : ''}`}
               />
+            </div>
+
+            {/* Call Preparation Controls */}
+            <div className="flex gap-3 pt-2">
+              {!callCode ? (
+                <button
+                  onClick={prepareCall}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+                >
+                  Prepare Call
+                </button>
+              ) : (
+                <>
+                  <div className="flex-1 bg-green-500/20 border border-green-400/30 text-green-300 px-4 py-3 rounded-xl font-medium text-center">
+                    Code: {callCode}
+                  </div>
+                  <button
+                    onClick={resetCall}
+                    className="bg-red-500/20 border border-red-400/30 text-red-300 px-4 py-3 rounded-xl hover:bg-red-500/30 transition-all duration-200"
+                  >
+                    Reset
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -356,10 +416,17 @@ export default function OpenAIRealtimeTest() {
             {!isConnected && !isConnecting && (
               <button
                 onClick={startCall}
-                className="group relative w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                disabled={!callCode}
+                className={`group relative w-20 h-20 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
+                  callCode
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 cursor-pointer'
+                    : 'bg-gray-500 cursor-not-allowed opacity-50'
+                }`}
               >
                 <Phone className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                {callCode && (
+                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                )}
               </button>
             )}
 
@@ -409,7 +476,20 @@ export default function OpenAIRealtimeTest() {
           {isConnected && (
             <div className="mt-8 text-center">
               <p className="text-white/60 text-sm">
-                Speak naturally • Sam is listening
+                Speak naturally • Sam is listening • English only
+              </p>
+              {callCode && (
+                <p className="text-white/40 text-xs mt-1">
+                  Call Code: {callCode}
+                </p>
+              )}
+            </div>
+          )}
+
+          {!isConnected && !callCode && (
+            <div className="mt-8 text-center">
+              <p className="text-white/60 text-sm">
+                Enter names and prepare call first
               </p>
             </div>
           )}
@@ -425,7 +505,7 @@ export default function OpenAIRealtimeTest() {
         {/* Footer Info */}
         <div className="text-center mt-6">
           <p className="text-white/40 text-sm">
-            Powered by Vouch
+            Powered by Vouch • English-only interviews
           </p>
         </div>
       </div>
