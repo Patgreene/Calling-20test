@@ -107,7 +107,22 @@ export default function Admin() {
     setMessage({ type: 'success', text: 'Prompt reset to last saved version' });
   };
 
-  const hasChanges = prompt !== originalPrompt;
+  const hasChanges = prompt !== originalPrompt || JSON.stringify(sessionConfig) !== JSON.stringify(originalSessionConfig);
+
+  const updateSessionConfig = (key: string, value: any) => {
+    if (key.includes('.')) {
+      const [parent, child] = key.split('.');
+      setSessionConfig(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent as keyof typeof prev],
+          [child]: value
+        }
+      }));
+    } else {
+      setSessionConfig(prev => ({ ...prev, [key]: value }));
+    }
+  };
 
   useEffect(() => {
     if (message) {
