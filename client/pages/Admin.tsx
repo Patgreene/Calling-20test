@@ -52,6 +52,12 @@ export default function Admin() {
         setPrompt(data.instructions);
         setOriginalPrompt(data.instructions);
         updateStats(data.instructions);
+
+        // Load session config if available
+        if (data.sessionConfig) {
+          setSessionConfig(data.sessionConfig);
+          setOriginalSessionConfig(data.sessionConfig);
+        }
       } else {
         setMessage({ type: 'error', text: 'Failed to load prompt' });
       }
