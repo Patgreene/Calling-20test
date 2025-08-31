@@ -436,7 +436,7 @@ export default function OpenAIRealtimeTest() {
                   </div>
                 </div>
                 <div className="text-white/50 text-xs mt-2">
-                  Variables: {`{{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}}`}
+                  Template variables will be substituted: {`{{voucher_first}} → ${preparedNames.voucher_first}, {{vouchee_first}} → ${preparedNames.vouchee_first}`}
                 </div>
               </div>
             )}
