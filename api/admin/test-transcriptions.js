@@ -131,7 +131,7 @@ export default async function handler(req, res) {
     }
 
     // Get all recording_id values from transcriptions table
-    const transcriptionRecordingIds = [];
+    let transcriptionRecordingIds = [];
     if (sampleData.length > 0) {
       sampleData.forEach(t => {
         transcriptionRecordingIds.push({
