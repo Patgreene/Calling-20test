@@ -28,6 +28,7 @@ import {
   Trash2,
   Archive,
 } from "lucide-react";
+import RecordingService from "@/services/RecordingService";
 
 interface Recording {
   id: string;
