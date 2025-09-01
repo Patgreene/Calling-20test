@@ -327,20 +327,24 @@ export default function OpenAIRealtimeTest() {
   // Automatic recording functions
   const startAutomaticRecording = async () => {
     try {
-      setRecordingStatus("Starting recording...");
+      setRecordingStatus("Starting mixed audio recording...");
       setIsRecording(true);
 
       // Use admin password for recording - you may want to configure this differently
       const adminPassword = "vouch2024admin";
 
-      const recordingId = await recordingService.current.startRecording(adminPassword);
+      // Pass the AI audio element to capture both sides of conversation
+      const recordingId = await recordingService.current.startRecording(
+        adminPassword,
+        audioRef.current || undefined
+      );
       currentRecordingId.current = recordingId;
 
       // Update recording metadata with call information
       await updateRecordingMetadata(recordingId);
 
-      setRecordingStatus("Recording active");
-      console.log(`✅ Automatic recording started for call ${callCode}: ${recordingId}`);
+      setRecordingStatus("Recording both sides of conversation");
+      console.log(`✅ Mixed audio recording started for call ${callCode}: ${recordingId}`);
 
     } catch (error) {
       console.error("❌ Failed to start automatic recording:", error);
