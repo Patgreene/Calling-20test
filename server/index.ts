@@ -124,7 +124,8 @@ export function createServer() {
         "Generated client secret for OpenAI Realtime API with configuration:",
         {
           model: "gpt-4o-realtime-preview-2024-12-17",
-          voice: "alloy",
+          voice: currentSessionConfig.voice,
+          voiceModel: `Using ${currentSessionConfig.voice} voice for Sam`,
           promptId: promptId,
           instructionsLength: instructions.length,
           containsTemplateVariables: instructions.includes('{{'),
