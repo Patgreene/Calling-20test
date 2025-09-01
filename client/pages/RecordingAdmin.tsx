@@ -160,7 +160,7 @@ export default function RecordingAdmin() {
         console.log("🎉 SUCCESS: Simple Supabase call returned:", simpleData);
         console.log(`📊 Found ${simpleData.length} transcriptions in database`);
         simpleData.forEach((t, i) => {
-          console.log(`��� Transcription ${i + 1}: id=${t.id}, recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}`);
+          console.log(`📄 Transcription ${i + 1}: id=${t.id}, recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}`);
         });
       } else {
         console.error("❌ FAILED: Simple Supabase call failed:", simpleResponse.status);
@@ -689,6 +689,15 @@ export default function RecordingAdmin() {
                       title="Refresh recordings and transcripts"
                     >
                       <RefreshCw className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={testTranscriptionsAPI}
+                      className="bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                      title="Test Transcriptions API"
+                    >
+                      🧪 Test
                     </Button>
                   </div>
                 </div>
