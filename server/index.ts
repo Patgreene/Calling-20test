@@ -392,6 +392,67 @@ export function createServer() {
     }
   });
 
+  // Get latest active prompt for calls
+  app.get("/api/active-prompt", async (req, res) => {
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_prompts?select=*&is_active=eq.true&limit=1`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const activePrompt = data[0];
+          console.log("🔄 Fetched active prompt for call:", {
+            id: activePrompt.id,
+            length: activePrompt.prompt.length,
+            created_at: activePrompt.created_at
+          });
+
+          // Return the prompt and session config
+          res.json({
+            instructions: activePrompt.prompt,
+            sessionConfig: {
+              voice: activePrompt.voice || 'alloy',
+              speed: parseFloat(activePrompt.speed) || 1.0,
+              temperature: parseFloat(activePrompt.temperature) || 0.8,
+              max_response_output_tokens: parseInt(activePrompt.max_response_tokens) || 4096,
+              turn_detection: {
+                type: 'server_vad',
+                threshold: parseFloat(activePrompt.vad_threshold) || 0.5,
+                prefix_padding_ms: parseInt(activePrompt.prefix_padding_ms) || 300,
+                silence_duration_ms: parseInt(activePrompt.silence_duration_ms) || 500
+              }
+            },
+            created_at: activePrompt.created_at,
+            id: activePrompt.id
+          });
+        } else {
+          // No active prompt found, return fallback
+          console.log("⚠️ No active prompt found, using fallback");
+          res.json({
+            instructions: currentInstructions,
+            sessionConfig: currentSessionConfig,
+            fallback: true
+          });
+        }
+      } else {
+        console.error("Failed to fetch active prompt:", response.status);
+        res.status(500).json({ error: "Failed to fetch active prompt" });
+      }
+    } catch (error) {
+      console.error("Error fetching active prompt:", error);
+      res.status(500).json({ error: "Error fetching active prompt" });
+    }
+  });
+
   // Load specific prompt by ID
   app.get("/api/admin/prompt/:id", async (req, res) => {
     const { id } = req.params;

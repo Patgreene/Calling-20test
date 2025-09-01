@@ -32,7 +32,19 @@ export default function OpenAIRealtimeTest() {
       setIsConnecting(true);
       setStatus("Getting client secret...");
 
-      // Step 1: Fetch client secret from server
+      // Step 1: Get fresh prompt data (from prepareCall) or fetch it now
+      let promptData = (window as any).freshPromptData;
+      if (!promptData) {
+        console.log('⚠️ No fresh prompt data found, fetching now...');
+        const promptResponse = await fetch('/api/active-prompt');
+        if (!promptResponse.ok) {
+          throw new Error('Failed to fetch active prompt');
+        }
+        promptData = await promptResponse.json();
+        console.log('✅ Fetched prompt data for call:', promptData);
+      }
+
+      // Step 2: Fetch client secret from server (just for OpenAI API key)
       const response = await fetch("/api/realtime/client-secret", {
         method: "POST",
         headers: {
@@ -49,8 +61,21 @@ export default function OpenAIRealtimeTest() {
         throw new Error(`Failed to get client secret: ${response.statusText}`);
       }
 
-      const { client_secret, config } = await response.json();
-      console.log("Received config from server:", config);
+      const { client_secret } = await response.json();
+
+      // Use fresh prompt data instead of server config
+      const config = {
+        instructions: promptData.instructions,
+        sessionConfig: promptData.sessionConfig,
+        model: "gpt-4o-realtime-preview-2024-12-17"
+      };
+
+      console.log("Using fresh prompt data for call:", {
+        instructionsLength: config.instructions.length,
+        sessionConfig: config.sessionConfig,
+        promptId: promptData.id,
+        fallback: promptData.fallback
+      });
       setStatus("Getting microphone access...");
 
       // Step 2: Get microphone access
@@ -299,30 +324,57 @@ export default function OpenAIRealtimeTest() {
     return 'CALL-' + Math.random().toString(36).substr(2, 9).toUpperCase();
   };
 
-  const prepareCall = () => {
+  const prepareCall = async () => {
     if (!voucherName.trim() || !voucheeName.trim()) {
       alert('Please enter both names before preparing the call.');
       return;
     }
 
-    console.log('Preparing call with names:', { voucherName, voucheeName });
+    setStatus('Preparing call and fetching latest prompt...');
 
-    const voucherParsed = parseNameToFirstLast(voucherName);
-    const voucheeParsed = parseNameToFirstLast(voucheeName);
-    const newCallCode = generateCallCode();
+    try {
+      // Fetch the latest active prompt from Supabase
+      console.log('🔄 Fetching latest active prompt from Supabase...');
+      const promptResponse = await fetch('/api/active-prompt');
 
-    const parsedNames = {
-      voucher_first: voucherParsed.first,
-      voucher_last: voucherParsed.last,
-      vouchee_first: voucheeParsed.first,
-      vouchee_last: voucheeParsed.last
-    };
+      if (!promptResponse.ok) {
+        throw new Error('Failed to fetch active prompt');
+      }
 
-    console.log('Final parsed names that will be sent to OpenAI:', parsedNames);
+      const promptData = await promptResponse.json();
+      console.log('✅ Fetched active prompt:', {
+        length: promptData.instructions.length,
+        id: promptData.id,
+        fallback: promptData.fallback,
+        created_at: promptData.created_at
+      });
 
-    setPreparedNames(parsedNames);
-    setCallCode(newCallCode);
-    setStatus(`Call prepared with code: ${newCallCode}. Names parsed successfully.`);
+      console.log('Preparing call with names:', { voucherName, voucheeName });
+
+      const voucherParsed = parseNameToFirstLast(voucherName);
+      const voucheeParsed = parseNameToFirstLast(voucheeName);
+      const newCallCode = generateCallCode();
+
+      const parsedNames = {
+        voucher_first: voucherParsed.first,
+        voucher_last: voucherParsed.last,
+        vouchee_first: voucheeParsed.first,
+        vouchee_last: voucheeParsed.last
+      };
+
+      console.log('Final parsed names that will be sent to OpenAI:', parsedNames);
+
+      setPreparedNames(parsedNames);
+      setCallCode(newCallCode);
+
+      // Store the fresh prompt data for use in the call
+      (window as any).freshPromptData = promptData;
+
+      setStatus(`Call prepared with code: ${newCallCode}. Using fresh prompt from Supabase${promptData.fallback ? ' (fallback)' : ''}.`);
+    } catch (error) {
+      console.error('Error preparing call:', error);
+      setStatus('Error preparing call. Please try again.');
+    }
   };
 
   const resetCall = () => {
