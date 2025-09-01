@@ -520,6 +520,17 @@ export default function OpenAIRealtimeTest() {
     };
   }, [isConnected, isMuted]);
 
+  // Cleanup recording on component unmount
+  useEffect(() => {
+    return () => {
+      if (isRecording && currentRecordingId.current) {
+        recordingService.current.stopRecording().catch((error) => {
+          console.error("Failed to stop recording on cleanup:", error);
+        });
+      }
+    };
+  }, [isRecording]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
