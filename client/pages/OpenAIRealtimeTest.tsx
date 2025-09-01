@@ -23,10 +23,10 @@ export default function OpenAIRealtimeTest() {
 
   const startCall = async () => {
     try {
-      // Ensure names are prepared before starting call
-      if (!callCode || !preparedNames) {
-        setStatus("Please prepare the call with names first.");
-        return;
+      // Generate a call code if one doesn't exist
+      if (!callCode) {
+        const newCallCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        setCallCode(newCallCode);
       }
 
       setIsConnecting(true);
