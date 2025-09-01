@@ -82,11 +82,30 @@ async function loadLatestPromptFromSupabase() {
     if (response.ok) {
       const data = await response.json();
       if (data && data.length > 0) {
+        const latestRecord = data[0];
         console.log("Loaded prompt from Supabase:", {
-          length: data[0].prompt.length,
-          created_at: data[0].created_at
+          length: latestRecord.prompt.length,
+          created_at: latestRecord.created_at
         });
-        return data[0].prompt;
+
+        // Update session config if available in database
+        if (latestRecord.voice || latestRecord.speed || latestRecord.temperature) {
+          currentSessionConfig = {
+            voice: latestRecord.voice || currentSessionConfig.voice,
+            speed: latestRecord.speed || currentSessionConfig.speed,
+            temperature: latestRecord.temperature || currentSessionConfig.temperature,
+            max_response_output_tokens: latestRecord.max_response_tokens || currentSessionConfig.max_response_output_tokens,
+            turn_detection: {
+              type: 'server_vad',
+              threshold: latestRecord.vad_threshold || currentSessionConfig.turn_detection.threshold,
+              prefix_padding_ms: latestRecord.prefix_padding_ms || currentSessionConfig.turn_detection.prefix_padding_ms,
+              silence_duration_ms: latestRecord.silence_duration_ms || currentSessionConfig.turn_detection.silence_duration_ms
+            }
+          };
+          console.log("Updated session config from Supabase:", currentSessionConfig);
+        }
+
+        return latestRecord.prompt;
       }
     } else {
       console.warn("Failed to load prompt from Supabase:", response.status);
