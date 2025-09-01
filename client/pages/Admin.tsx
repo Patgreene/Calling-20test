@@ -336,7 +336,7 @@ export default function Admin() {
                       ) : (
                         <Save className="w-4 h-4 mr-2" />
                       )}
-                      Save Prompt
+                      Save to Supabase
                     </Button>
                   </div>
                 </div>
