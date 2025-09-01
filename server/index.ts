@@ -1147,6 +1147,230 @@ export function createServer() {
     }
   });
 
+  // Download recording endpoint - concatenates all chunks
+  app.post("/api/admin/recordings/:id/download", async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      console.log(`🔽 Downloading recording ${id}`);
+
+      // Get recording details
+      const recordingResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!recordingResponse.ok) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recordings = await recordingResponse.json();
+      if (recordings.length === 0) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recording = recordings[0];
+
+      // Get all chunks for this recording
+      const chunks = await getRecordingChunks(id);
+
+      if (chunks.length === 0) {
+        return res.status(404).json({ error: "No audio chunks found" });
+      }
+
+      // Sort chunks by number
+      chunks.sort((a: any, b: any) => a.chunk_number - b.chunk_number);
+
+      // Download and concatenate chunks
+      const chunkBuffers: Buffer[] = [];
+
+      for (const chunk of chunks) {
+        if (chunk.upload_status === 'uploaded' && chunk.storage_path) {
+          try {
+            const chunkResponse = await fetch(
+              `${SUPABASE_URL}/storage/v1/object/interview-recordings/${chunk.storage_path}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                },
+              }
+            );
+
+            if (chunkResponse.ok) {
+              const chunkBuffer = Buffer.from(await chunkResponse.arrayBuffer());
+              chunkBuffers.push(chunkBuffer);
+            } else {
+              console.warn(`Failed to download chunk ${chunk.chunk_number}`);
+            }
+          } catch (error) {
+            console.warn(`Error downloading chunk ${chunk.chunk_number}:`, error);
+          }
+        }
+      }
+
+      if (chunkBuffers.length === 0) {
+        return res.status(404).json({ error: "No downloadable chunks found" });
+      }
+
+      // Concatenate all chunk buffers
+      const totalLength = chunkBuffers.reduce((sum, buffer) => sum + buffer.length, 0);
+      const concatenatedBuffer = Buffer.concat(chunkBuffers, totalLength);
+
+      // Set response headers
+      res.setHeader('Content-Type', recording.mime_type || 'audio/webm');
+      res.setHeader('Content-Length', concatenatedBuffer.length);
+      res.setHeader('Content-Disposition', `attachment; filename="${recording.file_name}"`);
+
+      // Send the concatenated audio file
+      res.send(concatenatedBuffer);
+
+      console.log(`✅ Downloaded recording ${id} (${concatenatedBuffer.length} bytes)`);
+
+    } catch (error) {
+      console.error("Download error:", error);
+      res.status(500).json({
+        error: "Failed to download recording",
+        details: error.message
+      });
+    }
+  });
+
+  // Fix stuck recording endpoint
+  app.post("/api/admin/recordings/:id/fix", async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      console.log(`🔧 Fixing stuck recording ${id}`);
+
+      // Get recording details
+      const recordingResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!recordingResponse.ok) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recordings = await recordingResponse.json();
+      if (recordings.length === 0) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recording = recordings[0];
+
+      // Get all chunks for this recording
+      const chunks = await getRecordingChunks(id);
+
+      // Re-run verification
+      const verification = await verifyChunkIntegrity(chunks);
+
+      // Determine new status
+      let uploadStatus = recording.upload_status;
+      let verificationStatus = recording.verification_status;
+      let message = "Recording status checked";
+
+      if (verification.totalChunks === 0) {
+        uploadStatus = 'failed';
+        verificationStatus = 'missing';
+        message = "No chunks found - marking as failed";
+      } else if (verification.uploadedChunks === verification.totalChunks && verification.failedChunks === 0) {
+        uploadStatus = 'completed';
+        verificationStatus = 'verified';
+        message = "All chunks verified - marking as completed";
+      } else if (verification.uploadedChunks > 0) {
+        uploadStatus = 'failed';
+        verificationStatus = verification.failedChunks > verification.uploadedChunks ? 'corrupted' : 'missing';
+        message = `Partial upload detected - ${verification.uploadedChunks}/${verification.totalChunks} chunks`;
+      } else {
+        uploadStatus = 'failed';
+        verificationStatus = 'missing';
+        message = "No successful uploads found";
+      }
+
+      // Update recording status
+      const updateData: any = {
+        upload_status: uploadStatus,
+        verification_status: verificationStatus,
+        chunks_uploaded: verification.uploadedChunks,
+        updated_at: new Date().toISOString()
+      };
+
+      if (uploadStatus === 'failed') {
+        updateData.last_error_message = `Fix attempted: ${message}`;
+      }
+
+      const updateResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!updateResponse.ok) {
+        throw new Error(`Failed to update recording: ${updateResponse.status}`);
+      }
+
+      // Log fix event
+      await logRecordingEvent(id, 'recording_fix_attempted', {
+        old_status: recording.upload_status,
+        new_status: uploadStatus,
+        verification_results: verification,
+        message: message
+      });
+
+      console.log(`✅ Fixed recording ${id}: ${uploadStatus} (${verificationStatus})`);
+
+      res.json({
+        success: true,
+        recording_id: id,
+        old_status: recording.upload_status,
+        new_status: uploadStatus,
+        verification_status: verificationStatus,
+        message: message,
+        verification_results: verification
+      });
+
+    } catch (error) {
+      console.error("Fix recording error:", error);
+      res.status(500).json({
+        error: "Failed to fix recording",
+        details: error.message
+      });
+    }
+  });
+
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     const { name, email, comment } = req.body;
