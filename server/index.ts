@@ -119,8 +119,31 @@ async function loadLatestPromptFromSupabase() {
 
 async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
   try {
+    // Step 1: Set all existing entries to inactive (is_active = false)
+    const updateResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_prompts`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          is_active: false
+        }),
+      }
+    );
+
+    if (!updateResponse.ok) {
+      console.warn("Failed to deactivate old entries:", updateResponse.status);
+    }
+
+    // Step 2: Save the new entry as active
     const dataToSave: any = {
       prompt: prompt,
+      is_active: true, // Only the new entry should be active
     };
 
     // Add session config fields if provided
@@ -132,7 +155,6 @@ async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
       dataToSave.vad_threshold = sessionConfig.turn_detection?.threshold;
       dataToSave.silence_duration_ms = sessionConfig.turn_detection?.silence_duration_ms;
       dataToSave.prefix_padding_ms = sessionConfig.turn_detection?.prefix_padding_ms;
-      dataToSave.is_active = true; // Set as active by default
     }
 
     const response = await fetch(
@@ -150,7 +172,7 @@ async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
     );
 
     if (response.ok) {
-      console.log("Prompt and session config saved to Supabase successfully");
+      console.log("Prompt saved and all old entries deactivated successfully");
       return true;
     } else {
       console.error("Failed to save to Supabase:", response.status);
