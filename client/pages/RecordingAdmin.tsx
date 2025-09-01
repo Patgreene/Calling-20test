@@ -69,6 +69,8 @@ export default function RecordingAdmin() {
     type: "success" | "error" | "warning";
     text: string;
   } | null>(null);
+  const [transcribingIds, setTranscribingIds] = useState<Set<string>>(new Set());
+  const [viewingTranscript, setViewingTranscript] = useState<string | null>(null);
 
 
   // Statistics
