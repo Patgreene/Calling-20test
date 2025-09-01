@@ -652,11 +652,11 @@ export default function RecordingAdmin() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={testTranscriptionsAPI}
-                      className="bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
-                      title="Test Transcriptions API"
+                      onClick={loadTranscriptsFromDB}
+                      className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+                      title="Load transcripts from database"
                     >
-                      🧪 Test
+                      📥 Load Transcripts
                     </Button>
                   </div>
                 </div>
