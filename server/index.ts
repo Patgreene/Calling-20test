@@ -857,13 +857,15 @@ export function createServer() {
         uploadStatus = 'failed';
       }
 
-      // Update recording with final details
+      // Update recording with final details - use actual chunk count, not parameter
+      const actualTotalChunks = Math.max(totalChunks || 0, verification.totalChunks, verification.uploadedChunks);
+
       const updateData: any = {
         upload_status: uploadStatus,
         verification_status: verificationStatus,
         duration_seconds: totalDuration,
         file_size_bytes: verification.totalSize,
-        chunks_total: totalChunks,
+        chunks_total: actualTotalChunks,
         chunks_uploaded: verification.uploadedChunks,
         file_hash: finalHash,
         updated_at: new Date().toISOString()
