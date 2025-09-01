@@ -219,6 +219,12 @@ export default function OpenAIRealtimeTest() {
         if (audioRef.current) {
           audioRef.current.srcObject = remoteStream;
           audioRef.current.play();
+
+          // If recording is already active, connect the AI audio to it
+          if (isRecording && currentRecordingId.current) {
+            console.log('🔗 Connecting AI audio to existing recording session');
+            recordingService.current.connectAIAudioToRecording(audioRef.current);
+          }
         }
       };
 
