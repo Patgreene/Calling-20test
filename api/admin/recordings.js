@@ -64,7 +64,8 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
 
 async function loadRecordings() {
   try {
-    const response = await fetch(
+    // First get recordings
+    const recordingsResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/interview_recordings?select=*&order=created_at.desc&limit=100`,
       {
         headers: {
@@ -75,13 +76,40 @@ async function loadRecordings() {
       },
     );
 
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      console.error("Failed to load recordings:", response.status);
+    if (!recordingsResponse.ok) {
+      console.error("Failed to load recordings:", recordingsResponse.status);
       return [];
     }
+
+    const recordings = await recordingsResponse.json();
+
+    // Get transcriptions for all recordings
+    const transcriptionsResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/transcriptions?select=*`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    let transcriptions = [];
+    if (transcriptionsResponse.ok) {
+      transcriptions = await transcriptionsResponse.json();
+    }
+
+    // Merge transcription data with recordings
+    const recordingsWithTranscriptions = recordings.map(recording => {
+      const transcription = transcriptions.find(t => t.recording_id === recording.id);
+      return {
+        ...recording,
+        transcription: transcription || null
+      };
+    });
+
+    return recordingsWithTranscriptions;
   } catch (error) {
     console.error("Error loading recordings:", error);
     return [];
