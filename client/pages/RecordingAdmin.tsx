@@ -532,20 +532,27 @@ export default function RecordingAdmin() {
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-white font-medium">{formatRecordingTitle(recording).title}</h3>
-                              <Badge className={getStatusColor(recording.upload_status)}>
-                                {recording.upload_status}
-                              </Badge>
-                              <Badge className={getVerificationColor(recording.verification_status)}>
-                                {recording.verification_status}
-                              </Badge>
-                            </div>
-                            {formatRecordingTitle(recording).subtitle && (
-                              <div className="text-xs text-white/40 mb-2">
-                                Call ID: {formatRecordingTitle(recording).subtitle}
-                              </div>
-                            )}
+                            {(() => {
+                              const titleInfo = formatRecordingTitle(recording);
+                              return (
+                                <>
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="text-white font-medium">{titleInfo.title}</h3>
+                                    <Badge className={getStatusColor(recording.upload_status)}>
+                                      {recording.upload_status}
+                                    </Badge>
+                                    <Badge className={getVerificationColor(recording.verification_status)}>
+                                      {recording.verification_status}
+                                    </Badge>
+                                  </div>
+                                  {titleInfo.subtitle && (
+                                    <div className="text-xs text-white/40 mb-2">
+                                      Call ID: {titleInfo.subtitle}
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()}
                             <div className="text-sm text-white/60 space-y-1">
                               <div>Created: {new Date(recording.created_at).toLocaleString()}</div>
                               <div className="flex gap-4">
