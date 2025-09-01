@@ -37,6 +37,7 @@ const App = () => (
             element={<OpenAIRealtimeTest />}
           />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/recording-admin" element={<RecordingAdmin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
