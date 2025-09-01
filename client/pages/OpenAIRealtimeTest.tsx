@@ -307,6 +307,10 @@ export default function OpenAIRealtimeTest() {
       setIsConnected(false);
       setIsConnecting(false);
       setIsMuted(false);
+
+      // Stop automatic recording when call ends
+      await stopAutomaticRecording();
+
       setStatus(
         callCode
           ? `Call ${callCode} ended. Names still prepared.`
