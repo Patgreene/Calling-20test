@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 
+// Supabase configuration
+const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
+
 // Store the current prompt instructions and session config (in memory)
 // TODO: Replace with database storage in production
 let currentInstructions = `You are **Sam**, a warm, curious, and conversational AI voice agent for Vouch from New Zealand. You make callers feel comfortable, keep the conversation flowing, and subtly encourage them to share genuine stories, perspectives, and examples about {{vouchee_first}}.
