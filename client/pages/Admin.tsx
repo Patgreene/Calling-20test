@@ -61,6 +61,9 @@ export default function Admin() {
           setSessionConfig(data.sessionConfig);
           setOriginalSessionConfig(data.sessionConfig);
         }
+
+        // Auto-load prompt history for the sidebar
+        loadPromptHistory();
       } else {
         setMessage({ type: 'error', text: 'Failed to load prompt' });
       }
@@ -145,9 +148,15 @@ export default function Admin() {
       const response = await fetch(`/api/admin/prompt/${id}`);
       if (response.ok) {
         const data = await response.json();
+        const historyItem = promptHistory.find(item => item.id === id);
+        const promptDate = historyItem ? new Date(historyItem.created_at).toLocaleString() : 'Unknown';
+
         setPrompt(data.instructions);
         updateStats(data.instructions);
-        setMessage({ type: 'success', text: 'Historical prompt loaded successfully' });
+        setMessage({
+          type: 'success',
+          text: `Reverted to prompt from ${promptDate}. Remember to save if you want to keep these changes.`
+        });
         setShowHistory(false);
       } else {
         setMessage({ type: 'error', text: 'Failed to load prompt' });
@@ -585,6 +594,82 @@ export default function Admin() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Recent Prompts */}
+            <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-white text-lg">Recent Prompts</CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={loadPromptHistory}
+                    disabled={isLoadingHistory}
+                    className="border-white/20 text-white hover:bg-white/10"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isLoadingHistory ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+                <CardDescription className="text-white/70">
+                  Click to view or revert to previous versions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {promptHistory.length === 0 ? (
+                    <div className="text-white/50 text-xs text-center py-4">
+                      {isLoadingHistory ? 'Loading...' : 'No history found'}
+                    </div>
+                  ) : (
+                    promptHistory.slice(0, 8).map((item, index) => (
+                      <div
+                        key={item.id}
+                        className="bg-white/5 border border-white/10 rounded-lg p-3 hover:bg-white/10 transition-colors cursor-pointer group"
+                        onClick={() => loadSpecificPrompt(item.id)}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-3 h-3 text-blue-400" />
+                            <span className="text-white/80 text-xs">
+                              {new Date(item.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          {index === 0 && (
+                            <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs px-1 py-0">
+                              Active
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-white/60 text-xs leading-relaxed line-clamp-2">
+                          {item.prompt.substring(0, 80)}...
+                        </p>
+                        <div className="flex justify-between items-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="text-white/40 text-xs">{item.length} chars</span>
+                          <span className="text-blue-300 text-xs">Click to revert</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                {promptHistory.length > 8 && (
+                  <div className="text-center mt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowHistory(true)}
+                      className="text-white/60 hover:text-white text-xs"
+                    >
+                      View all {promptHistory.length} prompts
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Template Variables */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
