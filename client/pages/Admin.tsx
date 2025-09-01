@@ -338,6 +338,73 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Prompt History */}
+            {showHistory && (
+              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 mt-6">
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-white">Prompt History</CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowHistory(false)}
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                  <CardDescription className="text-white/70">
+                    Load previous versions from Supabase
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    {promptHistory.length === 0 ? (
+                      <p className="text-white/50 text-sm text-center py-4">
+                        No prompt history found
+                      </p>
+                    ) : (
+                      promptHistory.map((item, index) => (
+                        <div
+                          key={item.id}
+                          className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors cursor-pointer"
+                          onClick={() => loadSpecificPrompt(item.id)}
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-blue-400" />
+                              <span className="text-white/80 text-sm">
+                                {new Date(item.created_at).toLocaleDateString()} {new Date(item.created_at).toLocaleTimeString()}
+                              </span>
+                            </div>
+                            <Badge variant="outline" className="border-white/20 text-white/60">
+                              {item.length} chars
+                            </Badge>
+                          </div>
+                          <p className="text-white/60 text-xs font-mono leading-relaxed">
+                            {item.preview}
+                          </p>
+                          <div className="mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-blue-400/30 text-blue-300 hover:bg-blue-500/20 text-xs"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                loadSpecificPrompt(item.id);
+                              }}
+                            >
+                              Load This Version
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* OpenAI Settings */}
