@@ -983,7 +983,16 @@ export function createServer() {
   });
 
   app.post("/api/admin/recordings", async (req, res) => {
-    const { action, call_code, mime_type, password } = req.body;
+    const { action, call_code, mime_type, password, voucher_name, vouchee_name } = req.body;
+
+    console.log('📥 Received POST request to /api/admin/recordings:', {
+      action,
+      call_code,
+      mime_type,
+      password: password ? '[PROVIDED]' : '[MISSING]',
+      voucher_name,
+      vouchee_name
+    });
 
     // Simple password check
     if (password !== "vouch2024admin") {
@@ -998,12 +1007,22 @@ export function createServer() {
       }
 
       try {
-        const recording = await createRecordingSession(call_code, mime_type);
+        console.log('🚀 Creating recording session with names:', {
+          call_code,
+          mime_type,
+          voucher_name,
+          vouchee_name
+        });
+
+        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name);
 
         if (recording) {
+          console.log(`✅ Recording session created with names: voucher="${voucher_name}", vouchee="${vouchee_name}"`);
           res.json({
             success: true,
             recording_id: recording.id,
+            voucher_name: recording.voucher_name,
+            vouchee_name: recording.vouchee_name,
             message: "Recording session created successfully"
           });
         } else {
