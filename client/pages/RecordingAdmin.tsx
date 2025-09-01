@@ -11,6 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
+  Play,
+  Pause,
   Download,
   Upload,
   CheckCircle,
@@ -47,6 +49,9 @@ export default function RecordingAdmin() {
   const [password, setPassword] = useState("");
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const [loadingAudio, setLoadingAudio] = useState<string | null>(null);
+  const [audioElements, setAudioElements] = useState<Map<string, HTMLAudioElement>>(new Map());
   const [message, setMessage] = useState<{
     type: "success" | "error" | "warning";
     text: string;
@@ -133,6 +138,79 @@ export default function RecordingAdmin() {
     } catch (error) {
       console.error('Download error:', error);
       setMessage({ type: "error", text: "Download failed. Recording may still be processing." });
+    }
+  };
+
+  const toggleAudioPlayback = async (recordingId: string) => {
+    try {
+      // Stop any currently playing audio
+      if (playingAudio && playingAudio !== recordingId) {
+        const currentAudio = audioElements.get(playingAudio);
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+        setPlayingAudio(null);
+      }
+
+      // Get or create audio element for this recording
+      let audio = audioElements.get(recordingId);
+
+      if (!audio) {
+        setLoadingAudio(recordingId);
+        setMessage({ type: "success", text: "Loading audio..." });
+
+        // Download the audio file and create a blob URL
+        const response = await fetch(`/api/admin/recordings/${recordingId}/download`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load audio');
+        }
+
+        const blob = await response.blob();
+        const audioUrl = window.URL.createObjectURL(blob);
+
+        audio = new Audio(audioUrl);
+        audio.onended = () => {
+          setPlayingAudio(null);
+        };
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e);
+          setMessage({ type: "error", text: "Failed to play audio. The recording may be corrupted." });
+          setPlayingAudio(null);
+          setLoadingAudio(null);
+        };
+        audio.onloadeddata = () => {
+          setLoadingAudio(null);
+          setMessage({ type: "success", text: "Audio loaded successfully!" });
+        };
+
+        // Store the audio element
+        const newAudioElements = new Map(audioElements);
+        newAudioElements.set(recordingId, audio);
+        setAudioElements(newAudioElements);
+      }
+
+      if (playingAudio === recordingId) {
+        // Currently playing this audio, so pause it
+        audio.pause();
+        setPlayingAudio(null);
+      } else {
+        // Start playing this audio
+        setLoadingAudio(null);
+        await audio.play();
+        setPlayingAudio(recordingId);
+        setMessage({ type: "success", text: "Playing audio..." });
+      }
+    } catch (error) {
+      console.error('Audio playback error:', error);
+      setMessage({ type: "error", text: "Failed to play audio. The recording may still be processing or unavailable." });
+      setPlayingAudio(null);
+      setLoadingAudio(null);
     }
   };
 
@@ -257,6 +335,20 @@ export default function RecordingAdmin() {
       return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      // Stop and cleanup all audio elements
+      audioElements.forEach((audio) => {
+        audio.pause();
+        if (audio.src.startsWith('blob:')) {
+          window.URL.revokeObjectURL(audio.src);
+        }
+      });
+      setAudioElements(new Map());
+    };
+  }, []);
 
 
   if (!isAuthenticated) {
@@ -450,6 +542,26 @@ export default function RecordingAdmin() {
                           </div>
                           
                           <div className="flex gap-2">
+                            {/* Play/Pause Button */}
+                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleAudioPlayback(recording.id)}
+                                disabled={loadingAudio === recording.id}
+                                className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+                                title={playingAudio === recording.id ? "Pause Audio" : "Play Audio"}
+                              >
+                                {loadingAudio === recording.id ? (
+                                  <RefreshCw className="w-3 h-3 animate-spin" />
+                                ) : playingAudio === recording.id ? (
+                                  <Pause className="w-3 h-3" />
+                                ) : (
+                                  <Play className="w-3 h-3" />
+                                )}
+                              </Button>
+                            )}
+
                             {/* Download Button */}
                             {recording.upload_status === 'completed' && recording.verification_status === 'verified' && (
                               <Button
