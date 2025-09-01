@@ -168,6 +168,17 @@ let currentSessionConfig = {
   }
 };
 
+// Initialize prompt from Supabase on startup
+async function initializePrompt() {
+  const latestPrompt = await loadLatestPromptFromSupabase();
+  if (latestPrompt) {
+    currentInstructions = latestPrompt;
+    console.log("✅ Loaded latest prompt from Supabase");
+  } else {
+    console.log("📝 Using default prompt (no saved prompts in Supabase)");
+  }
+}
+
 export function createServer() {
   const app = express();
 
