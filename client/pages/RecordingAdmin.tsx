@@ -793,7 +793,10 @@ export default function RecordingAdmin() {
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => loadTranscriptsFromDB()}
+                                      onClick={() => {
+                                        setMessage({ type: "success", text: "Refreshing transcripts..." });
+                                        loadRecordings();
+                                      }}
                                       className="flex-1 bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20 h-8"
                                       title="Refresh to load any new transcripts"
                                     >
