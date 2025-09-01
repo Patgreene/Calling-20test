@@ -202,6 +202,9 @@ export default function RecordingAdmin() {
 
   const retryFailedUpload = async (recordingId: string) => {
     try {
+      setMessage({ type: "success", text: "Starting enhanced retry process..." });
+
+      // First try server-side retry
       const response = await fetch("/api/admin/recordings/retry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -212,13 +215,18 @@ export default function RecordingAdmin() {
       });
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Retry initiated successfully" });
-        loadRecordings();
+        setMessage({ type: "success", text: "Server retry completed" });
       } else {
-        setMessage({ type: "error", text: "Failed to retry upload" });
+        setMessage({ type: "warning", text: "Server retry failed, trying local backup recovery..." });
+
+        // Try recovery from IndexedDB backup
+        await recordingService.current.retryFailedUploads(recordingId, password);
+        setMessage({ type: "success", text: "Backup recovery completed" });
       }
+
+      loadRecordings();
     } catch (error) {
-      setMessage({ type: "error", text: "Error retrying upload" });
+      setMessage({ type: "error", text: `Retry failed: ${error.message}` });
     }
   };
 
