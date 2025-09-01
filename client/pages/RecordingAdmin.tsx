@@ -45,6 +45,15 @@ interface Recording {
   chunks_total?: number;
   chunks_uploaded?: number;
   last_error_message?: string;
+  transcription?: {
+    id: string;
+    status: 'pending' | 'processing' | 'completed' | 'failed';
+    transcript_text?: string;
+    duration?: number;
+    language?: string;
+    error_message?: string;
+    completed_at?: string;
+  };
 }
 
 export default function RecordingAdmin() {
