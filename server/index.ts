@@ -585,7 +585,11 @@ export function createServer() {
 
   async function loadRecordings() {
     try {
-      const response = await fetch(
+      console.log("🔄 Starting to load recordings with transcriptions...");
+
+      // Step 1: Get all recordings first
+      console.log("📊 Step 1: Fetching recordings...");
+      const recordingsResponse = await fetch(
         `${SUPABASE_URL}/rest/v1/interview_recordings?select=*&order=created_at.desc&limit=100`,
         {
           headers: {
@@ -596,15 +600,92 @@ export function createServer() {
         },
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        console.error("Failed to load recordings:", response.status);
+      if (!recordingsResponse.ok) {
+        console.error("❌ Failed to load recordings:", recordingsResponse.status);
+        const errorText = await recordingsResponse.text();
+        console.error("❌ Error details:", errorText);
         return [];
       }
+
+      const recordings = await recordingsResponse.json();
+      console.log(`✅ Loaded ${recordings.length} recordings successfully`);
+
+      // Step 2: Get ALL transcriptions from database
+      console.log("📝 Step 2: Fetching transcriptions...");
+      let transcriptions = [];
+
+      try {
+        const transcriptionsResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/transcriptions?select=id,recording_id,status,transcript_text,created_at,completed_at`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        console.log(`📡 Transcriptions API response: ${transcriptionsResponse.status}`);
+
+        if (transcriptionsResponse.ok) {
+          transcriptions = await transcriptionsResponse.json();
+          console.log(`✅ Successfully loaded ${transcriptions.length} transcriptions`);
+
+          // Log each transcription
+          transcriptions.forEach((t: any, index: number) => {
+            console.log(`📄 Transcription ${index + 1}:`);
+            console.log(`   ID: ${t.id}`);
+            console.log(`   Recording ID: ${t.recording_id}`);
+            console.log(`   Status: ${t.status}`);
+            console.log(`   Has Text: ${!!t.transcript_text} (${t.transcript_text?.length || 0} chars)`);
+          });
+        } else {
+          const errorText = await transcriptionsResponse.text();
+          console.error("❌ Failed to fetch transcriptions:", transcriptionsResponse.status, errorText);
+          transcriptions = [];
+        }
+      } catch (transcriptionError) {
+        console.error("❌ Error fetching transcriptions:", transcriptionError);
+        transcriptions = [];
+      }
+
+      // Step 3: Manually match each recording with its transcription
+      console.log("🔗 Step 3: Matching recordings with transcriptions...");
+      const recordingsWithTranscriptions = recordings.map((recording: any) => {
+        // Find transcription for this recording
+        const matchingTranscription = transcriptions.find((t: any) => t.recording_id === recording.id);
+
+        if (matchingTranscription) {
+          console.log(`✅ Recording ${recording.call_code} HAS transcription: status=${matchingTranscription.status}, text=${!!matchingTranscription.transcript_text}`);
+          return {
+            ...recording,
+            transcription: matchingTranscription
+          };
+        } else {
+          console.log(`❌ Recording ${recording.call_code} has NO transcription`);
+          return {
+            ...recording,
+            transcription: null
+          };
+        }
+      });
+
+      // Step 4: Count successful matches
+      const withTranscriptText = recordingsWithTranscriptions.filter((r: any) => r.transcription?.transcript_text);
+      console.log(`🎉 FINAL RESULT: ${withTranscriptText.length} recordings have transcript text`);
+
+      if (withTranscriptText.length > 0) {
+        console.log("✅ Recordings with transcript text:");
+        withTranscriptText.forEach((r: any) => {
+          console.log(`  📝 ${r.call_code}: ${r.transcription.transcript_text.length} characters`);
+        });
+      }
+
+      return recordingsWithTranscriptions;
+
     } catch (error) {
-      console.error("Error loading recordings:", error);
+      console.error("💥 Error in loadRecordings:", error);
       return [];
     }
   }
