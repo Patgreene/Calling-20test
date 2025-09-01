@@ -1,10 +1,24 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Save, RefreshCw, Eye, EyeOff, Lock, History, Clock } from "lucide-react";
+import {
+  Save,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  Lock,
+  History,
+  Clock,
+} from "lucide-react";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,24 +27,28 @@ export default function Admin() {
   const [originalPrompt, setOriginalPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [promptStats, setPromptStats] = useState({ length: 0, variables: 0 });
 
   // OpenAI Session Configuration
   const [sessionConfig, setSessionConfig] = useState({
-    voice: 'alloy',
+    voice: "alloy",
     speed: 1.0,
     temperature: 0.8,
     max_response_output_tokens: 4096,
     turn_detection: {
-      type: 'server_vad',
+      type: "server_vad",
       threshold: 0.5,
       prefix_padding_ms: 300,
-      silence_duration_ms: 500
-    }
+      silence_duration_ms: 500,
+    },
   });
-  const [originalSessionConfig, setOriginalSessionConfig] = useState(sessionConfig);
+  const [originalSessionConfig, setOriginalSessionConfig] =
+    useState(sessionConfig);
   const [promptHistory, setPromptHistory] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -42,14 +60,14 @@ export default function Admin() {
       setIsAuthenticated(true);
       loadPrompt();
     } else {
-      setMessage({ type: 'error', text: 'Invalid admin password' });
+      setMessage({ type: "error", text: "Invalid admin password" });
     }
   };
 
   const loadPrompt = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/admin/prompt');
+      const response = await fetch("/api/admin/prompt");
       if (response.ok) {
         const data = await response.json();
         setPrompt(data.instructions);
@@ -65,10 +83,10 @@ export default function Admin() {
         // Auto-load prompt history for the sidebar
         loadPromptHistory();
       } else {
-        setMessage({ type: 'error', text: 'Failed to load prompt' });
+        setMessage({ type: "error", text: "Failed to load prompt" });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error loading prompt' });
+      setMessage({ type: "error", text: "Error loading prompt" });
     }
     setIsLoading(false);
   };
@@ -76,32 +94,38 @@ export default function Admin() {
   const savePrompt = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch('/api/admin/prompt', {
-        method: 'PUT',
+      const response = await fetch("/api/admin/prompt", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           instructions: prompt,
           sessionConfig: sessionConfig,
-          password: password // Include password for additional security
+          password: password, // Include password for additional security
         }),
       });
 
       if (response.ok) {
         setOriginalPrompt(prompt);
         setOriginalSessionConfig(sessionConfig);
-        setMessage({ type: 'success', text: 'Prompt and settings saved to Supabase successfully!' });
+        setMessage({
+          type: "success",
+          text: "Prompt and settings saved to Supabase successfully!",
+        });
         // Refresh history if it's currently shown
         if (showHistory) {
           loadPromptHistory();
         }
       } else {
         const error = await response.json();
-        setMessage({ type: 'error', text: error.error || 'Failed to save prompt' });
+        setMessage({
+          type: "error",
+          text: error.error || "Failed to save prompt",
+        });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error saving prompt' });
+      setMessage({ type: "error", text: "Error saving prompt" });
     }
     setIsSaving(false);
   };
@@ -110,7 +134,7 @@ export default function Admin() {
     const variables = (text.match(/{{[^}]+}}/g) || []).length;
     setPromptStats({
       length: text.length,
-      variables
+      variables,
     });
   };
 
@@ -123,22 +147,25 @@ export default function Admin() {
     setPrompt(originalPrompt);
     updateStats(originalPrompt);
     setSessionConfig(originalSessionConfig);
-    setMessage({ type: 'success', text: 'Prompt and settings reset to last saved version' });
+    setMessage({
+      type: "success",
+      text: "Prompt and settings reset to last saved version",
+    });
   };
 
   const loadPromptHistory = async () => {
     setIsLoadingHistory(true);
     try {
-      const response = await fetch('/api/admin/prompt-history');
+      const response = await fetch("/api/admin/prompt-history");
       if (response.ok) {
         const data = await response.json();
         setPromptHistory(data.history);
         setShowHistory(true);
       } else {
-        setMessage({ type: 'error', text: 'Failed to load prompt history' });
+        setMessage({ type: "error", text: "Failed to load prompt history" });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error loading prompt history' });
+      setMessage({ type: "error", text: "Error loading prompt history" });
     }
     setIsLoadingHistory(false);
   };
@@ -148,38 +175,42 @@ export default function Admin() {
       const response = await fetch(`/api/admin/prompt/${id}`);
       if (response.ok) {
         const data = await response.json();
-        const historyItem = promptHistory.find(item => item.id === id);
-        const promptDate = historyItem ? new Date(historyItem.created_at).toLocaleString() : 'Unknown';
+        const historyItem = promptHistory.find((item) => item.id === id);
+        const promptDate = historyItem
+          ? new Date(historyItem.created_at).toLocaleString()
+          : "Unknown";
 
         setPrompt(data.instructions);
         updateStats(data.instructions);
         setMessage({
-          type: 'success',
-          text: `Reverted to prompt from ${promptDate}. Remember to save if you want to keep these changes.`
+          type: "success",
+          text: `Reverted to prompt from ${promptDate}. Remember to save if you want to keep these changes.`,
         });
         setShowHistory(false);
       } else {
-        setMessage({ type: 'error', text: 'Failed to load prompt' });
+        setMessage({ type: "error", text: "Failed to load prompt" });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error loading prompt' });
+      setMessage({ type: "error", text: "Error loading prompt" });
     }
   };
 
-  const hasChanges = prompt !== originalPrompt || JSON.stringify(sessionConfig) !== JSON.stringify(originalSessionConfig);
+  const hasChanges =
+    prompt !== originalPrompt ||
+    JSON.stringify(sessionConfig) !== JSON.stringify(originalSessionConfig);
 
   const updateSessionConfig = (key: string, value: any) => {
-    if (key.includes('.')) {
-      const [parent, child] = key.split('.');
-      setSessionConfig(prev => ({
+    if (key.includes(".")) {
+      const [parent, child] = key.split(".");
+      setSessionConfig((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent as keyof typeof prev],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setSessionConfig(prev => ({ ...prev, [key]: value }));
+      setSessionConfig((prev) => ({ ...prev, [key]: value }));
     }
   };
 
@@ -210,15 +241,15 @@ export default function Admin() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Admin password"
               className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-              onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+              onKeyDown={(e) => e.key === "Enter" && handleAuth()}
             />
-            <Button 
+            <Button
               onClick={handleAuth}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
               Access Admin
             </Button>
-            {message && message.type === 'error' && (
+            {message && message.type === "error" && (
               <Alert className="border-red-500/50 bg-red-500/10">
                 <AlertDescription className="text-red-300">
                   {message.text}
@@ -239,21 +270,23 @@ export default function Admin() {
           <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
             Vouch Admin
           </h1>
-          <p className="text-blue-200 text-lg">
-            OpenAI Prompt Management
-          </p>
+          <p className="text-blue-200 text-lg">OpenAI Prompt Management</p>
         </div>
 
         {/* Status Messages */}
         {message && (
-          <Alert className={`${
-            message.type === 'success' 
-              ? 'border-green-500/50 bg-green-500/10' 
-              : 'border-red-500/50 bg-red-500/10'
-          }`}>
-            <AlertDescription className={
-              message.type === 'success' ? 'text-green-300' : 'text-red-300'
-            }>
+          <Alert
+            className={`${
+              message.type === "success"
+                ? "border-green-500/50 bg-green-500/10"
+                : "border-red-500/50 bg-red-500/10"
+            }`}
+          >
+            <AlertDescription
+              className={
+                message.type === "success" ? "text-green-300" : "text-red-300"
+              }
+            >
               {message.text}
             </AlertDescription>
           </Alert>
@@ -266,7 +299,9 @@ export default function Admin() {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-white">Sam AI Prompt Editor</CardTitle>
+                    <CardTitle className="text-white">
+                      Sam AI Prompt Editor
+                    </CardTitle>
                     <CardDescription className="text-white/70">
                       Edit the instructions for Sam, the Vouch reference agent
                     </CardDescription>
@@ -279,7 +314,9 @@ export default function Admin() {
                       disabled={isLoadingHistory}
                       className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
-                      <History className={`w-4 h-4 ${isLoadingHistory ? 'animate-pulse' : ''}`} />
+                      <History
+                        className={`w-4 h-4 ${isLoadingHistory ? "animate-pulse" : ""}`}
+                      />
                     </Button>
                     <Button
                       variant="outline"
@@ -287,7 +324,11 @@ export default function Admin() {
                       onClick={() => setShowPreview(!showPreview)}
                       className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
-                      {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPreview ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
                     </Button>
                     <Button
                       variant="outline"
@@ -296,7 +337,9 @@ export default function Admin() {
                       disabled={isLoading}
                       className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
-                      <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                      <RefreshCw
+                        className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+                      />
                     </Button>
                   </div>
                 </div>
@@ -309,13 +352,19 @@ export default function Admin() {
                   className="min-h-[600px] bg-white/5 border border-white/20 text-white placeholder-white/50 resize-none font-mono text-sm"
                   disabled={isLoading}
                 />
-                
+
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
-                    <Badge variant="outline" className="border-white/20 text-white">
+                    <Badge
+                      variant="outline"
+                      className="border-white/20 text-white"
+                    >
                       {promptStats.length} characters
                     </Badge>
-                    <Badge variant="outline" className="border-white/20 text-white">
+                    <Badge
+                      variant="outline"
+                      className="border-white/20 text-white"
+                    >
                       {promptStats.variables} variables
                     </Badge>
                     {hasChanges && (
@@ -324,7 +373,7 @@ export default function Admin() {
                       </Badge>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2">
                     {hasChanges && (
                       <Button
@@ -388,10 +437,14 @@ export default function Admin() {
                             <div className="flex items-center gap-2">
                               <Clock className="w-4 h-4 text-blue-400" />
                               <span className="text-white/80 text-sm">
-                                {new Date(item.created_at).toLocaleDateString()} {new Date(item.created_at).toLocaleTimeString()}
+                                {new Date(item.created_at).toLocaleDateString()}{" "}
+                                {new Date(item.created_at).toLocaleTimeString()}
                               </span>
                             </div>
-                            <Badge variant="outline" className="border-white/20 text-white/60">
+                            <Badge
+                              variant="outline"
+                              className="border-white/20 text-white/60"
+                            >
                               {item.length} chars
                             </Badge>
                           </div>
@@ -424,7 +477,9 @@ export default function Admin() {
           <div>
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Voice & Audio Settings</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Voice & Audio Settings
+                </CardTitle>
                 <CardDescription className="text-white/70">
                   Configure OpenAI Realtime API parameters
                 </CardDescription>
@@ -432,10 +487,14 @@ export default function Admin() {
               <CardContent className="space-y-6">
                 {/* Voice Selection */}
                 <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">Voice Model</label>
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Voice Model
+                  </label>
                   <select
                     value={sessionConfig.voice}
-                    onChange={(e) => updateSessionConfig('voice', e.target.value)}
+                    onChange={(e) =>
+                      updateSessionConfig("voice", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     <option value="alloy">Alloy - Versatile & Neutral</option>
@@ -444,8 +503,12 @@ export default function Admin() {
                     <option value="onyx">Onyx - Professional & Formal</option>
                     <option value="nova">Nova - Friendly & Approachable</option>
                     <option value="shimmer">Shimmer - Cheerful & Upbeat</option>
-                    <option value="marin">Marin - Natural & Expressive (New)</option>
-                    <option value="cedar">Cedar - Sophisticated & Clear (New)</option>
+                    <option value="marin">
+                      Marin - Natural & Expressive (New)
+                    </option>
+                    <option value="cedar">
+                      Cedar - Sophisticated & Clear (New)
+                    </option>
                   </select>
                 </div>
 
@@ -460,7 +523,9 @@ export default function Admin() {
                     max="1.5"
                     step="0.05"
                     value={sessionConfig.speed}
-                    onChange={(e) => updateSessionConfig('speed', parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig("speed", parseFloat(e.target.value))
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -480,7 +545,12 @@ export default function Admin() {
                     max="2"
                     step="0.1"
                     value={sessionConfig.temperature}
-                    onChange={(e) => updateSessionConfig('temperature', parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig(
+                        "temperature",
+                        parseFloat(e.target.value),
+                      )
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -488,14 +558,18 @@ export default function Admin() {
                     <span>2.0 (Creative)</span>
                   </div>
                   <p className="text-white/50 text-xs mt-2">
-                    Controls response randomness and creativity. Lower values make Sam more predictable and consistent, higher values make responses more varied and creative. 0.8 is optimal for interviews.
+                    Controls response randomness and creativity. Lower values
+                    make Sam more predictable and consistent, higher values make
+                    responses more varied and creative. 0.8 is optimal for
+                    interviews.
                   </p>
                 </div>
 
                 {/* Max Tokens */}
                 <div>
                   <label className="block text-white/80 text-sm font-medium mb-2">
-                    Max Response Tokens: {sessionConfig.max_response_output_tokens}
+                    Max Response Tokens:{" "}
+                    {sessionConfig.max_response_output_tokens}
                   </label>
                   <input
                     type="range"
@@ -503,7 +577,12 @@ export default function Admin() {
                     max="8192"
                     step="256"
                     value={sessionConfig.max_response_output_tokens}
-                    onChange={(e) => updateSessionConfig('max_response_output_tokens', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig(
+                        "max_response_output_tokens",
+                        parseInt(e.target.value),
+                      )
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -517,7 +596,9 @@ export default function Admin() {
             {/* Voice Activity Detection */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 mt-6">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Voice Activity Detection</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Voice Activity Detection
+                </CardTitle>
                 <CardDescription className="text-white/70">
                   Control how the AI detects when you stop speaking
                 </CardDescription>
@@ -526,7 +607,8 @@ export default function Admin() {
                 {/* VAD Threshold */}
                 <div>
                   <label className="block text-white/80 text-sm font-medium mb-2">
-                    Detection Sensitivity: {sessionConfig.turn_detection.threshold}
+                    Detection Sensitivity:{" "}
+                    {sessionConfig.turn_detection.threshold}
                   </label>
                   <input
                     type="range"
@@ -534,7 +616,12 @@ export default function Admin() {
                     max="1"
                     step="0.05"
                     value={sessionConfig.turn_detection.threshold}
-                    onChange={(e) => updateSessionConfig('turn_detection.threshold', parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig(
+                        "turn_detection.threshold",
+                        parseFloat(e.target.value),
+                      )
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -542,14 +629,17 @@ export default function Admin() {
                     <span>1.0 (Less Sensitive)</span>
                   </div>
                   <p className="text-white/50 text-xs mt-2">
-                    How easily Sam detects when you're speaking. Higher sensitivity responds to quieter speech but may trigger on background noise. Lower sensitivity requires clearer speech.
+                    How easily Sam detects when you're speaking. Higher
+                    sensitivity responds to quieter speech but may trigger on
+                    background noise. Lower sensitivity requires clearer speech.
                   </p>
                 </div>
 
                 {/* Silence Duration */}
                 <div>
                   <label className="block text-white/80 text-sm font-medium mb-2">
-                    Silence Duration: {sessionConfig.turn_detection.silence_duration_ms}ms
+                    Silence Duration:{" "}
+                    {sessionConfig.turn_detection.silence_duration_ms}ms
                   </label>
                   <input
                     type="range"
@@ -557,7 +647,12 @@ export default function Admin() {
                     max="2000"
                     step="50"
                     value={sessionConfig.turn_detection.silence_duration_ms}
-                    onChange={(e) => updateSessionConfig('turn_detection.silence_duration_ms', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig(
+                        "turn_detection.silence_duration_ms",
+                        parseInt(e.target.value),
+                      )
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -569,7 +664,8 @@ export default function Admin() {
                 {/* Prefix Padding */}
                 <div>
                   <label className="block text-white/80 text-sm font-medium mb-2">
-                    Audio Buffer: {sessionConfig.turn_detection.prefix_padding_ms}ms
+                    Audio Buffer:{" "}
+                    {sessionConfig.turn_detection.prefix_padding_ms}ms
                   </label>
                   <input
                     type="range"
@@ -577,7 +673,12 @@ export default function Admin() {
                     max="1000"
                     step="50"
                     value={sessionConfig.turn_detection.prefix_padding_ms}
-                    onChange={(e) => updateSessionConfig('turn_detection.prefix_padding_ms', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      updateSessionConfig(
+                        "turn_detection.prefix_padding_ms",
+                        parseInt(e.target.value),
+                      )
+                    }
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-white/50 mt-1">
@@ -585,7 +686,9 @@ export default function Admin() {
                     <span>1s (More Context)</span>
                   </div>
                   <p className="text-white/50 text-xs mt-2">
-                    Audio captured before detected speech begins. More buffer helps Sam understand context and catch the beginning of sentences, but increases processing time.
+                    Audio captured before detected speech begins. More buffer
+                    helps Sam understand context and catch the beginning of
+                    sentences, but increases processing time.
                   </p>
                 </div>
               </CardContent>
@@ -598,7 +701,9 @@ export default function Admin() {
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-white text-lg">Recent Prompts</CardTitle>
+                  <CardTitle className="text-white text-lg">
+                    Recent Prompts
+                  </CardTitle>
                   <Button
                     variant="outline"
                     size="sm"
@@ -606,7 +711,9 @@ export default function Admin() {
                     disabled={isLoadingHistory}
                     className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
                   >
-                    <RefreshCw className={`w-3 h-3 ${isLoadingHistory ? 'animate-spin' : ''}`} />
+                    <RefreshCw
+                      className={`w-3 h-3 ${isLoadingHistory ? "animate-spin" : ""}`}
+                    />
                   </Button>
                 </div>
                 <CardDescription className="text-white/70">
@@ -617,7 +724,7 @@ export default function Admin() {
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {promptHistory.length === 0 ? (
                     <div className="text-white/50 text-xs text-center py-4">
-                      {isLoadingHistory ? 'Loading...' : 'No history found'}
+                      {isLoadingHistory ? "Loading..." : "No history found"}
                     </div>
                   ) : (
                     promptHistory.slice(0, 8).map((item, index) => (
@@ -630,12 +737,15 @@ export default function Admin() {
                           <div className="flex items-center gap-2">
                             <Clock className="w-3 h-3 text-blue-400" />
                             <span className="text-white/80 text-xs">
-                              {new Date(item.created_at).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                              {new Date(item.created_at).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
                             </span>
                           </div>
                           {index === 0 && (
@@ -648,8 +758,12 @@ export default function Admin() {
                           {item.prompt.substring(0, 80)}...
                         </p>
                         <div className="flex justify-between items-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="text-white/40 text-xs">{item.length} chars</span>
-                          <span className="text-blue-300 text-xs">Click to revert</span>
+                          <span className="text-white/40 text-xs">
+                            {item.length} chars
+                          </span>
+                          <span className="text-blue-300 text-xs">
+                            Click to revert
+                          </span>
                         </div>
                       </div>
                     ))
@@ -673,7 +787,9 @@ export default function Admin() {
             {/* Template Variables */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Template Variables</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Template Variables
+                </CardTitle>
                 <CardDescription className="text-white/70">
                   Available in the prompt
                 </CardDescription>
@@ -684,7 +800,9 @@ export default function Admin() {
                   <div className="text-green-300">{`{{voucher_first}}`}</div>
                   <div className="text-green-300">{`{{voucher_last}}`}</div>
 
-                  <div className="text-white/60 mt-4">Vouchee (person being vouched for):</div>
+                  <div className="text-white/60 mt-4">
+                    Vouchee (person being vouched for):
+                  </div>
                   <div className="text-green-300">{`{{vouchee_first}}`}</div>
                   <div className="text-green-300">{`{{vouchee_last}}`}</div>
                 </div>
@@ -694,14 +812,16 @@ export default function Admin() {
             {/* Quick Actions */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Quick Actions</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Quick Actions
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
                   variant="outline"
                   size="sm"
                   className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                  onClick={() => window.open('/openai-realtime-test', '_blank')}
+                  onClick={() => window.open("/openai-realtime-test", "_blank")}
                 >
                   Test Interview Page
                 </Button>
@@ -728,12 +848,12 @@ export default function Admin() {
                 <CardContent>
                   <div className="text-xs text-white/80 bg-black/20 p-3 rounded border max-h-40 overflow-y-auto font-mono">
                     {prompt
-                      .replace(/{{voucher_first}}/g, 'Patrick')
-                      .replace(/{{voucher_last}}/g, 'Greene')
-                      .replace(/{{vouchee_first}}/g, 'Sam')
-                      .replace(/{{vouchee_last}}/g, 'Baker')
+                      .replace(/{{voucher_first}}/g, "Patrick")
+                      .replace(/{{voucher_last}}/g, "Greene")
+                      .replace(/{{vouchee_first}}/g, "Sam")
+                      .replace(/{{vouchee_last}}/g, "Baker")
                       .substring(0, 500)}
-                    {prompt.length > 500 && '...'}
+                    {prompt.length > 500 && "..."}
                   </div>
                 </CardContent>
               </Card>

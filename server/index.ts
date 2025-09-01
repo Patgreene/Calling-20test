@@ -4,7 +4,8 @@ import { handleDemo } from "./routes/demo";
 
 // Supabase configuration
 const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
 // Store the current prompt instructions and session config (in memory)
 // TODO: Replace with database storage in production
@@ -76,7 +77,7 @@ async function loadLatestPromptFromSupabase() {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -85,24 +86,40 @@ async function loadLatestPromptFromSupabase() {
         const latestRecord = data[0];
         console.log("Loaded prompt from Supabase:", {
           length: latestRecord.prompt.length,
-          created_at: latestRecord.created_at
+          created_at: latestRecord.created_at,
         });
 
         // Update session config if available in database
-        if (latestRecord.voice || latestRecord.speed || latestRecord.temperature) {
+        if (
+          latestRecord.voice ||
+          latestRecord.speed ||
+          latestRecord.temperature
+        ) {
           currentSessionConfig = {
             voice: latestRecord.voice || currentSessionConfig.voice,
             speed: latestRecord.speed || currentSessionConfig.speed,
-            temperature: latestRecord.temperature || currentSessionConfig.temperature,
-            max_response_output_tokens: latestRecord.max_response_tokens || currentSessionConfig.max_response_output_tokens,
+            temperature:
+              latestRecord.temperature || currentSessionConfig.temperature,
+            max_response_output_tokens:
+              latestRecord.max_response_tokens ||
+              currentSessionConfig.max_response_output_tokens,
             turn_detection: {
-              type: 'server_vad',
-              threshold: latestRecord.vad_threshold || currentSessionConfig.turn_detection.threshold,
-              prefix_padding_ms: latestRecord.prefix_padding_ms || currentSessionConfig.turn_detection.prefix_padding_ms,
-              silence_duration_ms: latestRecord.silence_duration_ms || currentSessionConfig.turn_detection.silence_duration_ms
-            }
+              type: "server_vad",
+              threshold:
+                latestRecord.vad_threshold ||
+                currentSessionConfig.turn_detection.threshold,
+              prefix_padding_ms:
+                latestRecord.prefix_padding_ms ||
+                currentSessionConfig.turn_detection.prefix_padding_ms,
+              silence_duration_ms:
+                latestRecord.silence_duration_ms ||
+                currentSessionConfig.turn_detection.silence_duration_ms,
+            },
           };
-          console.log("Updated session config from Supabase:", currentSessionConfig);
+          console.log(
+            "Updated session config from Supabase:",
+            currentSessionConfig,
+          );
         }
 
         return latestRecord.prompt;
@@ -131,9 +148,9 @@ async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
           Prefer: "return=minimal",
         },
         body: JSON.stringify({
-          is_active: false
+          is_active: false,
         }),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
@@ -153,23 +170,22 @@ async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
       dataToSave.temperature = sessionConfig.temperature;
       dataToSave.max_response_tokens = sessionConfig.max_response_output_tokens;
       dataToSave.vad_threshold = sessionConfig.turn_detection?.threshold;
-      dataToSave.silence_duration_ms = sessionConfig.turn_detection?.silence_duration_ms;
-      dataToSave.prefix_padding_ms = sessionConfig.turn_detection?.prefix_padding_ms;
+      dataToSave.silence_duration_ms =
+        sessionConfig.turn_detection?.silence_duration_ms;
+      dataToSave.prefix_padding_ms =
+        sessionConfig.turn_detection?.prefix_padding_ms;
     }
 
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/interview_prompts`,
-      {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify(dataToSave),
-      }
-    );
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/interview_prompts`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(dataToSave),
+    });
 
     if (response.ok) {
       console.log("Prompt saved and all old entries deactivated successfully");
@@ -196,14 +212,17 @@ async function getPromptHistoryFromSupabase() {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
       const data = await response.json();
       return data;
     } else {
-      console.warn("Failed to load prompt history from Supabase:", response.status);
+      console.warn(
+        "Failed to load prompt history from Supabase:",
+        response.status,
+      );
     }
   } catch (error) {
     console.warn("Error loading prompt history from Supabase:", error);
@@ -213,16 +232,16 @@ async function getPromptHistoryFromSupabase() {
 }
 
 let currentSessionConfig = {
-  voice: 'alloy',
+  voice: "alloy",
   speed: 1.0,
   temperature: 0.8,
   max_response_output_tokens: 4096,
   turn_detection: {
-    type: 'server_vad',
+    type: "server_vad",
     threshold: 0.5,
     prefix_padding_ms: 300,
-    silence_duration_ms: 500
-  }
+    silence_duration_ms: 500,
+  },
 };
 
 // Initialize prompt from Supabase on startup
@@ -269,8 +288,14 @@ export function createServer() {
       const promptId = "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3";
       let instructions = currentInstructions;
 
-      console.log("🔍 OpenAI API called - Current instructions length:", instructions.length);
-      console.log("🔍 Instructions preview:", instructions.substring(0, 100) + "...");
+      console.log(
+        "🔍 OpenAI API called - Current instructions length:",
+        instructions.length,
+      );
+      console.log(
+        "🔍 Instructions preview:",
+        instructions.substring(0, 100) + "...",
+      );
 
       try {
         console.log(
@@ -296,7 +321,7 @@ export function createServer() {
           voiceModel: `Using ${currentSessionConfig.voice} voice for Sam`,
           promptId: promptId,
           instructionsLength: instructions.length,
-          containsTemplateVariables: instructions.includes('{{'),
+          containsTemplateVariables: instructions.includes("{{"),
         },
       );
 
@@ -323,7 +348,7 @@ export function createServer() {
       instructions: currentInstructions,
       sessionConfig: currentSessionConfig,
       promptId: "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3",
-      lastModified: new Date().toISOString()
+      lastModified: new Date().toISOString(),
     });
   });
 
@@ -345,7 +370,10 @@ export function createServer() {
     if (saveSuccess) {
       // Update the in-memory instructions and session config only if save succeeded
       currentInstructions = instructions;
-      console.log("✅ Updated currentInstructions in memory, length:", instructions.length);
+      console.log(
+        "✅ Updated currentInstructions in memory, length:",
+        instructions.length,
+      );
       console.log("✅ Preview:", instructions.substring(0, 100) + "...");
 
       if (sessionConfig) {
@@ -359,16 +387,17 @@ export function createServer() {
         preview: instructions.substring(0, 100) + "...",
         variableCount: (instructions.match(/{{[^}]+}}/g) || []).length,
         sessionConfig: currentSessionConfig,
-        savedToSupabase: true
+        savedToSupabase: true,
       });
 
       res.json({
-        message: "Prompt and settings saved to Supabase successfully! Changes will take effect immediately for new calls.",
-        savedToSupabase: true
+        message:
+          "Prompt and settings saved to Supabase successfully! Changes will take effect immediately for new calls.",
+        savedToSupabase: true,
       });
     } else {
       res.status(500).json({
-        error: "Failed to save prompt to Supabase. Please try again."
+        error: "Failed to save prompt to Supabase. Please try again.",
       });
     }
   });
@@ -378,13 +407,13 @@ export function createServer() {
     try {
       const history = await getPromptHistoryFromSupabase();
       res.json({
-        history: history.map(item => ({
+        history: history.map((item) => ({
           id: item.id,
           prompt: item.prompt,
           created_at: item.created_at,
           preview: item.prompt.substring(0, 150) + "...",
-          length: item.prompt.length
-        }))
+          length: item.prompt.length,
+        })),
       });
     } catch (error) {
       console.error("Error fetching prompt history:", error);
@@ -403,7 +432,7 @@ export function createServer() {
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -413,26 +442,29 @@ export function createServer() {
           console.log("🔄 Fetched active prompt for call:", {
             id: activePrompt.id,
             length: activePrompt.prompt.length,
-            created_at: activePrompt.created_at
+            created_at: activePrompt.created_at,
           });
 
           // Return the prompt and session config
           res.json({
             instructions: activePrompt.prompt,
             sessionConfig: {
-              voice: activePrompt.voice || 'alloy',
+              voice: activePrompt.voice || "alloy",
               speed: parseFloat(activePrompt.speed) || 1.0,
               temperature: parseFloat(activePrompt.temperature) || 0.8,
-              max_response_output_tokens: parseInt(activePrompt.max_response_tokens) || 4096,
+              max_response_output_tokens:
+                parseInt(activePrompt.max_response_tokens) || 4096,
               turn_detection: {
-                type: 'server_vad',
+                type: "server_vad",
                 threshold: parseFloat(activePrompt.vad_threshold) || 0.5,
-                prefix_padding_ms: parseInt(activePrompt.prefix_padding_ms) || 300,
-                silence_duration_ms: parseInt(activePrompt.silence_duration_ms) || 500
-              }
+                prefix_padding_ms:
+                  parseInt(activePrompt.prefix_padding_ms) || 300,
+                silence_duration_ms:
+                  parseInt(activePrompt.silence_duration_ms) || 500,
+              },
             },
             created_at: activePrompt.created_at,
-            id: activePrompt.id
+            id: activePrompt.id,
           });
         } else {
           // No active prompt found, return fallback
@@ -440,7 +472,7 @@ export function createServer() {
           res.json({
             instructions: currentInstructions,
             sessionConfig: currentSessionConfig,
-            fallback: true
+            fallback: true,
           });
         }
       } else {
@@ -466,7 +498,7 @@ export function createServer() {
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -475,7 +507,7 @@ export function createServer() {
           res.json({
             instructions: data[0].prompt,
             sessionConfig: currentSessionConfig, // Use current session config
-            created_at: data[0].created_at
+            created_at: data[0].created_at,
           });
         } else {
           res.status(404).json({ error: "Prompt not found" });
