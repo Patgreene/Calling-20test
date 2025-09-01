@@ -347,7 +347,8 @@ export default function OpenAIRealtimeTest() {
         adminPassword,
         audioRef.current || undefined,
         voucherNameForRecording,
-        voucheeNameForRecording
+        voucheeNameForRecording,
+        callCode || undefined
       );
       currentRecordingId.current = recordingId;
 
