@@ -199,7 +199,15 @@ export default async function handler(req, res) {
       table_exists: true,
       total_count: totalCount,
       sample_data: sampleData,
+      recording_ids: recordingIds,
+      transcription_recording_ids: transcriptionRecordingIds,
+      relationship_check: relationshipCheck,
       specific_checks: specificChecks,
+      foreign_key_summary: {
+        total_transcriptions: transcriptionRecordingIds.length,
+        valid_foreign_keys: relationshipCheck.filter(r => r.valid_foreign_key).length,
+        invalid_foreign_keys: relationshipCheck.filter(r => !r.valid_foreign_key).length
+      },
       timestamp: new Date().toISOString()
     };
 
