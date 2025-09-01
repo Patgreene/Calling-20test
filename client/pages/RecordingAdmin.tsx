@@ -96,6 +96,18 @@ export default function RecordingAdmin() {
       const response = await fetch("/api/admin/recordings");
       if (response.ok) {
         const data = await response.json();
+        console.log("📊 Loaded recordings data:", data.recordings);
+        // Debug: Check for transcription data
+        const recordingsWithTranscripts = data.recordings?.filter(r => r.transcription) || [];
+        console.log("📝 Recordings with transcripts:", recordingsWithTranscripts.length);
+        recordingsWithTranscripts.forEach(r => {
+          console.log(`📄 Recording ${r.call_code} has transcription:`, {
+            status: r.transcription?.status,
+            hasText: !!r.transcription?.transcript_text,
+            textLength: r.transcription?.transcript_text?.length || 0
+          });
+        });
+
         setRecordings(data.recordings || []);
         calculateStats(data.recordings || []);
       } else {
@@ -699,13 +711,46 @@ export default function RecordingAdmin() {
                             </div>
                           </div>
 
-                          {/* Inline Transcript Display */}
-                          {recording.transcription?.status === 'completed' && recording.transcription?.transcript_text && (
-                            <div className="flex-1 min-w-0">
-                              <div className="bg-black/30 border border-white/10 rounded-lg p-3 max-h-32 overflow-y-auto">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <FileText className="w-3 h-3 text-green-400" />
-                                  <span className="text-xs text-green-400 font-medium">Word-for-Word Transcript</span>
+                          {/* Simple Transcript Text Box */}
+                          <div className="flex-1 min-w-0">
+                            <div className="bg-black/20 border border-white/10 rounded-lg p-2">
+                              <div className="flex items-center gap-2 mb-1">
+                                <FileText className="w-3 h-3 text-green-400" />
+                                <span className="text-xs text-green-400 font-medium">Transcript</span>
+                                {recording.transcription?.status && (
+                                  <Badge className={getTranscriptionColor(recording.transcription.status)} size="xs">
+                                    {recording.transcription.status}
+                                  </Badge>
+                                )}
+                              </div>
+                              <textarea
+                                value={recording.transcription?.transcript_text || (
+                                  recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription
+                                    ? "Click 📝 button to generate transcript"
+                                    : "No transcript available"
+                                )}
+                                onChange={(e) => {
+                                  // Update the transcript text in state (for editing)
+                                  const newRecordings = recordings.map(r => {
+                                    if (r.id === recording.id) {
+                                      return {
+                                        ...r,
+                                        transcription: {
+                                          ...r.transcription,
+                                          transcript_text: e.target.value
+                                        }
+                                      };
+                                    }
+                                    return r;
+                                  });
+                                  setRecordings(newRecordings);
+                                }}
+                                className="w-full h-24 text-xs text-white/80 bg-transparent border-none resize-none focus:outline-none leading-relaxed"
+                                placeholder="Transcript will appear here..."
+                                readOnly={!recording.transcription?.transcript_text}
+                              />
+                              {recording.transcription?.transcript_text && (
+                                <div className="flex gap-2 mt-1">
                                   <button
                                     onClick={() => navigator.clipboard.writeText(recording.transcription!.transcript_text!)}
                                     className="text-xs text-blue-400 hover:text-blue-300"
@@ -729,31 +774,9 @@ export default function RecordingAdmin() {
                                     Download
                                   </button>
                                 </div>
-                                <div className="text-xs text-white/80 leading-relaxed">
-                                  {recording.transcription.transcript_text}
-                                </div>
-                              </div>
+                              )}
                             </div>
-                          )}
-
-                          {/* Transcript Placeholder */}
-                          {recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription && (
-                            <div className="flex-1 min-w-0">
-                              <div className="bg-black/20 border border-white/5 rounded-lg p-3 flex items-center justify-center">
-                                <span className="text-xs text-white/40">Click 📝 to generate transcript</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Transcript Processing State */}
-                          {recording.transcription?.status === 'processing' && (
-                            <div className="flex-1 min-w-0">
-                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 flex items-center justify-center">
-                                <Loader2 className="w-4 h-4 text-blue-400 animate-spin mr-2" />
-                                <span className="text-xs text-blue-400">Generating transcript...</span>
-                              </div>
-                            </div>
-                          )}
+                          </div>
                           
                           <div className="flex gap-2">
                             {/* Play/Pause Button */}
