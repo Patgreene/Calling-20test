@@ -281,24 +281,37 @@ class RecordingService {
       const stream = destination.stream;
 
       // Create recording session on server
+      const requestData = {
+        action: 'start_recording',
+        call_code: callCode || `REC-${Date.now()}`,
+        mime_type: this.config.mimeType,
+        password: password,
+        voucher_name: voucherName,
+        vouchee_name: voucheeName,
+      };
+
+      console.log('📤 Sending recording session creation request:', requestData);
+
       const sessionResponse = await fetch('/api/admin/recordings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'start_recording',
-          call_code: callCode || `REC-${Date.now()}`,
-          mime_type: this.config.mimeType,
-          password: password,
-          voucher_name: voucherName,
-          vouchee_name: voucheeName,
-        }),
+        body: JSON.stringify(requestData),
       });
 
       if (!sessionResponse.ok) {
-        throw new Error('Failed to create recording session on server');
+        const errorText = await sessionResponse.text();
+        console.error('❌ Failed to create recording session:', {
+          status: sessionResponse.status,
+          statusText: sessionResponse.statusText,
+          error: errorText
+        });
+        throw new Error(`Failed to create recording session on server: ${sessionResponse.status} ${errorText}`);
       }
 
-      const { recording_id } = await sessionResponse.json();
+      const sessionData = await sessionResponse.json();
+      console.log('✅ Recording session creation response:', sessionData);
+
+      const { recording_id } = sessionData;
 
       // Initialize MediaRecorder
       const mediaRecorder = new MediaRecorder(stream, {
@@ -686,7 +699,7 @@ class RecordingService {
           
           if (createdAt < cutoffDate && record.uploadStatus === 'uploaded') {
             cursor.delete();
-            console.log(`��️ Cleaned up old backup chunk: ${record.id}`);
+            console.log(`🗑️ Cleaned up old backup chunk: ${record.id}`);
           }
           
           cursor.continue();
