@@ -119,6 +119,40 @@ export default function Admin() {
     setMessage({ type: 'success', text: 'Prompt and settings reset to last saved version' });
   };
 
+  const loadPromptHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const response = await fetch('/api/admin/prompt-history');
+      if (response.ok) {
+        const data = await response.json();
+        setPromptHistory(data.history);
+        setShowHistory(true);
+      } else {
+        setMessage({ type: 'error', text: 'Failed to load prompt history' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error loading prompt history' });
+    }
+    setIsLoadingHistory(false);
+  };
+
+  const loadSpecificPrompt = async (id: string) => {
+    try {
+      const response = await fetch(`/api/admin/prompt/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPrompt(data.instructions);
+        updateStats(data.instructions);
+        setMessage({ type: 'success', text: 'Historical prompt loaded successfully' });
+        setShowHistory(false);
+      } else {
+        setMessage({ type: 'error', text: 'Failed to load prompt' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error loading prompt' });
+    }
+  };
+
   const hasChanges = prompt !== originalPrompt || JSON.stringify(sessionConfig) !== JSON.stringify(originalSessionConfig);
 
   const updateSessionConfig = (key: string, value: any) => {
