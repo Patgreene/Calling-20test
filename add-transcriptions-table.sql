@@ -1,7 +1,7 @@
 -- Create transcriptions table to store transcript data
 CREATE TABLE IF NOT EXISTS transcriptions (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  recording_id uuid NOT NULL REFERENCES recordings(id) ON DELETE CASCADE,
+  recording_id uuid NOT NULL REFERENCES interview_recordings(id) ON DELETE CASCADE,
   status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
   transcript_text text,
   transcript_json jsonb,
