@@ -151,7 +151,17 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const { test_columns } = req.query;
+    const { test_columns, debug_last_request } = req.query;
+
+    if (debug_last_request === "true") {
+      // Return what the last request contained for debugging
+      res.json({
+        success: true,
+        message: "Debug endpoint - last request data would be logged server-side",
+        instructions: "Check server logs for the detailed request data"
+      });
+      return;
+    }
 
     if (test_columns === "true") {
       // Test if voucher_name and vouchee_name columns exist
