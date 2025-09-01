@@ -796,23 +796,43 @@ export default function RecordingAdmin() {
                                   </div>
                                 </>
                               ) : recording.upload_status === 'completed' && recording.verification_status === 'verified' ? (
-                                /* Clickable area to generate transcript */
-                                <div
-                                  onClick={() => startTranscription(recording.id)}
-                                  className="w-full h-24 flex items-center justify-center cursor-pointer bg-black/20 border border-dashed border-white/20 rounded-lg hover:bg-black/30 hover:border-white/30 transition-colors"
-                                  title="Click to generate transcript with OpenAI Whisper"
-                                >
-                                  {transcribingIds.has(recording.id) ? (
-                                    <div className="flex items-center gap-2 text-blue-300">
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                      <span className="text-xs">Generating transcript...</span>
-                                    </div>
-                                  ) : (
-                                    <div className="flex items-center gap-2 text-white/60 hover:text-white/80">
-                                      <FileText className="w-4 h-4" />
-                                      <span className="text-xs">Click 📝 to generate transcript</span>
-                                    </div>
-                                  )}
+                                /* Two buttons: Generate and Load transcript */
+                                <div className="w-full h-24 flex flex-col gap-2 p-2">
+                                  <div className="flex gap-2 flex-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => startTranscription(recording.id)}
+                                      disabled={transcribingIds.has(recording.id)}
+                                      className="flex-1 bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20 h-8"
+                                      title="Generate new transcript with OpenAI Whisper"
+                                    >
+                                      {transcribingIds.has(recording.id) ? (
+                                        <>
+                                          <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                                          <span className="text-xs">Generating...</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <FileText className="w-3 h-3 mr-1" />
+                                          <span className="text-xs">📝 Generate</span>
+                                        </>
+                                      )}
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => loadTranscriptsFromDB()}
+                                      className="flex-1 bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20 h-8"
+                                      title="Load existing transcript from database"
+                                    >
+                                      <RefreshCw className="w-3 h-3 mr-1" />
+                                      <span className="text-xs">📥 Load</span>
+                                    </Button>
+                                  </div>
+                                  <div className="text-xs text-white/40 text-center">
+                                    Generate new or load existing transcript
+                                  </div>
                                 </div>
                               ) : (
                                 /* No transcript available */
