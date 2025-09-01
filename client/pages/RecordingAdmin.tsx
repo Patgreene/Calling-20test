@@ -297,6 +297,18 @@ export default function RecordingAdmin() {
     }
   }, [isAuthenticated]);
 
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      if (statusIntervalRef.current) {
+        clearInterval(statusIntervalRef.current);
+      }
+      if (isRecording) {
+        recordingService.current.stopRecording().catch(console.error);
+      }
+    };
+  }, []);
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4">
