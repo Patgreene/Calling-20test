@@ -321,9 +321,6 @@ export default function Admin() {
                     <option value="marin">Marin - Natural & Expressive (New)</option>
                     <option value="cedar">Cedar - Sophisticated & Clear (New)</option>
                   </select>
-                  <p className="text-white/50 text-xs mt-2">
-                    Each voice has distinct characteristics: Alloy is balanced for all contexts, Echo conveys authority, Fable excels at storytelling, Onyx sounds professional, Nova is casual and friendly, Shimmer is energetic and optimistic. The new Marin and Cedar voices offer enhanced naturalness and expressiveness with better instruction-following capabilities.
-                  </p>
                 </div>
 
                 {/* Speed */}
@@ -344,9 +341,6 @@ export default function Admin() {
                     <span>0.25x (Slow)</span>
                     <span>1.5x (Fast)</span>
                   </div>
-                  <p className="text-white/50 text-xs mt-2">
-                    Controls how fast Sam speaks. Slower speeds are easier to understand and feel more deliberate, while faster speeds create a more energetic, efficient conversation pace.
-                  </p>
                 </div>
 
                 {/* Temperature */}
@@ -390,9 +384,6 @@ export default function Admin() {
                     <span>1K (Short)</span>
                     <span>8K (Long)</span>
                   </div>
-                  <p className="text-white/50 text-xs mt-2">
-                    Limits the maximum length of Sam's responses. Lower values keep responses concise and to-the-point, higher values allow for more detailed explanations and follow-ups.
-                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -447,9 +438,6 @@ export default function Admin() {
                     <span>200ms (Quick)</span>
                     <span>2s (Patient)</span>
                   </div>
-                  <p className="text-white/50 text-xs mt-2">
-                    How long Sam waits for silence before responding. Shorter durations create snappy conversations but may cut off speakers. Longer durations allow thinking pauses.
-                  </p>
                 </div>
 
                 {/* Prefix Padding */}
