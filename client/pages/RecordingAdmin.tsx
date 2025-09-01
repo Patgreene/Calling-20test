@@ -11,23 +11,17 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
-  Play,
-  Pause,
-  Square,
   Download,
   Upload,
   CheckCircle,
   AlertTriangle,
   Clock,
-  Mic,
-  MicOff,
   RefreshCw,
   Lock,
   FileAudio,
   HardDrive,
   Shield,
   Trash2,
-  Archive,
 } from "lucide-react";
 import RecordingService from "@/services/RecordingService";
 
@@ -53,15 +47,11 @@ export default function RecordingAdmin() {
   const [password, setPassword] = useState("");
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
-  const [audioElements, setAudioElements] = useState<Map<string, HTMLAudioElement>>(new Map());
   const [message, setMessage] = useState<{
     type: "success" | "error" | "warning";
     text: string;
   } | null>(null);
 
-  // Audio refs
-  const audioRef = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   // Statistics
   const [stats, setStats] = useState({
@@ -115,55 +105,56 @@ export default function RecordingAdmin() {
     });
   };
 
-  const getAudioUrl = (recordingId: string) => {
-    // Generate Supabase storage URL for the recording
-    const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
-
-    // For now, we'll attempt to play the first chunk. In a production app,
-    // you'd want to concatenate all chunks or use a streaming approach
-    return `${SUPABASE_URL}/storage/v1/object/interview-recordings/recordings/${recordingId}/chunk_0000.webm?token=${SUPABASE_ANON_KEY}`;
-  };
-
-  const toggleAudioPlayback = async (recordingId: string) => {
+  const downloadRecording = async (recordingId: string, fileName: string) => {
     try {
-      // Stop any currently playing audio
-      if (playingAudio && playingAudio !== recordingId) {
-        const currentAudio = audioRef.current.get(playingAudio);
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio.currentTime = 0;
-        }
-      }
+      setMessage({ type: "success", text: "Preparing download..." });
 
-      // Get or create audio element for this recording
-      let audio = audioRef.current.get(recordingId);
-      if (!audio) {
-        audio = new Audio();
-        audio.src = getAudioUrl(recordingId);
-        audio.onended = () => setPlayingAudio(null);
-        audio.onerror = (e) => {
-          console.error('Audio playback error:', e);
-          setMessage({ type: "error", text: "Failed to play audio. The recording may still be processing." });
-          setPlayingAudio(null);
-        };
-        audioRef.current.set(recordingId, audio);
-      }
+      // Get all chunks for this recording
+      const response = await fetch(`/api/admin/recordings/${recordingId}/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+      });
 
-      if (playingAudio === recordingId) {
-        // Currently playing this audio, so pause it
-        audio.pause();
-        audio.currentTime = 0;
-        setPlayingAudio(null);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName || `recording_${recordingId}.webm`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        setMessage({ type: "success", text: "Download started!" });
       } else {
-        // Start playing this audio
-        await audio.play();
-        setPlayingAudio(recordingId);
+        throw new Error('Download failed');
       }
     } catch (error) {
-      console.error('Audio playback error:', error);
-      setMessage({ type: "error", text: "Failed to play audio. The recording may still be processing or unavailable." });
-      setPlayingAudio(null);
+      console.error('Download error:', error);
+      setMessage({ type: "error", text: "Download failed. Recording may still be processing." });
+    }
+  };
+
+  const fixStuckRecording = async (recordingId: string) => {
+    try {
+      setMessage({ type: "success", text: "Attempting to fix stuck recording..." });
+
+      const response = await fetch(`/api/admin/recordings/${recordingId}/fix`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setMessage({ type: "success", text: result.message || "Recording fixed successfully" });
+        loadRecordings();
+      } else {
+        setMessage({ type: "error", text: "Failed to fix recording" });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: `Fix failed: ${error.message}` });
     }
   };
 
@@ -267,17 +258,6 @@ export default function RecordingAdmin() {
     }
   }, [isAuthenticated]);
 
-  // Cleanup audio on component unmount
-  useEffect(() => {
-    return () => {
-      // Stop and cleanup all audio elements
-      audioRef.current.forEach((audio) => {
-        audio.pause();
-        audio.src = '';
-      });
-      audioRef.current.clear();
-    };
-  }, []);
 
   if (!isAuthenticated) {
     return (
@@ -470,19 +450,29 @@ export default function RecordingAdmin() {
                           </div>
                           
                           <div className="flex gap-2">
-                            {/* Audio Playback Button */}
+                            {/* Download Button */}
                             {recording.upload_status === 'completed' && recording.verification_status === 'verified' && (
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => toggleAudioPlayback(recording.id)}
+                                onClick={() => downloadRecording(recording.id, recording.file_name)}
                                 className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
+                                title="Download Recording"
                               >
-                                {playingAudio === recording.id ? (
-                                  <Pause className="w-3 h-3" />
-                                ) : (
-                                  <Play className="w-3 h-3" />
-                                )}
+                                <Download className="w-3 h-3" />
+                              </Button>
+                            )}
+
+                            {/* Fix Stuck Recording Button */}
+                            {(recording.upload_status === 'uploading' || recording.upload_status === 'verifying') && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fixStuckRecording(recording.id)}
+                                className="bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
+                                title="Fix Stuck Recording"
+                              >
+                                <RefreshCw className="w-3 h-3" />
                               </Button>
                             )}
 
