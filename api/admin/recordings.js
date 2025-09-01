@@ -220,6 +220,15 @@ ADD COLUMN vouchee_name TEXT;
   else if (req.method === "POST") {
     const { action, call_code, mime_type, password, voucher_name, vouchee_name } = req.body;
 
+    console.log('📥 Received POST request to /api/admin/recordings:', {
+      action,
+      call_code,
+      mime_type,
+      password: password ? '[PROVIDED]' : '[MISSING]',
+      voucher_name,
+      vouchee_name
+    });
+
     // Simple password check
     if (password !== "vouch2024admin") {
       return res.status(401).json({ error: "Unauthorized" });
@@ -233,6 +242,13 @@ ADD COLUMN vouchee_name TEXT;
       }
 
       try {
+        console.log('🚀 Creating recording session with names:', {
+          call_code,
+          mime_type,
+          voucher_name,
+          vouchee_name
+        });
+
         const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name);
 
         if (recording) {
