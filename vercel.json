@@ -1,10 +1,22 @@
 {
   "buildCommand": "npm run build:client",
   "outputDirectory": "dist/spa",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "OPENAI_API_KEY": "@openai_api_key"
+  }
 }
