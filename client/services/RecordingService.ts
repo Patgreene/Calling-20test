@@ -218,7 +218,7 @@ class RecordingService {
   }
 
   // Start a new recording session with mixed audio
-  public async startRecording(password: string, remoteAudioElement?: HTMLAudioElement): Promise<string> {
+  public async startRecording(password: string, remoteAudioElement?: HTMLAudioElement, voucherName?: string, voucheeName?: string): Promise<string> {
     try {
       if (this.activeSession?.isActive) {
         throw new Error('Recording session already active');
