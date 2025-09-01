@@ -64,11 +64,9 @@ export default function RecordingAdmin() {
     text: string;
   } | null>(null);
 
-  // Recording state
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const recordingIdRef = useRef<string | null>(null);
+  // Recording service
+  const recordingService = useRef(RecordingService.getInstance());
+  const statusIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Statistics
   const [stats, setStats] = useState({
