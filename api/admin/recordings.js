@@ -3,7 +3,7 @@ const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
-async function createRecordingSession(callCode, mimeType) {
+async function createRecordingSession(callCode, mimeType, voucherName = null, voucheeName = null) {
   try {
     const recordingData = {
       call_code: callCode,
@@ -12,7 +12,9 @@ async function createRecordingSession(callCode, mimeType) {
       upload_status: 'uploading',
       verification_status: 'pending',
       retry_count: 0,
-      chunks_uploaded: 0
+      chunks_uploaded: 0,
+      voucher_name: voucherName,
+      vouchee_name: voucheeName
     };
 
     const response = await fetch(`${SUPABASE_URL}/rest/v1/interview_recordings`, {
