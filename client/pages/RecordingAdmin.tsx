@@ -718,7 +718,7 @@ export default function RecordingAdmin() {
                                 <FileText className="w-3 h-3 text-green-400" />
                                 <span className="text-xs text-green-400 font-medium">Transcript</span>
                                 {recording.transcription?.status && (
-                                  <Badge className={getTranscriptionColor(recording.transcription.status)} size="xs">
+                                  <Badge className={getTranscriptionColor(recording.transcription.status)}>
                                     {recording.transcription.status}
                                   </Badge>
                                 )}
