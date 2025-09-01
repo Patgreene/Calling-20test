@@ -635,18 +635,10 @@ export default function RecordingAdmin() {
                         loadRecordings();
                       }}
                       className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
-                      title="Refresh recordings and transcripts"
+                      title="Refresh all recordings and transcripts"
                     >
-                      <RefreshCw className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={loadTranscriptsFromDB}
-                      className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
-                      title="Load transcripts from database"
-                    >
-                      📥 Load Transcripts
+                      <RefreshCw className="w-3 h-3 mr-1" />
+                      Refresh All
                     </Button>
                   </div>
                 </div>
