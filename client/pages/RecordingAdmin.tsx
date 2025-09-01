@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Play,
+  Pause,
   Square,
   Download,
   Upload,
@@ -50,23 +51,17 @@ interface Recording {
 export default function RecordingAdmin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentRecording, setCurrentRecording] = useState<{
-    id: string;
-    duration: number;
-    chunks: number;
-    status: string;
-  } | null>(null);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const [audioElements, setAudioElements] = useState<Map<string, HTMLAudioElement>>(new Map());
   const [message, setMessage] = useState<{
     type: "success" | "error" | "warning";
     text: string;
   } | null>(null);
 
-  // Recording service
-  const recordingService = useRef(RecordingService.getInstance());
-  const statusIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // Audio refs
+  const audioRef = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   // Statistics
   const [stats, setStats] = useState({
@@ -120,91 +115,62 @@ export default function RecordingAdmin() {
     });
   };
 
-  const startRecording = async () => {
-    try {
-      setMessage({ type: "success", text: "Starting recording session..." });
+  const getAudioUrl = (recordingId: string) => {
+    // Generate Supabase storage URL for the recording
+    const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
-      const recordingId = await recordingService.current.startRecording(password);
-      setIsRecording(true);
-
-      setCurrentRecording({
-        id: recordingId,
-        duration: 0,
-        chunks: 0,
-        status: "Recording in progress with real-time backup...",
-      });
-
-      // Start status monitoring
-      statusIntervalRef.current = setInterval(() => {
-        const status = recordingService.current.getSessionStatus();
-        if (status) {
-          setCurrentRecording({
-            id: status.recordingId || '',
-            duration: status.duration || 0,
-            chunks: status.chunksTotal || 0,
-            status: `Recording... (${status.chunksUploaded}/${status.chunksTotal} chunks uploaded${status.chunksFailed ? `, ${status.chunksFailed} failed` : ''})`,
-          });
-        }
-      }, 1000);
-
-      setMessage({
-        type: "success",
-        text: "Recording started with advanced error handling and real-time backup. Chunks are uploaded automatically with retry logic."
-      });
-
-    } catch (error) {
-      console.error("Recording start error:", error);
-      setMessage({
-        type: "error",
-        text: `Failed to start recording: ${error.message}`
-      });
-    }
+    // For now, we'll attempt to play the first chunk. In a production app,
+    // you'd want to concatenate all chunks or use a streaming approach
+    return `${SUPABASE_URL}/storage/v1/object/interview-recordings/recordings/${recordingId}/chunk_0000.webm?token=${SUPABASE_ANON_KEY}`;
   };
 
-  const stopRecording = async () => {
-    if (!isRecording) return;
-
+  const toggleAudioPlayback = async (recordingId: string) => {
     try {
-      setMessage({ type: "success", text: "Stopping recording. Finalizing upload..." });
-
-      await recordingService.current.stopRecording();
-      setIsRecording(false);
-
-      // Stop status monitoring
-      if (statusIntervalRef.current) {
-        clearInterval(statusIntervalRef.current);
-        statusIntervalRef.current = null;
+      // Stop any currently playing audio
+      if (playingAudio && playingAudio !== recordingId) {
+        const currentAudio = audioRef.current.get(playingAudio);
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
       }
 
-      setCurrentRecording(prev => prev ? {
-        ...prev,
-        status: "Finalizing recording and verifying integrity...",
-      } : null);
+      // Get or create audio element for this recording
+      let audio = audioRef.current.get(recordingId);
+      if (!audio) {
+        audio = new Audio();
+        audio.src = getAudioUrl(recordingId);
+        audio.onended = () => setPlayingAudio(null);
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e);
+          setMessage({ type: "error", text: "Failed to play audio. The recording may still be processing." });
+          setPlayingAudio(null);
+        };
+        audioRef.current.set(recordingId, audio);
+      }
 
-      // Wait a moment for final processing
-      setTimeout(() => {
-        setMessage({
-          type: "success",
-          text: "Recording completed with comprehensive backup and verification!"
-        });
-        setCurrentRecording(null);
-        loadRecordings(); // Refresh the list
-      }, 3000);
-
+      if (playingAudio === recordingId) {
+        // Currently playing this audio, so pause it
+        audio.pause();
+        audio.currentTime = 0;
+        setPlayingAudio(null);
+      } else {
+        // Start playing this audio
+        await audio.play();
+        setPlayingAudio(recordingId);
+      }
     } catch (error) {
-      console.error("Recording stop error:", error);
-      setMessage({
-        type: "error",
-        text: `Failed to stop recording properly: ${error.message}`
-      });
+      console.error('Audio playback error:', error);
+      setMessage({ type: "error", text: "Failed to play audio. The recording may still be processing or unavailable." });
+      setPlayingAudio(null);
     }
   };
 
   const retryFailedUpload = async (recordingId: string) => {
     try {
-      setMessage({ type: "success", text: "Starting enhanced retry process..." });
+      setMessage({ type: "success", text: "Starting retry process..." });
 
-      // First try server-side retry
       const response = await fetch("/api/admin/recordings/retry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -215,13 +181,9 @@ export default function RecordingAdmin() {
       });
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Server retry completed" });
+        setMessage({ type: "success", text: "Retry completed" });
       } else {
-        setMessage({ type: "warning", text: "Server retry failed, trying local backup recovery..." });
-
-        // Try recovery from IndexedDB backup
-        await recordingService.current.retryFailedUploads(recordingId, password);
-        setMessage({ type: "success", text: "Backup recovery completed" });
+        setMessage({ type: "error", text: "Retry failed" });
       }
 
       loadRecordings();
@@ -305,15 +267,15 @@ export default function RecordingAdmin() {
     }
   }, [isAuthenticated]);
 
-  // Cleanup on component unmount
+  // Cleanup audio on component unmount
   useEffect(() => {
     return () => {
-      if (statusIntervalRef.current) {
-        clearInterval(statusIntervalRef.current);
-      }
-      if (isRecording) {
-        recordingService.current.stopRecording().catch(console.error);
-      }
+      // Stop and cleanup all audio elements
+      audioRef.current.forEach((audio) => {
+        audio.pause();
+        audio.src = '';
+      });
+      audioRef.current.clear();
     };
   }, []);
 
@@ -447,86 +409,8 @@ export default function RecordingAdmin() {
           </Card>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Recording Controls */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Mic className="w-5 h-5" />
-                  Recording Controls
-                </CardTitle>
-                <CardDescription className="text-white/70">
-                  Start and manage interview recordings
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  {!isRecording ? (
-                    <Button
-                      onClick={startRecording}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white"
-                      size="lg"
-                    >
-                      <Mic className="w-4 h-4 mr-2" />
-                      Start Recording
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={stopRecording}
-                      className="w-full bg-gray-600 hover:bg-gray-700 text-white"
-                      size="lg"
-                    >
-                      <Square className="w-4 h-4 mr-2" />
-                      Stop Recording
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="outline"
-                    onClick={loadRecordings}
-                    disabled={isLoading}
-                    className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
-                  >
-                    <RefreshCw
-                      className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-                    />
-                    Refresh List
-                  </Button>
-                </div>
-
-                {/* Current Recording Status */}
-                {currentRecording && (
-                  <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-red-300 font-medium">RECORDING LIVE</span>
-                    </div>
-                    <div className="space-y-2 text-sm text-white/80">
-                      <div>Duration: {formatDuration(currentRecording.duration)}</div>
-                      <div>Chunks Uploaded: {currentRecording.chunks}</div>
-                      <div>Status: {currentRecording.status}</div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Recording Tips */}
-                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                  <h4 className="text-blue-300 font-medium mb-2">Recording Tips:</h4>
-                  <ul className="text-sm text-blue-200 space-y-1">
-                    <li>• Ensure stable internet connection</li>
-                    <li>• Use headphones to prevent echo</li>
-                    <li>• Speak clearly and at normal volume</li>
-                    <li>• Upload happens automatically in chunks</li>
-                    <li>• Do not close browser during recording</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Recordings List */}
-          <div className="lg:col-span-2">
+        {/* Recordings List */}
+        <div className="w-full">
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
                 <div className="flex justify-between items-center">
@@ -586,6 +470,22 @@ export default function RecordingAdmin() {
                           </div>
                           
                           <div className="flex gap-2">
+                            {/* Audio Playback Button */}
+                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleAudioPlayback(recording.id)}
+                                className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
+                              >
+                                {playingAudio === recording.id ? (
+                                  <Pause className="w-3 h-3" />
+                                ) : (
+                                  <Play className="w-3 h-3" />
+                                )}
+                              </Button>
+                            )}
+
                             {recording.upload_status === 'failed' && (
                               <Button
                                 variant="outline"
@@ -640,8 +540,6 @@ export default function RecordingAdmin() {
               </CardContent>
             </Card>
           </div>
-        </div>
-
         {/* Quick Actions */}
         <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
           <CardHeader>
@@ -665,18 +563,12 @@ export default function RecordingAdmin() {
               </Button>
               <Button
                 variant="outline"
-                className="bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
-                onClick={async () => {
-                  try {
-                    await recordingService.current.cleanupOldBackups(7);
-                    setMessage({ type: "success", text: "Old backup files cleaned up successfully" });
-                  } catch (error) {
-                    setMessage({ type: "error", text: `Cleanup failed: ${error.message}` });
-                  }
-                }}
+                className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
+                onClick={loadRecordings}
+                disabled={isLoading}
               >
-                <Archive className="w-4 h-4 mr-2" />
-                Cleanup Backups
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                Refresh Recordings
               </Button>
               <Button
                 variant="outline"
