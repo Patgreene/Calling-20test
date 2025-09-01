@@ -70,7 +70,6 @@ export default function RecordingAdmin() {
     text: string;
   } | null>(null);
   const [transcribingIds, setTranscribingIds] = useState<Set<string>>(new Set());
-  const [viewingTranscript, setViewingTranscript] = useState<string | null>(null);
 
 
   // Statistics
@@ -399,7 +398,7 @@ export default function RecordingAdmin() {
   const formatRecordingTitle = (recording: Recording): { title: string; subtitle?: string } => {
     if (recording.voucher_name && recording.vouchee_name) {
       return {
-        title: `${recording.voucher_name} → ${recording.vouchee_name}`,
+        title: `${recording.voucher_name} ��� ${recording.vouchee_name}`,
         subtitle: recording.call_code
       };
     } else if (recording.voucher_name) {
@@ -811,31 +810,6 @@ export default function RecordingAdmin() {
                           </div>
                         </div>
 
-                        {/* Transcription Status */}
-                        {recording.transcription && (
-                          <div className="mb-3">
-                            <div className="flex items-center gap-2 mb-2">
-                              <FileText className="w-4 h-4 text-white/60" />
-                              <span className="text-sm text-white/60">Transcript:</span>
-                              <Badge className={getTranscriptionColor(recording.transcription.status)}>
-                                {recording.transcription.status}
-                              </Badge>
-                              {recording.transcription.language && (
-                                <span className="text-xs text-white/40">
-                                  {recording.transcription.language.toUpperCase()}
-                                </span>
-                              )}
-                            </div>
-                            {recording.transcription.error_message && (
-                              <Alert className="border-red-500/50 bg-red-500/10 mb-2">
-                                <AlertTriangle className="h-4 w-4" />
-                                <AlertDescription className="text-red-300 text-xs">
-                                  Transcription error: {recording.transcription.error_message}
-                                </AlertDescription>
-                              </Alert>
-                            )}
-                          </div>
-                        )}
 
 
                         {/* Upload Progress */}
