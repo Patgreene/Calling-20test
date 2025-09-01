@@ -304,7 +304,7 @@ export default function RecordingAdmin() {
   const formatRecordingTitle = (recording: Recording): { title: string; subtitle?: string } => {
     if (recording.voucher_name && recording.vouchee_name) {
       return {
-        title: `${recording.voucher_name} Vouching for ${recording.vouchee_name}`,
+        title: `${recording.voucher_name} → ${recording.vouchee_name}`,
         subtitle: recording.call_code
       };
     } else if (recording.voucher_name) {
