@@ -542,11 +542,20 @@ export default function RecordingAdmin() {
                 </div>
 
                 <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {recordings.length === 0 ? (
+                  {filteredRecordings.length === 0 ? (
                     <div className="text-center py-8">
                       <FileAudio className="w-12 h-12 text-white/30 mx-auto mb-4" />
-                      <p className="text-white/50">No recordings found</p>
-                      <p className="text-white/30 text-sm">Start your first recording above</p>
+                      {searchTerm ? (
+                        <>
+                          <p className="text-white/50">No recordings found for "{searchTerm}"</p>
+                          <p className="text-white/30 text-sm">Try a different search term</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-white/50">No recordings found</p>
+                          <p className="text-white/30 text-sm">Start your first recording above</p>
+                        </>
+                      )}
                     </div>
                   ) : (
                     filteredRecordings.map((recording) => (
