@@ -417,6 +417,65 @@ export default async function handler(req, res) {
       });
     }
   }
+  else if (req.method === "PATCH") {
+    // Update recording metadata
+    const { call_code, voucher_name, vouchee_name, password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      const updateData = {};
+      if (call_code) updateData.call_code = call_code;
+      if (voucher_name) updateData.voucher_name = voucher_name;
+      if (vouchee_name) updateData.vouchee_name = vouchee_name;
+      updateData.updated_at = new Date().toISOString();
+
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (response.ok) {
+        const updatedRecording = await response.json();
+
+        // Log the metadata update
+        await logRecordingEvent(id, 'metadata_updated', {
+          updated_fields: Object.keys(updateData),
+          call_code,
+          voucher_name,
+          vouchee_name
+        });
+
+        res.json({
+          success: true,
+          recording_id: id,
+          updated_recording: updatedRecording[0],
+          message: "Recording metadata updated successfully"
+        });
+      } else {
+        throw new Error(`Failed to update recording: ${response.status}`);
+      }
+
+    } catch (error) {
+      console.error("Update recording error:", error);
+      res.status(500).json({
+        error: "Failed to update recording metadata",
+        details: error.message
+      });
+    }
+  }
   else {
     res.status(405).json({ error: "Method not allowed" });
   }
