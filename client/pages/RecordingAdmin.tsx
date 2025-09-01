@@ -301,6 +301,25 @@ export default function RecordingAdmin() {
     return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
   };
 
+  const formatRecordingTitle = (recording: Recording): { title: string; subtitle?: string } => {
+    if (recording.voucher_name && recording.vouchee_name) {
+      return {
+        title: `${recording.voucher_name} Vouching for ${recording.vouchee_name}`,
+        subtitle: recording.call_code
+      };
+    } else if (recording.voucher_name) {
+      return {
+        title: `${recording.voucher_name} - Interview Recording`,
+        subtitle: recording.call_code
+      };
+    } else {
+      return {
+        title: recording.call_code,
+        subtitle: undefined
+      };
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-500/20 text-green-300 border-green-500/30';
