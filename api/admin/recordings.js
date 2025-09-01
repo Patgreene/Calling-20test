@@ -17,6 +17,8 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
       vouchee_name: voucheeName
     };
 
+    console.log('💾 About to insert recording data into Supabase:', recordingData);
+
     const response = await fetch(`${SUPABASE_URL}/rest/v1/interview_recordings`, {
       method: "POST",
       headers: {
