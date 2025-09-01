@@ -277,7 +277,7 @@ export default function Admin() {
                       size="sm"
                       onClick={loadPromptHistory}
                       disabled={isLoadingHistory}
-                      className="border-white/20 text-white hover:bg-white/10"
+                      className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
                       <History className={`w-4 h-4 ${isLoadingHistory ? 'animate-pulse' : ''}`} />
                     </Button>
@@ -285,7 +285,7 @@ export default function Admin() {
                       variant="outline"
                       size="sm"
                       onClick={() => setShowPreview(!showPreview)}
-                      className="border-white/20 text-white hover:bg-white/10"
+                      className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
                       {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </Button>
@@ -294,7 +294,7 @@ export default function Admin() {
                       size="sm"
                       onClick={loadPrompt}
                       disabled={isLoading}
-                      className="border-white/20 text-white hover:bg-white/10"
+                      className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
                       <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </Button>
@@ -330,7 +330,7 @@ export default function Admin() {
                       <Button
                         variant="outline"
                         onClick={resetPrompt}
-                        className="border-white/20 text-white hover:bg-white/10"
+                        className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                       >
                         Reset
                       </Button>
@@ -362,7 +362,7 @@ export default function Admin() {
                       variant="outline"
                       size="sm"
                       onClick={() => setShowHistory(false)}
-                      className="border-white/20 text-white hover:bg-white/10"
+                      className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     >
                       Close
                     </Button>
