@@ -1281,6 +1281,147 @@ export function createServer() {
     }
   });
 
+  // Delete recording endpoint
+  app.delete("/api/admin/recordings/:id", async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      console.log(`🗑️ Starting deletion process for recording ${id}`);
+
+      // Get recording details first
+      const recordingResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!recordingResponse.ok) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recordings = await recordingResponse.json();
+      if (recordings.length === 0) {
+        return res.status(404).json({ error: "Recording not found" });
+      }
+
+      const recording = recordings[0];
+
+      // Get all chunks for this recording
+      const chunks = await getRecordingChunks(id);
+
+      // Delete chunks from storage
+      for (const chunk of chunks) {
+        if (chunk.upload_status === 'uploaded' && chunk.storage_path) {
+          try {
+            const deleteChunkResponse = await fetch(
+              `${SUPABASE_URL}/storage/v1/object/interview-recordings/${chunk.storage_path}`,
+              {
+                method: 'DELETE',
+                headers: {
+                  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                },
+              }
+            );
+
+            if (deleteChunkResponse.ok) {
+              console.log(`✅ Deleted chunk ${chunk.chunk_number} from storage`);
+            } else {
+              console.warn(`⚠️ Failed to delete chunk ${chunk.chunk_number} from storage:`, deleteChunkResponse.status);
+            }
+          } catch (error) {
+            console.error(`❌ Error deleting chunk ${chunk.chunk_number} from storage:`, error);
+          }
+        }
+      }
+
+      // Delete chunk records from database
+      const deleteChunksResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/recording_chunks?recording_id=eq.${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+        }
+      );
+
+      if (deleteChunksResponse.ok) {
+        console.log(`✅ Deleted chunk records for recording ${id}`);
+      } else {
+        console.error("Failed to delete recording chunks from database:", deleteChunksResponse.status);
+      }
+
+      // Delete event records
+      const deleteEventsResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/recording_events?recording_id=eq.${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+        }
+      );
+
+      if (deleteEventsResponse.ok) {
+        console.log(`✅ Deleted event records for recording ${id}`);
+      } else {
+        console.error("Failed to delete recording events from database:", deleteEventsResponse.status);
+      }
+
+      // Finally, delete the main recording record
+      const deleteRecordingResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+        }
+      );
+
+      if (deleteRecordingResponse.ok) {
+        console.log(`✅ Deleted recording record ${id}`);
+        res.json({
+          success: true,
+          recording_id: id,
+          message: "Recording deleted successfully"
+        });
+      } else {
+        console.error("Failed to delete recording from database:", deleteRecordingResponse.status);
+        res.status(500).json({
+          error: "Failed to delete recording from database"
+        });
+      }
+
+    } catch (error) {
+      console.error("Delete recording error:", error);
+      res.status(500).json({
+        error: "Failed to delete recording",
+        details: error.message
+      });
+    }
+  });
+
   // Fix stuck recording endpoint
   app.post("/api/admin/recordings/:id/fix", async (req, res) => {
     const { id } = req.params;
