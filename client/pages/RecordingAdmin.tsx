@@ -268,6 +268,8 @@ export default function RecordingAdmin() {
     }
 
     try {
+      setMessage({ type: "warning", text: "Deleting recording..." });
+
       const response = await fetch(`/api/admin/recordings/${recordingId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -275,13 +277,28 @@ export default function RecordingAdmin() {
       });
 
       if (response.ok) {
+        const result = await response.json();
         setMessage({ type: "success", text: "Recording deleted successfully" });
         loadRecordings();
+        console.log("✅ Recording deletion completed:", result);
       } else {
-        setMessage({ type: "error", text: "Failed to delete recording" });
+        const errorData = await response.text();
+        console.error("❌ Delete request failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        setMessage({
+          type: "error",
+          text: `Failed to delete recording: ${response.status} ${response.statusText}`
+        });
       }
     } catch (error) {
-      setMessage({ type: "error", text: "Error deleting recording" });
+      console.error("❌ Delete request error:", error);
+      setMessage({
+        type: "error",
+        text: `Error deleting recording: ${error instanceof Error ? error.message : 'Unknown error'}`
+      });
     }
   };
 
