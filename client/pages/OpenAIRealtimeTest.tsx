@@ -81,13 +81,17 @@ export default function OpenAIRealtimeTest() {
         let instructions = config?.instructions || "You are a helpful assistant.";
 
         // Replace template variables with actual values from preparedNames
-        if (preparedNames) {
-          instructions = instructions
-            .replace(/{{voucher_first}}/g, preparedNames.voucher_first)
-            .replace(/{{voucher_last}}/g, preparedNames.voucher_last)
-            .replace(/{{vouchee_first}}/g, preparedNames.vouchee_first)
-            .replace(/{{vouchee_last}}/g, preparedNames.vouchee_last);
-        }
+        // Use fallback values if names aren't prepared to ensure instructions always work
+        const voucherFirst = preparedNames?.voucher_first || "the caller";
+        const voucherLast = preparedNames?.voucher_last || "";
+        const voucheeFirst = preparedNames?.vouchee_first || "the person being vouched for";
+        const voucheeLast = preparedNames?.vouchee_last || "";
+
+        instructions = instructions
+          .replace(/{{voucher_first}}/g, voucherFirst)
+          .replace(/{{voucher_last}}/g, voucherLast)
+          .replace(/{{vouchee_first}}/g, voucheeFirst)
+          .replace(/{{vouchee_last}}/g, voucheeLast);
 
         // Add English-only constraint
         instructions += " You must respond only in English. Do not use any other language under any circumstances.";
