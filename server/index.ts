@@ -279,24 +279,34 @@ export function createServer() {
       return res.status(400).json({ error: "Instructions are required" });
     }
 
-    // Update the in-memory instructions and session config
-    currentInstructions = instructions;
-    if (sessionConfig) {
-      currentSessionConfig = { ...currentSessionConfig, ...sessionConfig };
+    // Save to Supabase
+    const saveSuccess = await savePromptToSupabase(instructions);
+
+    if (saveSuccess) {
+      // Update the in-memory instructions and session config only if save succeeded
+      currentInstructions = instructions;
+      if (sessionConfig) {
+        currentSessionConfig = { ...currentSessionConfig, ...sessionConfig };
+      }
+
+      console.log("Admin updated prompt and settings:", {
+        instructionsLength: instructions.length,
+        timestamp: new Date().toISOString(),
+        preview: instructions.substring(0, 100) + "...",
+        variableCount: (instructions.match(/{{[^}]+}}/g) || []).length,
+        sessionConfig: currentSessionConfig,
+        savedToSupabase: true
+      });
+
+      res.json({
+        message: "Prompt and settings saved to Supabase successfully! Changes will take effect immediately for new calls.",
+        savedToSupabase: true
+      });
+    } else {
+      res.status(500).json({
+        error: "Failed to save prompt to Supabase. Please try again."
+      });
     }
-
-    console.log("Admin updated prompt and settings:", {
-      instructionsLength: instructions.length,
-      timestamp: new Date().toISOString(),
-      preview: instructions.substring(0, 100) + "...",
-      variableCount: (instructions.match(/{{[^}]+}}/g) || []).length,
-      sessionConfig: currentSessionConfig
-    });
-
-    res.json({
-      message: "Prompt and settings updated successfully! Changes will take effect immediately for new calls.",
-      note: "Note: Changes are saved in memory. For production, consider database persistence."
-    });
   });
 
   // Contact form endpoint
