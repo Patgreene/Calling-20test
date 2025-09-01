@@ -115,10 +115,28 @@ async function loadRecordings() {
       console.error("❌ Response headers:", [...transcriptionsResponse.headers.entries()]);
     }
 
+    // Debug: Show all recording IDs and transcription recording_ids for comparison
+    console.log("🔍 DEBUGGING FOREIGN KEY RELATIONSHIPS:");
+    console.log("📊 Recording IDs from interview_recordings table:");
+    recordings.forEach(r => {
+      console.log(`  📝 Recording: ${r.call_code} -> ID: ${r.id}`);
+    });
+
+    console.log("📄 Transcription recording_ids from transcriptions table:");
+    transcriptions.forEach(t => {
+      console.log(`  📋 Transcription: ${t.id} -> points to recording_id: ${t.recording_id} (status: ${t.status})`);
+    });
+
     // Merge transcription data with recordings
     const recordingsWithTranscriptions = recordings.map(recording => {
       const transcription = transcriptions.find(t => t.recording_id === recording.id);
-      console.log(`🔗 Recording ${recording.id} (${recording.call_code}): ${transcription ? `matched with transcription ${transcription.id}` : 'no transcription found'}`);
+      console.log(`🔗 Recording ${recording.id} (${recording.call_code}): ${transcription ? `✅ matched with transcription ${transcription.id} (status: ${transcription.status})` : '❌ no transcription found'}`);
+
+      if (transcription) {
+        console.log(`  📄 Transcript text length: ${transcription.transcript_text?.length || 0} characters`);
+        console.log(`  📄 Transcript preview: "${transcription.transcript_text?.substring(0, 50) || 'NO TEXT'}..."`);
+      }
+
       return {
         ...recording,
         transcription: transcription || null
@@ -127,6 +145,30 @@ async function loadRecordings() {
 
     const recordingsWithTranscriptText = recordingsWithTranscriptions.filter(r => r.transcription?.transcript_text);
     console.log(`✅ Final result: ${recordingsWithTranscriptText.length} recordings have transcript text`);
+
+    // Debug: Show which recording IDs don't have matching transcriptions
+    const recordingIdsWithoutTranscripts = recordings
+      .filter(r => !transcriptions.find(t => t.recording_id === r.id))
+      .map(r => ({ id: r.id, call_code: r.call_code }));
+
+    if (recordingIdsWithoutTranscripts.length > 0) {
+      console.log("❌ Recording IDs that don't have transcriptions:");
+      recordingIdsWithoutTranscripts.forEach(r => {
+        console.log(`  📝 ${r.call_code} -> ${r.id}`);
+      });
+    }
+
+    // Debug: Show which transcription recording_ids don't match any recordings
+    const orphanedTranscriptions = transcriptions
+      .filter(t => !recordings.find(r => r.id === t.recording_id))
+      .map(t => ({ transcription_id: t.id, recording_id: t.recording_id, status: t.status }));
+
+    if (orphanedTranscriptions.length > 0) {
+      console.log("❌ Transcription recording_ids that don't match any recordings:");
+      orphanedTranscriptions.forEach(t => {
+        console.log(`  📄 Transcription ${t.transcription_id} -> points to non-existent recording_id: ${t.recording_id}`);
+      });
+    }
 
     return recordingsWithTranscriptions;
   } catch (error) {
