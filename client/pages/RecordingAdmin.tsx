@@ -554,9 +554,6 @@ export default function RecordingAdmin() {
                                     <Badge className={getStatusColor(recording.upload_status)}>
                                       {recording.upload_status}
                                     </Badge>
-                                    <Badge className={getVerificationColor(recording.verification_status)}>
-                                      {recording.verification_status}
-                                    </Badge>
                                   </div>
                                   {titleInfo.subtitle && (
                                     <div className="text-xs text-white/40 mb-2">
