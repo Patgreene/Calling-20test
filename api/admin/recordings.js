@@ -64,7 +64,10 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
 
 async function loadRecordings() {
   try {
-    // First get recordings
+    console.log("🔄 Starting to load recordings with transcriptions...");
+
+    // Step 1: Get all recordings first
+    console.log("📊 Step 1: Fetching recordings...");
     const recordingsResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/interview_recordings?select=*&order=created_at.desc&limit=100`,
       {
@@ -77,102 +80,91 @@ async function loadRecordings() {
     );
 
     if (!recordingsResponse.ok) {
-      console.error("Failed to load recordings:", recordingsResponse.status);
+      console.error("❌ Failed to load recordings:", recordingsResponse.status);
+      const errorText = await recordingsResponse.text();
+      console.error("❌ Error details:", errorText);
       return [];
     }
 
     const recordings = await recordingsResponse.json();
-    console.log(`📊 Loaded ${recordings.length} recordings from database`);
+    console.log(`✅ Loaded ${recordings.length} recordings successfully`);
 
-    // Get transcriptions for all recordings
-    console.log(`🔍 Fetching transcriptions from: ${SUPABASE_URL}/rest/v1/transcriptions?select=*`);
-    const transcriptionsResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/transcriptions?select=*`,
-      {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
-
-    console.log(`📡 Transcriptions response status: ${transcriptionsResponse.status}`);
-
+    // Step 2: Get ALL transcriptions from database
+    console.log("📝 Step 2: Fetching transcriptions...");
     let transcriptions = [];
-    if (transcriptionsResponse.ok) {
-      transcriptions = await transcriptionsResponse.json();
-      console.log(`📝 Loaded ${transcriptions.length} transcriptions from database`);
 
-      // Debug: Log details about transcriptions
-      transcriptions.forEach(t => {
-        console.log(`📄 Transcription ${t.id}: recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}, textLength=${t.transcript_text?.length || 0}`);
-      });
-    } else {
-      console.error("❌ Failed to load transcriptions:", transcriptionsResponse.status);
-      const errorText = await transcriptionsResponse.text();
-      console.error("❌ Transcriptions error details:", errorText);
-      console.error("❌ Response headers:", [...transcriptionsResponse.headers.entries()]);
-    }
+    try {
+      const transcriptionsResponse = await fetch(
+        `${SUPABASE_URL}/rest/v1/transcriptions?select=id,recording_id,status,transcript_text,created_at,completed_at`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
-    // Debug: Show all recording IDs and transcription recording_ids for comparison
-    console.log("🔍 DEBUGGING FOREIGN KEY RELATIONSHIPS:");
-    console.log("📊 Recording IDs from interview_recordings table:");
-    recordings.forEach(r => {
-      console.log(`  📝 Recording: ${r.call_code} -> ID: ${r.id}`);
-    });
+      console.log(`📡 Transcriptions API response: ${transcriptionsResponse.status}`);
 
-    console.log("📄 Transcription recording_ids from transcriptions table:");
-    transcriptions.forEach(t => {
-      console.log(`  📋 Transcription: ${t.id} -> points to recording_id: ${t.recording_id} (status: ${t.status})`);
-    });
+      if (transcriptionsResponse.ok) {
+        transcriptions = await transcriptionsResponse.json();
+        console.log(`✅ Successfully loaded ${transcriptions.length} transcriptions`);
 
-    // Merge transcription data with recordings
-    const recordingsWithTranscriptions = recordings.map(recording => {
-      const transcription = transcriptions.find(t => t.recording_id === recording.id);
-      console.log(`🔗 Recording ${recording.id} (${recording.call_code}): ${transcription ? `✅ matched with transcription ${transcription.id} (status: ${transcription.status})` : '❌ no transcription found'}`);
-
-      if (transcription) {
-        console.log(`  📄 Transcript text length: ${transcription.transcript_text?.length || 0} characters`);
-        console.log(`  📄 Transcript preview: "${transcription.transcript_text?.substring(0, 50) || 'NO TEXT'}..."`);
+        // Log each transcription
+        transcriptions.forEach((t, index) => {
+          console.log(`📄 Transcription ${index + 1}:`);
+          console.log(`   ID: ${t.id}`);
+          console.log(`   Recording ID: ${t.recording_id}`);
+          console.log(`   Status: ${t.status}`);
+          console.log(`   Has Text: ${!!t.transcript_text} (${t.transcript_text?.length || 0} chars)`);
+        });
+      } else {
+        const errorText = await transcriptionsResponse.text();
+        console.error("❌ Failed to fetch transcriptions:", transcriptionsResponse.status, errorText);
+        transcriptions = [];
       }
-
-      return {
-        ...recording,
-        transcription: transcription || null
-      };
-    });
-
-    const recordingsWithTranscriptText = recordingsWithTranscriptions.filter(r => r.transcription?.transcript_text);
-    console.log(`✅ Final result: ${recordingsWithTranscriptText.length} recordings have transcript text`);
-
-    // Debug: Show which recording IDs don't have matching transcriptions
-    const recordingIdsWithoutTranscripts = recordings
-      .filter(r => !transcriptions.find(t => t.recording_id === r.id))
-      .map(r => ({ id: r.id, call_code: r.call_code }));
-
-    if (recordingIdsWithoutTranscripts.length > 0) {
-      console.log("❌ Recording IDs that don't have transcriptions:");
-      recordingIdsWithoutTranscripts.forEach(r => {
-        console.log(`  📝 ${r.call_code} -> ${r.id}`);
-      });
+    } catch (transcriptionError) {
+      console.error("❌ Error fetching transcriptions:", transcriptionError);
+      transcriptions = [];
     }
 
-    // Debug: Show which transcription recording_ids don't match any recordings
-    const orphanedTranscriptions = transcriptions
-      .filter(t => !recordings.find(r => r.id === t.recording_id))
-      .map(t => ({ transcription_id: t.id, recording_id: t.recording_id, status: t.status }));
+    // Step 3: Manually match each recording with its transcription
+    console.log("🔗 Step 3: Matching recordings with transcriptions...");
+    const recordingsWithTranscriptions = recordings.map(recording => {
+      // Find transcription for this recording
+      const matchingTranscription = transcriptions.find(t => t.recording_id === recording.id);
 
-    if (orphanedTranscriptions.length > 0) {
-      console.log("❌ Transcription recording_ids that don't match any recordings:");
-      orphanedTranscriptions.forEach(t => {
-        console.log(`  📄 Transcription ${t.transcription_id} -> points to non-existent recording_id: ${t.recording_id}`);
+      if (matchingTranscription) {
+        console.log(`✅ Recording ${recording.call_code} HAS transcription: status=${matchingTranscription.status}, text=${!!matchingTranscription.transcript_text}`);
+        return {
+          ...recording,
+          transcription: matchingTranscription
+        };
+      } else {
+        console.log(`❌ Recording ${recording.call_code} has NO transcription`);
+        return {
+          ...recording,
+          transcription: null
+        };
+      }
+    });
+
+    // Step 4: Count successful matches
+    const withTranscriptText = recordingsWithTranscriptions.filter(r => r.transcription?.transcript_text);
+    console.log(`🎉 FINAL RESULT: ${withTranscriptText.length} recordings have transcript text`);
+
+    if (withTranscriptText.length > 0) {
+      console.log("✅ Recordings with transcript text:");
+      withTranscriptText.forEach(r => {
+        console.log(`  📝 ${r.call_code}: ${r.transcription.transcript_text.length} characters`);
       });
     }
 
     return recordingsWithTranscriptions;
+
   } catch (error) {
-    console.error("Error loading recordings:", error);
+    console.error("💥 Error in loadRecordings:", error);
     return [];
   }
 }
@@ -330,7 +322,7 @@ ADD COLUMN vouchee_name TEXT;
   else if (req.method === "POST") {
     const { action, call_code, mime_type, password, voucher_name, vouchee_name } = req.body;
 
-    console.log('📥 Received POST request to /api/admin/recordings:', {
+    console.log('��� Received POST request to /api/admin/recordings:', {
       action,
       call_code,
       mime_type,
