@@ -184,6 +184,9 @@ export default function OpenAIRealtimeTest() {
         });
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus(`Connected! Sam is ready for call ${callCode}.`);
+
+        // Start automatic recording when call is connected
+        startAutomaticRecording();
       });
 
       dataChannel.addEventListener("message", (event) => {
