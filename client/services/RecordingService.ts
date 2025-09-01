@@ -26,6 +26,8 @@ interface RecordingSession {
   stream: MediaStream | null;
   isActive: boolean;
   backupEnabled: boolean;
+  isStopping: boolean;
+  finalChunkReceived: boolean;
 }
 
 class RecordingService {
@@ -265,12 +267,20 @@ class RecordingService {
         stream,
         isActive: true,
         backupEnabled: true,
+        isStopping: false,
+        finalChunkReceived: false,
       };
 
       // Set up event handlers
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0) {
           await this.handleChunkAvailable(event.data, password);
+        }
+
+        // If we're stopping and this is likely the final chunk, mark it
+        if (this.activeSession?.isStopping && mediaRecorder.state === 'inactive') {
+          this.activeSession.finalChunkReceived = true;
+          console.log('📝 Final chunk received and processed');
         }
       };
 
@@ -303,6 +313,8 @@ class RecordingService {
       const chunkIndex = this.activeSession.chunks.size;
       const hash = await this.calculateHash(blob);
 
+      console.log(`📦 Processing chunk ${chunkIndex} (${blob.size} bytes, stopping: ${this.activeSession.isStopping})`);
+
       const chunkData: ChunkData = {
         id: `${this.activeSession.id}_${chunkIndex}`,
         index: chunkIndex,
@@ -314,7 +326,7 @@ class RecordingService {
 
       this.activeSession.chunks.set(chunkIndex, chunkData);
 
-      console.log(`📊 New chunk ${chunkIndex} available (${blob.size} bytes, hash: ${hash.substring(0, 8)}...)`);
+      console.log(`📊 Chunk ${chunkIndex} queued (${blob.size} bytes, hash: ${hash.substring(0, 8)}...)`);
 
       // Save to IndexedDB as backup (async, don't wait)
       if (this.activeSession.backupEnabled) {
@@ -327,6 +339,11 @@ class RecordingService {
       this.uploadChunkWithRetry(this.activeSession.id, chunkData, password).catch(error => {
         console.error(`💥 Failed to upload chunk ${chunkIndex}:`, error);
       });
+
+      // If this chunk has a very small size and we're stopping, it might be the final chunk
+      if (this.activeSession.isStopping && blob.size < 1024) {
+        console.log(`📝 Small chunk detected during stop (${blob.size} bytes) - likely final chunk`);
+      }
 
     } catch (error) {
       console.error('❌ Error handling chunk:', error);
@@ -342,6 +359,7 @@ class RecordingService {
     console.log('🛑 Stopping recording session...');
 
     this.activeSession.isActive = false;
+    this.activeSession.isStopping = true;
 
     if (this.activeSession.mediaRecorder && this.activeSession.mediaRecorder.state === 'recording') {
       this.activeSession.mediaRecorder.stop();
@@ -359,8 +377,26 @@ class RecordingService {
     try {
       console.log('🏁 Processing recording completion...');
 
+      // Wait a moment for any final chunk to be processed
+      if (this.activeSession.isStopping && !this.activeSession.finalChunkReceived) {
+        console.log('⏳ Waiting for final chunk to be processed...');
+        let waitTime = 0;
+        const maxWait = 5000; // 5 seconds max wait
+
+        while (!this.activeSession.finalChunkReceived && waitTime < maxWait) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          waitTime += 100;
+        }
+
+        if (waitTime >= maxWait) {
+          console.warn('⚠️ Timeout waiting for final chunk, proceeding anyway');
+        }
+      }
+
       const totalDuration = Math.round((Date.now() - this.activeSession.startTime) / 1000);
       const totalChunks = this.activeSession.chunks.size;
+
+      console.log(`📊 Recording summary: ${totalChunks} chunks, ${totalDuration}s duration`);
 
       // Wait for all pending uploads to complete or fail
       await this.waitForUploadsToComplete();
