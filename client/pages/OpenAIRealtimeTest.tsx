@@ -364,6 +364,11 @@ export default function OpenAIRealtimeTest() {
 
       setRecordingStatus("Recording both sides of conversation");
       console.log(`✅ Mixed audio recording started for call ${callCode}: ${recordingId}`);
+      console.log('🎯 Recording should now have names:', {
+        recordingId,
+        voucherName: voucherNameForRecording,
+        voucheeName: voucheeNameForRecording
+      });
 
     } catch (error) {
       console.error("❌ Failed to start automatic recording:", error);
