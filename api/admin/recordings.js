@@ -218,7 +218,7 @@ ADD COLUMN vouchee_name TEXT;
     }
   } 
   else if (req.method === "POST") {
-    const { action, call_code, mime_type, password } = req.body;
+    const { action, call_code, mime_type, password, voucher_name, vouchee_name } = req.body;
 
     // Simple password check
     if (password !== "vouch2024admin") {
@@ -227,18 +227,21 @@ ADD COLUMN vouchee_name TEXT;
 
     if (action === "start_recording") {
       if (!call_code || !mime_type) {
-        return res.status(400).json({ 
-          error: "call_code and mime_type are required" 
+        return res.status(400).json({
+          error: "call_code and mime_type are required"
         });
       }
 
       try {
-        const recording = await createRecordingSession(call_code, mime_type);
-        
+        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name);
+
         if (recording) {
+          console.log(`✅ Recording session created with names: voucher="${voucher_name}", vouchee="${vouchee_name}"`);
           res.json({
             success: true,
             recording_id: recording.id,
+            voucher_name: recording.voucher_name,
+            vouchee_name: recording.vouchee_name,
             message: "Recording session created successfully"
           });
         } else {
@@ -248,9 +251,9 @@ ADD COLUMN vouchee_name TEXT;
         }
       } catch (error) {
         console.error("POST /api/admin/recordings error:", error);
-        res.status(500).json({ 
+        res.status(500).json({
           error: "Failed to create recording session",
-          details: error.message 
+          details: error.message
         });
       }
     } else {
