@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Save, RefreshCw, Eye, EyeOff, Lock } from "lucide-react";
+import { Save, RefreshCw, Eye, EyeOff, Lock, History, Clock } from "lucide-react";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
