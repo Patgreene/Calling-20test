@@ -335,8 +335,15 @@ export default function RecordingAdmin() {
         setMessage({ type: "success", text: "Transcription completed successfully!" });
         loadRecordings(); // Refresh to show updated transcription status
       } else {
-        const errorData = await response.json();
-        setMessage({ type: "error", text: `Transcription failed: ${errorData.message || 'Unknown error'}` });
+        let errorMessage = 'Unknown error';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || 'Unknown error';
+        } catch (jsonError) {
+          // If response isn't JSON, use status text
+          errorMessage = `${response.status} ${response.statusText}`;
+        }
+        setMessage({ type: "error", text: `Transcription failed: ${errorMessage}` });
       }
     } catch (error) {
       console.error('Transcription error:', error);
