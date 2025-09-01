@@ -345,6 +345,35 @@ class RecordingService {
     }
   }
 
+  // Connect AI audio to an existing recording session
+  public connectAIAudioToRecording(remoteAudioElement: HTMLAudioElement): boolean {
+    if (!this.activeSession?.isActive || !this.activeSession.audioContext) {
+      console.warn('⚠️ No active recording session to connect AI audio to');
+      return false;
+    }
+
+    try {
+      if (remoteAudioElement.srcObject) {
+        const remoteStream = remoteAudioElement.srcObject as MediaStream;
+        const remoteSource = this.activeSession.audioContext.createMediaStreamSource(remoteStream);
+        const remoteGain = this.activeSession.audioContext.createGain();
+        remoteGain.gain.value = 1.0; // Full volume for AI responses
+
+        // Find the destination (should be connected to the mixed stream)
+        const destination = this.activeSession.audioContext.destination;
+        remoteSource.connect(remoteGain);
+        remoteGain.connect(destination);
+
+        console.log('🤖 AI audio connected to existing recording session');
+        return true;
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to connect AI audio to recording:', error);
+    }
+
+    return false;
+  }
+
   // Handle new chunk availability
   private async handleChunkAvailable(blob: Blob, password: string): Promise<void> {
     if (!this.activeSession) return;
@@ -371,7 +400,7 @@ class RecordingService {
       // Save to IndexedDB as backup (async, don't wait)
       if (this.activeSession.backupEnabled) {
         this.saveChunkToIndexedDB(this.activeSession.id, chunkData).catch(error => {
-          console.warn('��️ Failed to backup chunk to IndexedDB:', error);
+          console.warn('⚠️ Failed to backup chunk to IndexedDB:', error);
         });
       }
 
