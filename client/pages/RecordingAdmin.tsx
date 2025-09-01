@@ -723,56 +723,85 @@ export default function RecordingAdmin() {
                                   </Badge>
                                 )}
                               </div>
-                              <textarea
-                                value={recording.transcription?.transcript_text || (
-                                  recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription
-                                    ? "Click 📝 button to generate transcript"
-                                    : "No transcript available"
-                                )}
-                                onChange={(e) => {
-                                  // Update the transcript text in state (for editing)
-                                  const newRecordings = recordings.map(r => {
-                                    if (r.id === recording.id) {
-                                      return {
-                                        ...r,
-                                        transcription: {
-                                          ...r.transcription,
-                                          transcript_text: e.target.value
+
+                              {/* Show transcript text if available */}
+                              {recording.transcription?.transcript_text ? (
+                                <>
+                                  <textarea
+                                    value={recording.transcription.transcript_text}
+                                    onChange={(e) => {
+                                      // Update the transcript text in state (for editing)
+                                      const newRecordings = recordings.map(r => {
+                                        if (r.id === recording.id) {
+                                          return {
+                                            ...r,
+                                            transcription: {
+                                              ...r.transcription,
+                                              transcript_text: e.target.value
+                                            }
+                                          };
                                         }
-                                      };
-                                    }
-                                    return r;
-                                  });
-                                  setRecordings(newRecordings);
-                                }}
-                                className="w-full h-24 text-xs text-white/80 bg-transparent border-none resize-none focus:outline-none leading-relaxed"
-                                placeholder="Transcript will appear here..."
-                                readOnly={!recording.transcription?.transcript_text}
-                              />
-                              {recording.transcription?.transcript_text && (
-                                <div className="flex gap-2 mt-1">
-                                  <button
-                                    onClick={() => navigator.clipboard.writeText(recording.transcription!.transcript_text!)}
-                                    className="text-xs text-blue-400 hover:text-blue-300"
-                                    title="Copy transcript"
-                                  >
-                                    Copy
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      const blob = new Blob([recording.transcription!.transcript_text!], { type: 'text/plain' });
-                                      const url = URL.createObjectURL(blob);
-                                      const a = document.createElement('a');
-                                      a.href = url;
-                                      a.download = `transcript-${recording.call_code}.txt`;
-                                      a.click();
-                                      URL.revokeObjectURL(url);
+                                        return r;
+                                      });
+                                      setRecordings(newRecordings);
                                     }}
-                                    className="text-xs text-green-400 hover:text-green-300"
-                                    title="Download transcript as TXT"
-                                  >
-                                    Download
-                                  </button>
+                                    className="w-full h-24 text-xs text-white/80 bg-transparent border-none resize-none focus:outline-none leading-relaxed"
+                                    placeholder="Transcript will appear here..."
+                                  />
+                                  <div className="flex gap-2 mt-1">
+                                    <button
+                                      onClick={() => navigator.clipboard.writeText(recording.transcription!.transcript_text!)}
+                                      className="text-xs text-blue-400 hover:text-blue-300"
+                                      title="Copy transcript"
+                                    >
+                                      Copy
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        const blob = new Blob([recording.transcription!.transcript_text!], { type: 'text/plain' });
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `transcript-${recording.call_code}.txt`;
+                                        a.click();
+                                        URL.revokeObjectURL(url);
+                                      }}
+                                      className="text-xs text-green-400 hover:text-green-300"
+                                      title="Download transcript as TXT"
+                                    >
+                                      Download
+                                    </button>
+                                  </div>
+                                </>
+                              ) : recording.upload_status === 'completed' && recording.verification_status === 'verified' ? (
+                                /* Clickable area to generate transcript */
+                                <div
+                                  onClick={() => startTranscription(recording.id)}
+                                  className="w-full h-24 flex items-center justify-center cursor-pointer bg-black/20 border border-dashed border-white/20 rounded-lg hover:bg-black/30 hover:border-white/30 transition-colors"
+                                  title="Click to generate transcript with OpenAI Whisper"
+                                >
+                                  {transcribingIds.has(recording.id) ? (
+                                    <div className="flex items-center gap-2 text-blue-300">
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                      <span className="text-xs">Generating transcript...</span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-2 text-white/60 hover:text-white/80">
+                                      <FileText className="w-4 h-4" />
+                                      <span className="text-xs">Click 📝 to generate transcript</span>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                /* No transcript available */
+                                <div className="w-full h-24 flex items-center justify-center bg-black/10 border border-white/5 rounded-lg">
+                                  <span className="text-xs text-white/40">
+                                    {recording.upload_status !== 'completed'
+                                      ? 'Recording must be completed first'
+                                      : recording.verification_status !== 'verified'
+                                      ? 'Recording must be verified first'
+                                      : 'No transcript available'}
+                                  </span>
                                 </div>
                               )}
                             </div>
@@ -799,8 +828,8 @@ export default function RecordingAdmin() {
                               </Button>
                             )}
 
-                            {/* Transcribe Button */}
-                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription && (
+                            {/* Transcribe Button - Show only if no transcript text exists */}
+                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription?.transcript_text && (
                               <Button
                                 variant="outline"
                                 size="sm"
