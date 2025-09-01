@@ -318,6 +318,8 @@ export default function Admin() {
                     <option value="onyx">Onyx - Professional & Formal</option>
                     <option value="nova">Nova - Friendly & Approachable</option>
                     <option value="shimmer">Shimmer - Cheerful & Upbeat</option>
+                    <option value="marin">Marin - Natural & Expressive (New)</option>
+                    <option value="cedar">Cedar - Sophisticated & Clear (New)</option>
                   </select>
                   <p className="text-white/50 text-xs mt-2">
                     Each voice has distinct characteristics: Alloy is balanced for all contexts, Echo conveys authority, Fable excels at storytelling, Onyx sounds professional, Nova is casual and friendly, while Shimmer is energetic and optimistic.
