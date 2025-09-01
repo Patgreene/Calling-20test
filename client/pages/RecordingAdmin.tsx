@@ -770,6 +770,80 @@ export default function RecordingAdmin() {
                           </div>
                         </div>
 
+                        {/* Transcription Status */}
+                        {recording.transcription && (
+                          <div className="mb-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <FileText className="w-4 h-4 text-white/60" />
+                              <span className="text-sm text-white/60">Transcript:</span>
+                              <Badge className={getTranscriptionColor(recording.transcription.status)}>
+                                {recording.transcription.status}
+                              </Badge>
+                              {recording.transcription.language && (
+                                <span className="text-xs text-white/40">
+                                  {recording.transcription.language.toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                            {recording.transcription.error_message && (
+                              <Alert className="border-red-500/50 bg-red-500/10 mb-2">
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertDescription className="text-red-300 text-xs">
+                                  Transcription error: {recording.transcription.error_message}
+                                </AlertDescription>
+                              </Alert>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Transcript Viewer */}
+                        {viewingTranscript === recording.id && recording.transcription?.transcript_text && (
+                          <div className="mb-3 p-4 bg-white/5 border border-white/10 rounded-lg">
+                            <div className="flex justify-between items-center mb-3">
+                              <h4 className="text-white font-medium flex items-center gap-2">
+                                <FileText className="w-4 h-4" />
+                                Word-for-Word Transcript
+                              </h4>
+                              <div className="text-xs text-white/50">
+                                {recording.transcription.completed_at && (
+                                  <span>Generated: {new Date(recording.transcription.completed_at).toLocaleString()}</span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="max-h-64 overflow-y-auto">
+                              <div className="text-sm text-white/80 leading-relaxed whitespace-pre-wrap bg-black/20 p-3 rounded border border-white/5">
+                                {recording.transcription.transcript_text}
+                              </div>
+                            </div>
+                            <div className="mt-3 flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => navigator.clipboard.writeText(recording.transcription!.transcript_text!)}
+                                className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20 text-xs"
+                              >
+                                Copy Transcript
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const blob = new Blob([recording.transcription!.transcript_text!], { type: 'text/plain' });
+                                  const url = URL.createObjectURL(blob);
+                                  const a = document.createElement('a');
+                                  a.href = url;
+                                  a.download = `transcript-${recording.call_code}.txt`;
+                                  a.click();
+                                  URL.revokeObjectURL(url);
+                                }}
+                                className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20 text-xs"
+                              >
+                                Download as TXT
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Upload Progress */}
                         {recording.chunks_total && recording.chunks_uploaded && (
                           <div className="mb-3">
