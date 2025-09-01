@@ -225,6 +225,13 @@ class RecordingService {
       }
 
       console.log('🎙️ Starting new recording session with mixed audio...');
+      console.log('📋 Recording session parameters:', {
+        password: password ? '[PROVIDED]' : '[MISSING]',
+        voucherName,
+        voucheeName,
+        callCode,
+        hasRemoteAudio: !!remoteAudioElement
+      });
 
       // Get microphone access with high-quality settings
       const micStream = await navigator.mediaDevices.getUserMedia({
@@ -679,7 +686,7 @@ class RecordingService {
           
           if (createdAt < cutoffDate && record.uploadStatus === 'uploaded') {
             cursor.delete();
-            console.log(`🗑️ Cleaned up old backup chunk: ${record.id}`);
+            console.log(`��️ Cleaned up old backup chunk: ${record.id}`);
           }
           
           cursor.continue();
