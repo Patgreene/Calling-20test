@@ -282,6 +282,8 @@ class RecordingService {
           call_code: `REC-${Date.now()}`,
           mime_type: this.config.mimeType,
           password: password,
+          voucher_name: voucherName,
+          vouchee_name: voucheeName,
         }),
       });
 
