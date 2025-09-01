@@ -339,10 +339,15 @@ export default function OpenAIRealtimeTest() {
       // Use admin password for recording - you may want to configure this differently
       const adminPassword = "vouch2024admin";
 
-      // Pass the AI audio element to capture both sides of conversation
+      // Pass the AI audio element and names to capture both sides of conversation
+      const voucherNameForRecording = preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName;
+      const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
+
       const recordingId = await recordingService.current.startRecording(
         adminPassword,
-        audioRef.current || undefined
+        audioRef.current || undefined,
+        voucherNameForRecording,
+        voucheeNameForRecording
       );
       currentRecordingId.current = recordingId;
 
