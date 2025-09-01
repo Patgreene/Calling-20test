@@ -22,6 +22,12 @@ export default function OpenAIRealtimeTest() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  // Recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingStatus, setRecordingStatus] = useState<string>("");
+  const recordingService = useRef(RecordingService.getInstance());
+  const currentRecordingId = useRef<string | null>(null);
+
   const startCall = async () => {
     try {
       // Generate a call code if one doesn't exist
