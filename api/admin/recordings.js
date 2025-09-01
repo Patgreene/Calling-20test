@@ -82,6 +82,7 @@ async function loadRecordings() {
     }
 
     const recordings = await recordingsResponse.json();
+    console.log(`📊 Loaded ${recordings.length} recordings from database`);
 
     // Get transcriptions for all recordings
     const transcriptionsResponse = await fetch(
@@ -98,16 +99,30 @@ async function loadRecordings() {
     let transcriptions = [];
     if (transcriptionsResponse.ok) {
       transcriptions = await transcriptionsResponse.json();
+      console.log(`📝 Loaded ${transcriptions.length} transcriptions from database`);
+
+      // Debug: Log details about transcriptions
+      transcriptions.forEach(t => {
+        console.log(`📄 Transcription ${t.id}: recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}, textLength=${t.transcript_text?.length || 0}`);
+      });
+    } else {
+      console.error("Failed to load transcriptions:", transcriptionsResponse.status);
+      const errorText = await transcriptionsResponse.text();
+      console.error("Transcriptions error details:", errorText);
     }
 
     // Merge transcription data with recordings
     const recordingsWithTranscriptions = recordings.map(recording => {
       const transcription = transcriptions.find(t => t.recording_id === recording.id);
+      console.log(`🔗 Recording ${recording.id} (${recording.call_code}): ${transcription ? `matched with transcription ${transcription.id}` : 'no transcription found'}`);
       return {
         ...recording,
         transcription: transcription || null
       };
     });
+
+    const recordingsWithTranscriptText = recordingsWithTranscriptions.filter(r => r.transcription?.transcript_text);
+    console.log(`✅ Final result: ${recordingsWithTranscriptText.length} recordings have transcript text`);
 
     return recordingsWithTranscriptions;
   } catch (error) {
