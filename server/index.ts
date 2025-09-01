@@ -1333,13 +1333,21 @@ export function createServer() {
         message = "No successful uploads found";
       }
 
-      // Update recording status
+      // Update recording status with corrected chunk counts
+      const actualTotalChunks = Math.max(recording.chunks_total || 0, verification.totalChunks, verification.uploadedChunks);
+
       const updateData: any = {
         upload_status: uploadStatus,
         verification_status: verificationStatus,
+        chunks_total: actualTotalChunks,
         chunks_uploaded: verification.uploadedChunks,
         updated_at: new Date().toISOString()
       };
+
+      if (finalHash) {
+        updateData.file_hash = finalHash;
+        updateData.file_size_bytes = uploadedChunks.reduce((sum: number, chunk: any) => sum + (chunk.chunk_size_bytes || 0), 0);
+      }
 
       if (uploadStatus === 'failed') {
         updateData.last_error_message = `Fix attempted: ${message}`;
