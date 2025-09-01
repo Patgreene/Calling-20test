@@ -312,13 +312,16 @@ export default function Admin() {
                     onChange={(e) => updateSessionConfig('voice', e.target.value)}
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
-                    <option value="alloy">Alloy</option>
-                    <option value="echo">Echo</option>
-                    <option value="fable">Fable</option>
-                    <option value="onyx">Onyx</option>
-                    <option value="nova">Nova</option>
-                    <option value="shimmer">Shimmer</option>
+                    <option value="alloy">Alloy - Versatile & Neutral</option>
+                    <option value="echo">Echo - Deep & Authoritative</option>
+                    <option value="fable">Fable - Warm & Storytelling</option>
+                    <option value="onyx">Onyx - Professional & Formal</option>
+                    <option value="nova">Nova - Friendly & Approachable</option>
+                    <option value="shimmer">Shimmer - Cheerful & Upbeat</option>
                   </select>
+                  <p className="text-white/50 text-xs mt-2">
+                    Each voice has distinct characteristics: Alloy is balanced for all contexts, Echo conveys authority, Fable excels at storytelling, Onyx sounds professional, Nova is casual and friendly, while Shimmer is energetic and optimistic.
+                  </p>
                 </div>
 
                 {/* Speed */}
@@ -339,6 +342,9 @@ export default function Admin() {
                     <span>0.25x (Slow)</span>
                     <span>1.5x (Fast)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    Controls how fast Sam speaks. Slower speeds are easier to understand and feel more deliberate, while faster speeds create a more energetic, efficient conversation pace.
+                  </p>
                 </div>
 
                 {/* Temperature */}
@@ -359,6 +365,9 @@ export default function Admin() {
                     <span>0.0 (Focused)</span>
                     <span>2.0 (Creative)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    Controls response randomness and creativity. Lower values make Sam more predictable and consistent, higher values make responses more varied and creative. 0.8 is optimal for interviews.
+                  </p>
                 </div>
 
                 {/* Max Tokens */}
@@ -379,6 +388,9 @@ export default function Admin() {
                     <span>1K (Short)</span>
                     <span>8K (Long)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    Limits the maximum length of Sam's responses. Lower values keep responses concise and to-the-point, higher values allow for more detailed explanations and follow-ups.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -410,6 +422,9 @@ export default function Admin() {
                     <span>0.0 (Very Sensitive)</span>
                     <span>1.0 (Less Sensitive)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    How easily Sam detects when you're speaking. Higher sensitivity responds to quieter speech but may trigger on background noise. Lower sensitivity requires clearer speech.
+                  </p>
                 </div>
 
                 {/* Silence Duration */}
@@ -430,6 +445,9 @@ export default function Admin() {
                     <span>200ms (Quick)</span>
                     <span>2s (Patient)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    How long Sam waits for silence before responding. Shorter durations create snappy conversations but may cut off speakers. Longer durations allow thinking pauses.
+                  </p>
                 </div>
 
                 {/* Prefix Padding */}
@@ -450,6 +468,9 @@ export default function Admin() {
                     <span>100ms (Minimal)</span>
                     <span>1s (More Context)</span>
                   </div>
+                  <p className="text-white/50 text-xs mt-2">
+                    Audio captured before detected speech begins. More buffer helps Sam understand context and catch the beginning of sentences, but increases processing time.
+                  </p>
                 </div>
               </CardContent>
             </Card>
