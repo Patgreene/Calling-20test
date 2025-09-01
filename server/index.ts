@@ -640,6 +640,315 @@ export function createServer() {
     }
   }
 
+  async function uploadChunkToSupabase(recordingId: string, chunkNumber: number, chunkData: Buffer) {
+    try {
+      const fileName = `recordings/${recordingId}/chunk_${chunkNumber.toString().padStart(4, '0')}.webm`;
+
+      // Calculate hash for integrity verification
+      const hash = crypto.createHash('sha256').update(chunkData).digest('hex');
+
+      // Upload to Supabase Storage
+      const uploadResponse = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/interview-recordings/${fileName}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/octet-stream',
+            'Cache-Control': 'no-cache',
+          },
+          body: chunkData,
+        }
+      );
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        throw new Error(`Supabase upload failed: ${uploadResponse.status} - ${errorText}`);
+      }
+
+      // Record chunk in database
+      const chunkRecord = {
+        recording_id: recordingId,
+        chunk_number: chunkNumber,
+        chunk_size_bytes: chunkData.length,
+        chunk_hash: hash,
+        upload_status: 'uploaded',
+        storage_path: fileName,
+      };
+
+      const dbResponse = await fetch(`${SUPABASE_URL}/rest/v1/recording_chunks`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify(chunkRecord),
+      });
+
+      if (!dbResponse.ok) {
+        const errorText = await dbResponse.text();
+        throw new Error(`Database insert failed: ${dbResponse.status} - ${errorText}`);
+      }
+
+      // Update recording progress
+      await updateRecordingProgress(recordingId, chunkNumber + 1);
+
+      // Log successful chunk upload
+      await logRecordingEvent(recordingId, 'chunk_uploaded', {
+        chunk_number: chunkNumber,
+        chunk_size: chunkData.length,
+        storage_path: fileName,
+        hash: hash
+      });
+
+      console.log(`✅ Chunk ${chunkNumber} uploaded successfully for recording ${recordingId}`);
+      return { success: true, chunk_number: chunkNumber, hash: hash, storage_path: fileName };
+
+    } catch (error) {
+      console.error(`❌ Chunk ${chunkNumber} upload failed for recording ${recordingId}:`, error);
+
+      // Log failed chunk upload
+      await logRecordingEvent(recordingId, 'chunk_upload_failed', {
+        chunk_number: chunkNumber,
+        error: error.message
+      });
+
+      // Record failed chunk in database
+      const failedChunkRecord = {
+        recording_id: recordingId,
+        chunk_number: chunkNumber,
+        chunk_size_bytes: chunkData.length,
+        upload_status: 'failed',
+      };
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/recording_chunks`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(failedChunkRecord),
+        });
+      } catch (dbError) {
+        console.error("Failed to record chunk failure in database:", dbError);
+      }
+
+      throw error;
+    }
+  }
+
+  async function updateRecordingProgress(recordingId: string, chunksUploaded: number) {
+    try {
+      const updateData = {
+        chunks_uploaded: chunksUploaded,
+        updated_at: new Date().toISOString()
+      };
+
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${recordingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        console.warn("Failed to update recording progress:", response.status);
+      }
+    } catch (error) {
+      console.warn("Error updating recording progress:", error);
+    }
+  }
+
+  async function getRecordingChunks(recordingId: string) {
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/recording_chunks?recording_id=eq.${recordingId}&order=chunk_number.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error("Failed to load recording chunks:", response.status);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error loading recording chunks:", error);
+      return [];
+    }
+  }
+
+  async function verifyChunkIntegrity(chunks: any[]) {
+    const verificationResults = {
+      totalChunks: chunks.length,
+      uploadedChunks: 0,
+      failedChunks: 0,
+      missingChunks: [] as number[],
+      corruptedChunks: [] as number[],
+      totalSize: 0
+    };
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+
+      if (chunk.upload_status === 'uploaded') {
+        verificationResults.uploadedChunks++;
+        verificationResults.totalSize += chunk.chunk_size_bytes || 0;
+
+        // Verify chunk sequence (should be consecutive)
+        if (chunk.chunk_number !== i) {
+          verificationResults.missingChunks.push(i);
+        }
+
+      } else {
+        verificationResults.failedChunks++;
+        verificationResults.missingChunks.push(i);
+      }
+    }
+
+    return verificationResults;
+  }
+
+  async function finalizeRecording(recordingId: string, totalChunks: number, totalDuration: number) {
+    try {
+      // Get all chunks for this recording
+      const chunks = await getRecordingChunks(recordingId);
+
+      console.log(`🔍 Verifying ${chunks.length} chunks for recording ${recordingId}`);
+
+      // Verify chunk integrity
+      const verification = await verifyChunkIntegrity(chunks);
+
+      // Calculate final hash of all chunks combined
+      const chunkHashes = chunks
+        .filter((c: any) => c.chunk_hash)
+        .sort((a: any, b: any) => a.chunk_number - b.chunk_number)
+        .map((c: any) => c.chunk_hash);
+
+      const finalHash = crypto
+        .createHash('sha256')
+        .update(chunkHashes.join(''))
+        .digest('hex');
+
+      // Determine verification status
+      let verificationStatus = 'verified';
+      let uploadStatus = 'completed';
+
+      if (verification.failedChunks > 0 || verification.missingChunks.length > 0) {
+        verificationStatus = verification.failedChunks > verification.uploadedChunks ? 'corrupted' : 'missing';
+        uploadStatus = 'failed';
+      }
+
+      // Update recording with final details
+      const updateData: any = {
+        upload_status: uploadStatus,
+        verification_status: verificationStatus,
+        duration_seconds: totalDuration,
+        file_size_bytes: verification.totalSize,
+        chunks_total: totalChunks,
+        chunks_uploaded: verification.uploadedChunks,
+        file_hash: finalHash,
+        updated_at: new Date().toISOString()
+      };
+
+      // Add error message if there were issues
+      if (uploadStatus === 'failed') {
+        updateData.last_error_message = `Verification failed: ${verification.failedChunks} failed chunks, ${verification.missingChunks.length} missing chunks`;
+      }
+
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${recordingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to update recording: ${response.status}`);
+      }
+
+      // Log finalization event
+      await logRecordingEvent(recordingId, 'recording_finalized', {
+        verification_results: verification,
+        final_hash: finalHash,
+        upload_status: uploadStatus,
+        verification_status: verificationStatus,
+        total_duration: totalDuration
+      });
+
+      console.log(`✅ Recording ${recordingId} finalized: ${uploadStatus} (${verificationStatus})`);
+
+      return {
+        success: uploadStatus === 'completed',
+        verification: verification,
+        upload_status: uploadStatus,
+        verification_status: verificationStatus,
+        final_hash: finalHash,
+        total_size: verification.totalSize,
+        total_duration: totalDuration
+      };
+
+    } catch (error) {
+      console.error(`❌ Failed to finalize recording ${recordingId}:`, error);
+
+      // Log finalization failure
+      await logRecordingEvent(recordingId, 'finalization_failed', {
+        error: error.message
+      });
+
+      // Update recording with error status
+      try {
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${recordingId}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify({
+              upload_status: 'failed',
+              verification_status: 'corrupted',
+              last_error_message: `Finalization failed: ${error.message}`,
+              updated_at: new Date().toISOString()
+            }),
+          }
+        );
+      } catch (updateError) {
+        console.error("Failed to update recording with error status:", updateError);
+      }
+
+      throw error;
+    }
+  }
+
   // Recording endpoints
   app.get("/api/admin/recordings", async (req, res) => {
     try {
