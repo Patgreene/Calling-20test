@@ -814,14 +814,14 @@ export default function RecordingAdmin() {
                                       size="sm"
                                       onClick={() => loadTranscriptsFromDB()}
                                       className="flex-1 bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20 h-8"
-                                      title="Load existing transcript from database"
+                                      title="Refresh to load any new transcripts"
                                     >
                                       <RefreshCw className="w-3 h-3 mr-1" />
-                                      <span className="text-xs">📥 Load</span>
+                                      <span className="text-xs">🔄 Refresh</span>
                                     </Button>
                                   </div>
                                   <div className="text-xs text-white/40 text-center">
-                                    Generate new or load existing transcript
+                                    Generate new transcript or refresh to load existing
                                   </div>
                                 </div>
                               ) : (
@@ -860,23 +860,6 @@ export default function RecordingAdmin() {
                               </Button>
                             )}
 
-                            {/* Transcribe Button - Show only if no transcript text exists */}
-                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription?.transcript_text && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => startTranscription(recording.id)}
-                                disabled={transcribingIds.has(recording.id)}
-                                className="bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
-                                title="Generate Transcript with OpenAI Whisper"
-                              >
-                                {transcribingIds.has(recording.id) ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
-                                ) : (
-                                  <FileText className="w-3 h-3" />
-                                )}
-                              </Button>
-                            )}
 
 
                             {/* Download Button */}
