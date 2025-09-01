@@ -1,5 +1,5 @@
 // Vercel serverless function for /api/admin/recordings/finalize
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
 const SUPABASE_ANON_KEY =
