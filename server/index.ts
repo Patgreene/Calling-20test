@@ -109,6 +109,7 @@ export function createServer() {
           `Loading Sam (Vouch Reference Agent) instructions from prompt ID: ${promptId}`,
         );
         // Instructions are now set above with the full Sam persona
+        // Note: Supporting all OpenAI voice models including new Marin and Cedar voices
       } catch (promptError) {
         console.warn(
           "Using Sam (Vouch Reference Agent) instructions:",
