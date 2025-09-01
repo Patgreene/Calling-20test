@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import OpenAIRealtimeTest from "./pages/OpenAIRealtimeTest";
 import Admin from "./pages/Admin";
+import RecordingAdmin from "./pages/RecordingAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
