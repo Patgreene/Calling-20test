@@ -123,116 +123,40 @@ export default function RecordingAdmin() {
   const startRecording = async () => {
     try {
       setMessage({ type: "success", text: "Starting recording session..." });
-      
-      // Get microphone access with high quality settings
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          sampleRate: 44100,
-          channelCount: 2,
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
-      
-      streamRef.current = stream;
 
-      // Determine the best MIME type for recording
-      const mimeTypes = [
-        'audio/webm;codecs=opus',
-        'audio/mp4;codecs=mp4a.40.2',
-        'audio/wav',
-        'audio/webm'
-      ];
-      
-      let selectedMimeType = 'audio/wav';
-      for (const mimeType of mimeTypes) {
-        if (MediaRecorder.isTypeSupported(mimeType)) {
-          selectedMimeType = mimeType;
-          break;
-        }
-      }
-
-      // Create MediaRecorder with high quality settings
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: selectedMimeType,
-        audioBitsPerSecond: 128000, // High quality bitrate
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
-      chunksRef.current = [];
-
-      // Create recording session in database
-      const sessionResponse = await fetch("/api/admin/recordings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "start_recording",
-          call_code: `REC-${Date.now()}`,
-          mime_type: selectedMimeType,
-          password: password,
-        }),
-      });
-
-      if (!sessionResponse.ok) {
-        throw new Error("Failed to create recording session");
-      }
-
-      const { recording_id } = await sessionResponse.json();
-      recordingIdRef.current = recording_id;
-
-      // Handle data available (every 30 seconds for chunked upload)
-      mediaRecorder.ondataavailable = async (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
-          
-          // Upload chunk immediately for reliability
-          await uploadChunk(event.data, chunksRef.current.length - 1);
-          
-          setCurrentRecording(prev => prev ? {
-            ...prev,
-            chunks: chunksRef.current.length,
-          } : null);
-        }
-      };
-
-      // Handle recording stop
-      mediaRecorder.onstop = async () => {
-        await finalizeRecording();
-      };
-
-      // Start recording with 30-second chunks
-      mediaRecorder.start(30000); // 30 seconds per chunk
+      const recordingId = await recordingService.current.startRecording(password);
       setIsRecording(true);
-      
+
       setCurrentRecording({
-        id: recording_id,
+        id: recordingId,
         duration: 0,
         chunks: 0,
-        status: "Recording in progress...",
+        status: "Recording in progress with real-time backup...",
       });
 
-      // Update duration every second
-      const durationInterval = setInterval(() => {
-        setCurrentRecording(prev => prev ? {
-          ...prev,
-          duration: prev.duration + 1,
-        } : null);
+      // Start status monitoring
+      statusIntervalRef.current = setInterval(() => {
+        const status = recordingService.current.getSessionStatus();
+        if (status) {
+          setCurrentRecording({
+            id: status.recordingId || '',
+            duration: status.duration || 0,
+            chunks: status.chunksTotal || 0,
+            status: `Recording... (${status.chunksUploaded}/${status.chunksTotal} chunks uploaded${status.chunksFailed ? `, ${status.chunksFailed} failed` : ''})`,
+          });
+        }
       }, 1000);
 
-      // Store interval reference for cleanup
-      (window as any).recordingDurationInterval = durationInterval;
-
-      setMessage({ 
-        type: "success", 
-        text: `Recording started with ${selectedMimeType}. Uploading chunks in real-time for maximum reliability.` 
+      setMessage({
+        type: "success",
+        text: "Recording started with advanced error handling and real-time backup. Chunks are uploaded automatically with retry logic."
       });
 
     } catch (error) {
       console.error("Recording start error:", error);
-      setMessage({ 
-        type: "error", 
-        text: `Failed to start recording: ${error.message}` 
+      setMessage({
+        type: "error",
+        text: `Failed to start recording: ${error.message}`
       });
     }
   };
