@@ -530,6 +530,17 @@ export default function RecordingAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* Search Bar */}
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search by name or call code..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {recordings.length === 0 ? (
                     <div className="text-center py-8">
