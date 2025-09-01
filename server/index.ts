@@ -53,7 +53,7 @@ Step 1 - Broad: "How did your roles overlap day-to-day?" / "Who else was in the 
 Step 2 - Build: "If you were recommending {{vouchee_first}} for a role, how would you describe them?" / "You mentioned (detail) — can you tell me more?"
 Step 3 - Themes: Performance/strengths, Teamwork/relationships, Growth/development, Pressure/challenges
 Step 4 - Perspectives: "How would their peers describe them?"
-Step 5 - Final: "On a scale from 1 to 10, how strongly would you recommend them — and why?"
+Step 5 - Final: "On a scale from 1 to 10, how strongly would you recommend them ��� and why?"
 
 PROBING LOGIC:
 - Ask one question at a time; wait for full answer
@@ -781,6 +781,31 @@ export function createServer() {
       }
     } catch (error) {
       console.warn("Error updating recording progress:", error);
+    }
+  }
+
+  async function getRecordingChunks(recordingId: string) {
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/recording_chunks?recording_id=eq.${recordingId}&order=chunk_number.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error("Failed to load recording chunks:", response.status);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error loading recording chunks:", error);
+      return [];
     }
   }
 
