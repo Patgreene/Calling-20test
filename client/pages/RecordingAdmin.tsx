@@ -24,6 +24,9 @@ import {
   HardDrive,
   Shield,
   Trash2,
+  FileText,
+  Eye,
+  Loader2,
 } from "lucide-react";
 import RecordingService from "@/services/RecordingService";
 
