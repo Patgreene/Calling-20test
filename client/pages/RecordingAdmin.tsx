@@ -692,6 +692,37 @@ export default function RecordingAdmin() {
                               </Button>
                             )}
 
+                            {/* Transcribe Button */}
+                            {recording.upload_status === 'completed' && recording.verification_status === 'verified' && !recording.transcription && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => startTranscription(recording.id)}
+                                disabled={transcribingIds.has(recording.id)}
+                                className="bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                                title="Generate Transcript with OpenAI Whisper"
+                              >
+                                {transcribingIds.has(recording.id) ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <FileText className="w-3 h-3" />
+                                )}
+                              </Button>
+                            )}
+
+                            {/* View Transcript Button */}
+                            {recording.transcription?.status === 'completed' && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setViewingTranscript(viewingTranscript === recording.id ? null : recording.id)}
+                                className="bg-indigo-500/10 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20"
+                                title="View Transcript"
+                              >
+                                <Eye className="w-3 h-3" />
+                              </Button>
+                            )}
+
                             {/* Download Button */}
                             {recording.upload_status === 'completed' && recording.verification_status === 'verified' && (
                               <Button
