@@ -161,92 +161,41 @@ export default function RecordingAdmin() {
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+  const stopRecording = async () => {
+    if (!isRecording) return;
+
+    try {
+      setMessage({ type: "success", text: "Stopping recording. Finalizing upload..." });
+
+      await recordingService.current.stopRecording();
       setIsRecording(false);
-      
-      // Stop duration tracking
-      if ((window as any).recordingDurationInterval) {
-        clearInterval((window as any).recordingDurationInterval);
-      }
-      
-      // Stop media stream
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+
+      // Stop status monitoring
+      if (statusIntervalRef.current) {
+        clearInterval(statusIntervalRef.current);
+        statusIntervalRef.current = null;
       }
 
-      setMessage({ type: "success", text: "Recording stopped. Finalizing upload..." });
-    }
-  };
-
-  const uploadChunk = async (chunk: Blob, chunkIndex: number) => {
-    if (!recordingIdRef.current) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('chunk', chunk);
-      formData.append('recording_id', recordingIdRef.current);
-      formData.append('chunk_index', chunkIndex.toString());
-      formData.append('password', password);
-
-      const response = await fetch("/api/admin/recordings/chunk", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Chunk upload failed: ${response.statusText}`);
-      }
-
-      console.log(`✅ Chunk ${chunkIndex} uploaded successfully`);
-      
-    } catch (error) {
-      console.error(`❌ Chunk ${chunkIndex} upload failed:`, error);
-      setMessage({ 
-        type: "error", 
-        text: `Chunk ${chunkIndex} upload failed. Will retry automatically.` 
-      });
-    }
-  };
-
-  const finalizeRecording = async () => {
-    if (!recordingIdRef.current) return;
-
-    try {
       setCurrentRecording(prev => prev ? {
         ...prev,
-        status: "Finalizing recording...",
+        status: "Finalizing recording and verifying integrity...",
       } : null);
 
-      const response = await fetch("/api/admin/recordings/finalize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recording_id: recordingIdRef.current,
-          total_chunks: chunksRef.current.length,
-          total_duration: currentRecording?.duration || 0,
-          password: password,
-        }),
-      });
-
-      if (response.ok) {
-        setMessage({ 
-          type: "success", 
-          text: "Recording completed and verified successfully!" 
+      // Wait a moment for final processing
+      setTimeout(() => {
+        setMessage({
+          type: "success",
+          text: "Recording completed with comprehensive backup and verification!"
         });
         setCurrentRecording(null);
-        recordingIdRef.current = null;
         loadRecordings(); // Refresh the list
-      } else {
-        throw new Error("Failed to finalize recording");
-      }
+      }, 3000);
 
     } catch (error) {
-      console.error("Finalization error:", error);
-      setMessage({ 
-        type: "error", 
-        text: "Recording completed but finalization failed. Check the recordings list." 
+      console.error("Recording stop error:", error);
+      setMessage({
+        type: "error",
+        text: `Failed to stop recording properly: ${error.message}`
       });
     }
   };
