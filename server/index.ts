@@ -65,6 +65,96 @@ CLOSING:
 
 Remember: Use dynamic variables {{voucher_first}}, {{voucher_last}}, {{vouchee_first}}, {{vouchee_last}} as provided.`;
 
+// Supabase helper functions
+async function loadLatestPromptFromSupabase() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_prompts?select=*&order=created_at.desc&limit=1`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.length > 0) {
+        console.log("Loaded prompt from Supabase:", {
+          length: data[0].prompt.length,
+          created_at: data[0].created_at
+        });
+        return data[0].prompt;
+      }
+    } else {
+      console.warn("Failed to load prompt from Supabase:", response.status);
+    }
+  } catch (error) {
+    console.warn("Error loading prompt from Supabase:", error);
+  }
+
+  return null; // Return null if no prompt found or error
+}
+
+async function savePromptToSupabase(prompt: string) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_prompts`,
+      {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      console.log("Prompt saved to Supabase successfully");
+      return true;
+    } else {
+      console.error("Failed to save prompt to Supabase:", response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error saving prompt to Supabase:", error);
+    return false;
+  }
+}
+
+async function getPromptHistoryFromSupabase() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_prompts?select=*&order=created_at.desc&limit=10`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.warn("Failed to load prompt history from Supabase:", response.status);
+    }
+  } catch (error) {
+    console.warn("Error loading prompt history from Supabase:", error);
+  }
+
+  return [];
+}
+
 let currentSessionConfig = {
   voice: 'alloy',
   speed: 1.0,
