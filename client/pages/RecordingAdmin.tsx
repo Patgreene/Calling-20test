@@ -119,6 +119,60 @@ export default function RecordingAdmin() {
     setIsLoading(false);
   };
 
+  // Debug function to directly test transcriptions API
+  const testTranscriptionsAPI = async () => {
+    try {
+      console.log("🧪 TESTING: Direct transcriptions API call...");
+
+      // Test 1: Try to fetch transcriptions directly
+      const transcriptionsResponse = await fetch("/.netlify/functions/api", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: "/rest/v1/transcriptions",
+          method: "GET",
+          headers: {
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik"
+          }
+        })
+      });
+
+      if (transcriptionsResponse.ok) {
+        const transcriptionsData = await transcriptionsResponse.json();
+        console.log("🎉 SUCCESS: Direct transcriptions API call returned:", transcriptionsData);
+      } else {
+        console.error("❌ FAILED: Direct transcriptions API call failed:", transcriptionsResponse.status);
+        const errorText = await transcriptionsResponse.text();
+        console.error("❌ Error details:", errorText);
+      }
+
+      // Test 2: Try to fetch with simple fetch
+      const simpleResponse = await fetch("https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/transcriptions?select=*", {
+        headers: {
+          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik"
+        }
+      });
+
+      if (simpleResponse.ok) {
+        const simpleData = await simpleResponse.json();
+        console.log("🎉 SUCCESS: Simple Supabase call returned:", simpleData);
+        console.log(`📊 Found ${simpleData.length} transcriptions in database`);
+        simpleData.forEach((t, i) => {
+          console.log(`��� Transcription ${i + 1}: id=${t.id}, recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}`);
+        });
+      } else {
+        console.error("❌ FAILED: Simple Supabase call failed:", simpleResponse.status);
+        const errorText = await simpleResponse.text();
+        console.error("❌ Error details:", errorText);
+      }
+
+    } catch (error) {
+      console.error("💥 Test failed with error:", error);
+    }
+  };
+
   const calculateStats = (recordings: Recording[]) => {
     const total = recordings.length;
     const totalDuration = recordings.reduce((sum, r) => sum + (r.duration_seconds || 0), 0);
