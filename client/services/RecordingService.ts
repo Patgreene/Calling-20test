@@ -28,6 +28,8 @@ interface RecordingSession {
   backupEnabled: boolean;
   isStopping: boolean;
   finalChunkReceived: boolean;
+  audioContext?: AudioContext;
+  mixedStream?: MediaStream;
 }
 
 class RecordingService {
@@ -214,17 +216,17 @@ class RecordingService {
     return false;
   }
 
-  // Start a new recording session
-  public async startRecording(password: string): Promise<string> {
+  // Start a new recording session with mixed audio
+  public async startRecording(password: string, remoteAudioElement?: HTMLAudioElement): Promise<string> {
     try {
       if (this.activeSession?.isActive) {
         throw new Error('Recording session already active');
       }
 
-      console.log('🎙️ Starting new recording session...');
+      console.log('🎙️ Starting new recording session with mixed audio...');
 
       // Get microphone access with high-quality settings
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const micStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 44100,
           channelCount: 2,
@@ -233,6 +235,42 @@ class RecordingService {
           autoGainControl: true,
         },
       });
+
+      // Create audio context for mixing
+      const audioContext = new AudioContext({ sampleRate: 44100 });
+
+      // Create destination for mixed audio
+      const destination = audioContext.createMediaStreamDestination();
+
+      // Connect microphone to mixer
+      const micSource = audioContext.createMediaStreamSource(micStream);
+      const micGain = audioContext.createGain();
+      micGain.gain.value = 0.8; // Slightly reduce mic volume to prevent overwhelming AI audio
+      micSource.connect(micGain);
+      micGain.connect(destination);
+
+      console.log('🎤 Microphone connected to mixer');
+
+      // If we have AI audio, connect it to the mixer too
+      if (remoteAudioElement && remoteAudioElement.srcObject) {
+        try {
+          const remoteStream = remoteAudioElement.srcObject as MediaStream;
+          const remoteSource = audioContext.createMediaStreamSource(remoteStream);
+          const remoteGain = audioContext.createGain();
+          remoteGain.gain.value = 1.0; // Full volume for AI responses
+          remoteSource.connect(remoteGain);
+          remoteGain.connect(destination);
+          console.log('🤖 AI audio connected to mixer');
+        } catch (remoteError) {
+          console.warn('⚠️ Could not connect AI audio to mixer:', remoteError);
+          console.log('📝 Recording will continue with microphone only');
+        }
+      } else {
+        console.warn('⚠️ No AI audio source provided, recording microphone only');
+      }
+
+      // Use the mixed stream for recording
+      const stream = destination.stream;
 
       // Create recording session on server
       const sessionResponse = await fetch('/api/admin/recordings', {
@@ -269,6 +307,8 @@ class RecordingService {
         backupEnabled: true,
         isStopping: false,
         finalChunkReceived: false,
+        audioContext,
+        mixedStream: stream,
       };
 
       // Set up event handlers
@@ -331,7 +371,7 @@ class RecordingService {
       // Save to IndexedDB as backup (async, don't wait)
       if (this.activeSession.backupEnabled) {
         this.saveChunkToIndexedDB(this.activeSession.id, chunkData).catch(error => {
-          console.warn('⚠️ Failed to backup chunk to IndexedDB:', error);
+          console.warn('��️ Failed to backup chunk to IndexedDB:', error);
         });
       }
 
@@ -367,6 +407,16 @@ class RecordingService {
 
     if (this.activeSession.stream) {
       this.activeSession.stream.getTracks().forEach(track => track.stop());
+    }
+
+    // Clean up audio context
+    if (this.activeSession.audioContext) {
+      try {
+        await this.activeSession.audioContext.close();
+        console.log('🔇 Audio context closed');
+      } catch (error) {
+        console.warn('⚠️ Error closing audio context:', error);
+      }
     }
   }
 
