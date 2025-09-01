@@ -121,7 +121,7 @@ async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
   try {
     // Step 1: Set all existing entries to inactive (is_active = false)
     const updateResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/interview_prompts`,
+      `${SUPABASE_URL}/rest/v1/interview_prompts?is_active=eq.true`,
       {
         method: "PATCH",
         headers: {
