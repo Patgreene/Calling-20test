@@ -402,7 +402,7 @@ export default function Admin() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="bg-blue/10 border-blue/30 text-blue-300 hover:bg-blue/20 text-xs"
+                              className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20 text-xs"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 loadSpecificPrompt(item.id);
@@ -604,7 +604,7 @@ export default function Admin() {
                     size="sm"
                     onClick={loadPromptHistory}
                     disabled={isLoadingHistory}
-                    className="bg-blue/10 border-blue/30 text-blue-300 hover:bg-blue/20"
+                    className="bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
                   >
                     <RefreshCw className={`w-3 h-3 ${isLoadingHistory ? 'animate-spin' : ''}`} />
                   </Button>
@@ -700,7 +700,7 @@ export default function Admin() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full bg-slate/10 border-slate/30 text-slate-300 hover:bg-slate/20"
+                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
                   onClick={() => window.open('/openai-realtime-test', '_blank')}
                 >
                   Test Interview Page
@@ -708,7 +708,7 @@ export default function Admin() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full bg-slate/10 border-slate/30 text-slate-300 hover:bg-slate/20"
+                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
                   onClick={() => setIsAuthenticated(false)}
                 >
                   Logout
