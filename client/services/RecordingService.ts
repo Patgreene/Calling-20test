@@ -279,7 +279,7 @@ class RecordingService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'start_recording',
-          call_code: `REC-${Date.now()}`,
+          call_code: callCode || `REC-${Date.now()}`,
           mime_type: this.config.mimeType,
           password: password,
           voucher_name: voucherName,
