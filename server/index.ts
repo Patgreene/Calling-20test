@@ -182,6 +182,9 @@ async function initializePrompt() {
 export function createServer() {
   const app = express();
 
+  // Initialize prompt from Supabase
+  initializePrompt();
+
   // Middleware
   app.use(cors());
   app.use(express.json());
