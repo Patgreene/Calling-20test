@@ -524,7 +524,7 @@ export function createServer() {
   });
 
   // Recording API endpoints
-  async function createRecordingSession(callCode: string, mimeType: string) {
+  async function createRecordingSession(callCode: string, mimeType: string, voucherName?: string, voucheeName?: string) {
     try {
       const recordingData = {
         call_code: callCode,
@@ -533,8 +533,12 @@ export function createServer() {
         upload_status: 'uploading',
         verification_status: 'pending',
         retry_count: 0,
-        chunks_uploaded: 0
+        chunks_uploaded: 0,
+        voucher_name: voucherName || null,
+        vouchee_name: voucheeName || null
       };
+
+      console.log('💾 About to insert recording data into Supabase:', recordingData);
 
       const response = await fetch(`${SUPABASE_URL}/rest/v1/interview_recordings`, {
         method: "POST",
