@@ -262,6 +262,15 @@ export default function Admin() {
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={loadPromptHistory}
+                      disabled={isLoadingHistory}
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      <History className={`w-4 h-4 ${isLoadingHistory ? 'animate-pulse' : ''}`} />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => setShowPreview(!showPreview)}
                       className="border-white/20 text-white hover:bg-white/10"
                     >
