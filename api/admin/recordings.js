@@ -33,13 +33,22 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
     if (response.ok) {
       const data = await response.json();
       console.log("✅ Recording session created:", data[0].id);
-      
+      console.log("📊 Saved recording data:", {
+        id: data[0].id,
+        call_code: data[0].call_code,
+        voucher_name: data[0].voucher_name,
+        vouchee_name: data[0].vouchee_name,
+        file_name: data[0].file_name
+      });
+
       // Log the creation event
       await logRecordingEvent(data[0].id, 'recording_session_created', {
         call_code: callCode,
-        mime_type: mimeType
+        mime_type: mimeType,
+        voucher_name: voucherName,
+        vouchee_name: voucheeName
       });
-      
+
       return data[0];
     } else {
       console.error("Failed to create recording session:", response.status);
