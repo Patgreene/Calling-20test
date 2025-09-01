@@ -98,8 +98,24 @@ async function loadLatestPromptFromSupabase() {
   return null; // Return null if no prompt found or error
 }
 
-async function savePromptToSupabase(prompt: string) {
+async function savePromptToSupabase(prompt: string, sessionConfig?: any) {
   try {
+    const dataToSave: any = {
+      prompt: prompt,
+    };
+
+    // Add session config fields if provided
+    if (sessionConfig) {
+      dataToSave.voice = sessionConfig.voice;
+      dataToSave.speed = sessionConfig.speed;
+      dataToSave.temperature = sessionConfig.temperature;
+      dataToSave.max_response_tokens = sessionConfig.max_response_output_tokens;
+      dataToSave.vad_threshold = sessionConfig.turn_detection?.threshold;
+      dataToSave.silence_duration_ms = sessionConfig.turn_detection?.silence_duration_ms;
+      dataToSave.prefix_padding_ms = sessionConfig.turn_detection?.prefix_padding_ms;
+      dataToSave.is_active = true; // Set as active by default
+    }
+
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/interview_prompts`,
       {
@@ -110,21 +126,21 @@ async function savePromptToSupabase(prompt: string) {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({
-          prompt: prompt,
-        }),
+        body: JSON.stringify(dataToSave),
       }
     );
 
     if (response.ok) {
-      console.log("Prompt saved to Supabase successfully");
+      console.log("Prompt and session config saved to Supabase successfully");
       return true;
     } else {
-      console.error("Failed to save prompt to Supabase:", response.status);
+      console.error("Failed to save to Supabase:", response.status);
+      const errorText = await response.text();
+      console.error("Error details:", errorText);
       return false;
     }
   } catch (error) {
-    console.error("Error saving prompt to Supabase:", error);
+    console.error("Error saving to Supabase:", error);
     return false;
   }
 }
@@ -280,7 +296,7 @@ export function createServer() {
     }
 
     // Save to Supabase
-    const saveSuccess = await savePromptToSupabase(instructions);
+    const saveSuccess = await savePromptToSupabase(instructions, sessionConfig);
 
     if (saveSuccess) {
       // Update the in-memory instructions and session config only if save succeeded
