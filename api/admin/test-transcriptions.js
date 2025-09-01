@@ -104,7 +104,60 @@ export default async function handler(req, res) {
       console.error("❌ Sample fetch error:", errorText);
     }
 
-    // Test 4: Check specific recording IDs from server logs
+    // Test 4: Check foreign key relationship between tables
+    console.log("🔍 Test 4: Checking foreign key relationship...");
+
+    // Get all recording IDs from interview_recordings table
+    const recordingsResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_recordings?select=id,call_code&limit=10`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    let recordingIds = [];
+    if (recordingsResponse.ok) {
+      const recordings = await recordingsResponse.json();
+      recordingIds = recordings.map(r => ({ id: r.id, call_code: r.call_code }));
+      console.log(`📊 Found ${recordingIds.length} recordings in interview_recordings table`);
+      recordingIds.forEach(r => console.log(`📝 Recording: ${r.call_code} (ID: ${r.id})`));
+    }
+
+    // Get all recording_id values from transcriptions table
+    const transcriptionRecordingIds = [];
+    if (sampleData.length > 0) {
+      sampleData.forEach(t => {
+        transcriptionRecordingIds.push({
+          transcription_id: t.id,
+          recording_id: t.recording_id,
+          status: t.status
+        });
+        console.log(`📄 Transcription ${t.id} points to recording_id: ${t.recording_id} (status: ${t.status})`);
+      });
+    }
+
+    // Check if recording_ids in transcriptions match actual recording IDs
+    const relationshipCheck = [];
+    for (const transcription of transcriptionRecordingIds) {
+      const matchingRecording = recordingIds.find(r => r.id === transcription.recording_id);
+      const isValid = !!matchingRecording;
+
+      relationshipCheck.push({
+        transcription_id: transcription.transcription_id,
+        recording_id: transcription.recording_id,
+        status: transcription.status,
+        valid_foreign_key: isValid,
+        matching_call_code: matchingRecording?.call_code || null
+      });
+
+      console.log(`🔗 Transcription ${transcription.transcription_id} -> Recording ${transcription.recording_id}: ${isValid ? '✅ VALID' : '❌ INVALID'} ${matchingRecording ? `(${matchingRecording.call_code})` : ''}`);
+    }
+
+    // Test specific recording IDs from server logs
     const testRecordingIds = [
       'b14a6688-ab40-42f0-9670-be530b93a8ae',
       '0580c782-512f-460d-9f80-e8edbf039902'
@@ -112,7 +165,7 @@ export default async function handler(req, res) {
 
     const specificChecks = [];
     for (const recordingId of testRecordingIds) {
-      console.log(`🔍 Test 4: Checking transcription for recording ${recordingId}...`);
+      console.log(`🔍 Test 5: Checking transcription for recording ${recordingId}...`);
       const specificResponse = await fetch(
         `${SUPABASE_URL}/rest/v1/transcriptions?recording_id=eq.${recordingId}&select=*`,
         {
