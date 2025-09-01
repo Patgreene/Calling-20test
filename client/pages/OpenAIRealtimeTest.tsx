@@ -287,7 +287,7 @@ export default function OpenAIRealtimeTest() {
     }
   };
 
-  const stopCall = () => {
+  const stopCall = async () => {
     try {
       if (peerConnectionRef.current) {
         peerConnectionRef.current.close();
