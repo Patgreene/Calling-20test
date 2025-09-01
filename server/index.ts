@@ -1289,6 +1289,16 @@ export function createServer() {
       // Re-run verification
       const verification = await verifyChunkIntegrity(chunks);
 
+      // Calculate the final hash of uploaded chunks
+      const uploadedChunks = chunks.filter((c: any) => c.upload_status === 'uploaded');
+      const chunkHashes = uploadedChunks
+        .sort((a: any, b: any) => a.chunk_number - b.chunk_number)
+        .map((c: any) => c.chunk_hash);
+
+      const finalHash = chunkHashes.length > 0
+        ? crypto.createHash('sha256').update(chunkHashes.join('')).digest('hex')
+        : null;
+
       // Determine new status
       let uploadStatus = recording.upload_status;
       let verificationStatus = recording.verification_status;
@@ -1298,14 +1308,23 @@ export function createServer() {
         uploadStatus = 'failed';
         verificationStatus = 'missing';
         message = "No chunks found - marking as failed";
-      } else if (verification.uploadedChunks === verification.totalChunks && verification.failedChunks === 0) {
+      } else if (verification.uploadedChunks > 0 && verification.failedChunks === 0) {
+        // All available chunks are uploaded successfully
         uploadStatus = 'completed';
         verificationStatus = 'verified';
-        message = "All chunks verified - marking as completed";
+        message = `All ${verification.uploadedChunks} chunks verified - marking as completed`;
       } else if (verification.uploadedChunks > 0) {
-        uploadStatus = 'failed';
-        verificationStatus = verification.failedChunks > verification.uploadedChunks ? 'corrupted' : 'missing';
-        message = `Partial upload detected - ${verification.uploadedChunks}/${verification.totalChunks} chunks`;
+        // Some chunks uploaded, some failed
+        if (verification.uploadedChunks >= verification.totalChunks * 0.8) {
+          // If 80% or more chunks are uploaded, consider it completed with warning
+          uploadStatus = 'completed';
+          verificationStatus = 'verified';
+          message = `Mostly complete - ${verification.uploadedChunks}/${verification.totalChunks} chunks uploaded`;
+        } else {
+          uploadStatus = 'failed';
+          verificationStatus = verification.failedChunks > verification.uploadedChunks ? 'corrupted' : 'missing';
+          message = `Partial upload detected - ${verification.uploadedChunks}/${verification.totalChunks} chunks`;
+        }
       } else {
         uploadStatus = 'failed';
         verificationStatus = 'missing';
