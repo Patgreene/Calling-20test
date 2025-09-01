@@ -320,6 +320,77 @@ export default function OpenAIRealtimeTest() {
     }
   };
 
+  // Automatic recording functions
+  const startAutomaticRecording = async () => {
+    try {
+      setRecordingStatus("Starting recording...");
+      setIsRecording(true);
+
+      // Use admin password for recording - you may want to configure this differently
+      const adminPassword = "vouch2024admin";
+
+      const recordingId = await recordingService.current.startRecording(adminPassword);
+      currentRecordingId.current = recordingId;
+
+      // Update recording metadata with call information
+      await updateRecordingMetadata(recordingId);
+
+      setRecordingStatus("Recording active");
+      console.log(`✅ Automatic recording started for call ${callCode}: ${recordingId}`);
+
+    } catch (error) {
+      console.error("❌ Failed to start automatic recording:", error);
+      setRecordingStatus("Recording failed to start");
+      setIsRecording(false);
+    }
+  };
+
+  const stopAutomaticRecording = async () => {
+    if (!currentRecordingId.current || !isRecording) return;
+
+    try {
+      setRecordingStatus("Stopping recording...");
+
+      await recordingService.current.stopRecording();
+
+      console.log(`✅ Automatic recording stopped for call ${callCode}: ${currentRecordingId.current}`);
+      setRecordingStatus("Recording saved");
+      setIsRecording(false);
+      currentRecordingId.current = null;
+
+      // Clear recording status after a few seconds
+      setTimeout(() => {
+        setRecordingStatus("");
+      }, 3000);
+
+    } catch (error) {
+      console.error("❌ Failed to stop automatic recording:", error);
+      setRecordingStatus("Recording stop failed");
+    }
+  };
+
+  const updateRecordingMetadata = async (recordingId: string) => {
+    try {
+      // Update the recording with call metadata
+      const response = await fetch(`/api/admin/recordings/${recordingId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          call_code: callCode,
+          voucher_name: preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName,
+          vouchee_name: preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName,
+          password: "vouch2024admin"
+        }),
+      });
+
+      if (!response.ok) {
+        console.warn("Failed to update recording metadata:", response.status);
+      }
+    } catch (error) {
+      console.warn("Error updating recording metadata:", error);
+    }
+  };
+
   const toggleMute = () => {
     if (streamRef.current) {
       const audioTrack = streamRef.current.getAudioTracks()[0];
