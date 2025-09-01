@@ -125,6 +125,9 @@ export default async function handler(req, res) {
       recordingIds = recordings.map(r => ({ id: r.id, call_code: r.call_code }));
       console.log(`📊 Found ${recordingIds.length} recordings in interview_recordings table`);
       recordingIds.forEach(r => console.log(`📝 Recording: ${r.call_code} (ID: ${r.id})`));
+    } else {
+      console.error("❌ Failed to fetch recordings for foreign key check");
+      recordingIds = [];
     }
 
     // Get all recording_id values from transcriptions table
