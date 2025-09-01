@@ -25,7 +25,6 @@ import {
   Shield,
   Trash2,
   FileText,
-  Eye,
   Loader2,
 } from "lucide-react";
 import RecordingService from "@/services/RecordingService";
@@ -398,7 +397,7 @@ export default function RecordingAdmin() {
   const formatRecordingTitle = (recording: Recording): { title: string; subtitle?: string } => {
     if (recording.voucher_name && recording.vouchee_name) {
       return {
-        title: `${recording.voucher_name} ��� ${recording.vouchee_name}`,
+        title: `${recording.voucher_name} → ${recording.vouchee_name}`,
         subtitle: recording.call_code
       };
     } else if (recording.voucher_name) {
