@@ -351,9 +351,6 @@ export default function OpenAIRealtimeTest() {
       );
       currentRecordingId.current = recordingId;
 
-      // Update recording metadata with call information
-      await updateRecordingMetadata(recordingId);
-
       setRecordingStatus("Recording both sides of conversation");
       console.log(`✅ Mixed audio recording started for call ${callCode}: ${recordingId}`);
 
