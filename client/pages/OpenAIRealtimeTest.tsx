@@ -96,7 +96,10 @@ export default function OpenAIRealtimeTest() {
         // Add English-only constraint
         instructions += " You must respond only in English. Do not use any other language under any circumstances.";
 
-        console.log('Instructions with substituted variables:', instructions);
+        console.log('✅ Final instructions after variable substitution:');
+        console.log('📏 Length:', instructions.length);
+        console.log('🔍 Preview:', instructions.substring(0, 200) + '...');
+        console.log('🔗 Contains template variables:', instructions.includes('{{'));
 
         const sessionUpdateEvent = {
           type: 'session.update',
