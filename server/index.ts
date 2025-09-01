@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import multer from "multer";
+import crypto from "crypto";
 import { handleDemo } from "./routes/demo";
 
 // Supabase configuration
@@ -293,7 +295,7 @@ export function createServer() {
         instructions.length,
       );
       console.log(
-        "🔍 Instructions preview:",
+        "��� Instructions preview:",
         instructions.substring(0, 100) + "...",
       );
 
