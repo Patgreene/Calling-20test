@@ -85,6 +85,7 @@ async function loadRecordings() {
     console.log(`📊 Loaded ${recordings.length} recordings from database`);
 
     // Get transcriptions for all recordings
+    console.log(`🔍 Fetching transcriptions from: ${SUPABASE_URL}/rest/v1/transcriptions?select=*`);
     const transcriptionsResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/transcriptions?select=*`,
       {
@@ -96,6 +97,8 @@ async function loadRecordings() {
       },
     );
 
+    console.log(`📡 Transcriptions response status: ${transcriptionsResponse.status}`);
+
     let transcriptions = [];
     if (transcriptionsResponse.ok) {
       transcriptions = await transcriptionsResponse.json();
@@ -106,9 +109,10 @@ async function loadRecordings() {
         console.log(`📄 Transcription ${t.id}: recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}, textLength=${t.transcript_text?.length || 0}`);
       });
     } else {
-      console.error("Failed to load transcriptions:", transcriptionsResponse.status);
+      console.error("❌ Failed to load transcriptions:", transcriptionsResponse.status);
       const errorText = await transcriptionsResponse.text();
-      console.error("Transcriptions error details:", errorText);
+      console.error("❌ Transcriptions error details:", errorText);
+      console.error("❌ Response headers:", [...transcriptionsResponse.headers.entries()]);
     }
 
     // Merge transcription data with recordings
