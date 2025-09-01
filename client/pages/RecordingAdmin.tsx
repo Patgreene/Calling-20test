@@ -316,6 +316,50 @@ export default function RecordingAdmin() {
     }
   };
 
+  const startTranscription = async (recordingId: string) => {
+    try {
+      setTranscribingIds(prev => new Set(prev).add(recordingId));
+      setMessage({ type: "success", text: "Starting transcription with OpenAI Whisper..." });
+
+      const response = await fetch('/api/admin/recordings/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recording_id: recordingId,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setMessage({ type: "success", text: "Transcription completed successfully!" });
+        loadRecordings(); // Refresh to show updated transcription status
+      } else {
+        const errorData = await response.json();
+        setMessage({ type: "error", text: `Transcription failed: ${errorData.message || 'Unknown error'}` });
+      }
+    } catch (error) {
+      console.error('Transcription error:', error);
+      setMessage({ type: "error", text: `Transcription failed: ${error instanceof Error ? error.message : 'Unknown error'}` });
+    } finally {
+      setTranscribingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(recordingId);
+        return newSet;
+      });
+    }
+  };
+
+  const getTranscriptionColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'processing': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'failed': return 'bg-red-500/20 text-red-300 border-red-500/30';
+      case 'pending': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+    }
+  };
+
   // Filter recordings based on search term
   const filteredRecordings = recordings.filter(recording => {
     if (!searchTerm) return true;
