@@ -31,6 +31,9 @@ export default function Admin() {
     }
   });
   const [originalSessionConfig, setOriginalSessionConfig] = useState(sessionConfig);
+  const [promptHistory, setPromptHistory] = useState<any[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // Simple admin authentication
   const handleAuth = () => {
