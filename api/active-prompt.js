@@ -1,6 +1,7 @@
 // Vercel serverless function for /api/active-prompt
 const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
 // Default fallback prompt
 const DEFAULT_INSTRUCTIONS = `You are **Sam**, a warm, curious, and conversational AI voice agent for Vouch from New Zealand. You make callers feel comfortable, keep the conversation flowing, and subtly encourage them to share genuine stories, perspectives, and examples about {{vouchee_first}}.
@@ -62,18 +63,24 @@ Remember: Use dynamic variables {{voucher_first}}, {{voucher_last}}, {{vouchee_f
 
 export default async function handler(req, res) {
   // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+  );
 
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
   }
 
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
@@ -85,7 +92,7 @@ export default async function handler(req, res) {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -95,26 +102,29 @@ export default async function handler(req, res) {
         console.log("🔄 Fetched active prompt for call:", {
           id: activePrompt.id,
           length: activePrompt.prompt.length,
-          created_at: activePrompt.created_at
+          created_at: activePrompt.created_at,
         });
-        
+
         // Return the prompt and session config
         res.json({
           instructions: activePrompt.prompt,
           sessionConfig: {
-            voice: activePrompt.voice || 'alloy',
+            voice: activePrompt.voice || "alloy",
             speed: parseFloat(activePrompt.speed) || 1.0,
             temperature: parseFloat(activePrompt.temperature) || 0.8,
-            max_response_output_tokens: parseInt(activePrompt.max_response_tokens) || 4096,
+            max_response_output_tokens:
+              parseInt(activePrompt.max_response_tokens) || 4096,
             turn_detection: {
-              type: 'server_vad',
+              type: "server_vad",
               threshold: parseFloat(activePrompt.vad_threshold) || 0.5,
-              prefix_padding_ms: parseInt(activePrompt.prefix_padding_ms) || 300,
-              silence_duration_ms: parseInt(activePrompt.silence_duration_ms) || 500
-            }
+              prefix_padding_ms:
+                parseInt(activePrompt.prefix_padding_ms) || 300,
+              silence_duration_ms:
+                parseInt(activePrompt.silence_duration_ms) || 500,
+            },
           },
           created_at: activePrompt.created_at,
-          id: activePrompt.id
+          id: activePrompt.id,
         });
       } else {
         // No active prompt found, return fallback
@@ -122,18 +132,18 @@ export default async function handler(req, res) {
         res.json({
           instructions: DEFAULT_INSTRUCTIONS,
           sessionConfig: {
-            voice: 'alloy',
+            voice: "alloy",
             speed: 1.0,
             temperature: 0.8,
             max_response_output_tokens: 4096,
             turn_detection: {
-              type: 'server_vad',
+              type: "server_vad",
               threshold: 0.5,
               prefix_padding_ms: 300,
-              silence_duration_ms: 500
-            }
+              silence_duration_ms: 500,
+            },
           },
-          fallback: true
+          fallback: true,
         });
       }
     } else {

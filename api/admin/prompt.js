@@ -1,6 +1,7 @@
 // Vercel serverless function for /api/admin/prompt
 const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
 async function savePromptToSupabase(prompt, sessionConfig) {
   try {
@@ -16,9 +17,9 @@ async function savePromptToSupabase(prompt, sessionConfig) {
           Prefer: "return=minimal",
         },
         body: JSON.stringify({
-          is_active: false
+          is_active: false,
         }),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
@@ -38,23 +39,22 @@ async function savePromptToSupabase(prompt, sessionConfig) {
       dataToSave.temperature = sessionConfig.temperature;
       dataToSave.max_response_tokens = sessionConfig.max_response_output_tokens;
       dataToSave.vad_threshold = sessionConfig.turn_detection?.threshold;
-      dataToSave.silence_duration_ms = sessionConfig.turn_detection?.silence_duration_ms;
-      dataToSave.prefix_padding_ms = sessionConfig.turn_detection?.prefix_padding_ms;
+      dataToSave.silence_duration_ms =
+        sessionConfig.turn_detection?.silence_duration_ms;
+      dataToSave.prefix_padding_ms =
+        sessionConfig.turn_detection?.prefix_padding_ms;
     }
 
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/interview_prompts`,
-      {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify(dataToSave),
-      }
-    );
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/interview_prompts`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(dataToSave),
+    });
 
     if (response.ok) {
       console.log("Prompt saved and all old entries deactivated successfully");
@@ -81,7 +81,7 @@ async function loadLatestPromptFromSupabase() {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -91,18 +91,21 @@ async function loadLatestPromptFromSupabase() {
         return {
           instructions: latestRecord.prompt,
           sessionConfig: {
-            voice: latestRecord.voice || 'alloy',
+            voice: latestRecord.voice || "alloy",
             speed: parseFloat(latestRecord.speed) || 1.0,
             temperature: parseFloat(latestRecord.temperature) || 0.8,
-            max_response_output_tokens: parseInt(latestRecord.max_response_tokens) || 4096,
+            max_response_output_tokens:
+              parseInt(latestRecord.max_response_tokens) || 4096,
             turn_detection: {
-              type: 'server_vad',
+              type: "server_vad",
               threshold: parseFloat(latestRecord.vad_threshold) || 0.5,
-              prefix_padding_ms: parseInt(latestRecord.prefix_padding_ms) || 300,
-              silence_duration_ms: parseInt(latestRecord.silence_duration_ms) || 500
-            }
+              prefix_padding_ms:
+                parseInt(latestRecord.prefix_padding_ms) || 300,
+              silence_duration_ms:
+                parseInt(latestRecord.silence_duration_ms) || 500,
+            },
           },
-          created_at: latestRecord.created_at
+          created_at: latestRecord.created_at,
         };
       }
     }
@@ -115,17 +118,23 @@ async function loadLatestPromptFromSupabase() {
 
 export default async function handler(req, res) {
   // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+  );
 
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
   }
 
-  if (req.method === 'GET') {
+  if (req.method === "GET") {
     // Get current prompt
     try {
       const promptData = await loadLatestPromptFromSupabase();
@@ -135,23 +144,23 @@ export default async function handler(req, res) {
         res.json({
           instructions: "Default prompt not found",
           sessionConfig: {
-            voice: 'alloy',
+            voice: "alloy",
             speed: 1.0,
             temperature: 0.8,
             max_response_output_tokens: 4096,
             turn_detection: {
-              type: 'server_vad',
+              type: "server_vad",
               threshold: 0.5,
               prefix_padding_ms: 300,
-              silence_duration_ms: 500
-            }
-          }
+              silence_duration_ms: 500,
+            },
+          },
         });
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to load prompt" });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === "PUT") {
     // Save prompt
     const { instructions, sessionConfig, password } = req.body;
 
@@ -165,22 +174,26 @@ export default async function handler(req, res) {
     }
 
     try {
-      const saveSuccess = await savePromptToSupabase(instructions, sessionConfig);
+      const saveSuccess = await savePromptToSupabase(
+        instructions,
+        sessionConfig,
+      );
 
       if (saveSuccess) {
         res.json({
-          message: "Prompt and settings saved to Supabase successfully! Changes will take effect immediately for new calls.",
-          savedToSupabase: true
+          message:
+            "Prompt and settings saved to Supabase successfully! Changes will take effect immediately for new calls.",
+          savedToSupabase: true,
         });
       } else {
         res.status(500).json({
-          error: "Failed to save prompt to Supabase. Please try again."
+          error: "Failed to save prompt to Supabase. Please try again.",
         });
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to save prompt" });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: "Method not allowed" });
   }
 }
