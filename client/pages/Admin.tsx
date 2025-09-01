@@ -322,7 +322,7 @@ export default function Admin() {
                     <option value="cedar">Cedar - Sophisticated & Clear (New)</option>
                   </select>
                   <p className="text-white/50 text-xs mt-2">
-                    Each voice has distinct characteristics: Alloy is balanced for all contexts, Echo conveys authority, Fable excels at storytelling, Onyx sounds professional, Nova is casual and friendly, while Shimmer is energetic and optimistic.
+                    Each voice has distinct characteristics: Alloy is balanced for all contexts, Echo conveys authority, Fable excels at storytelling, Onyx sounds professional, Nova is casual and friendly, Shimmer is energetic and optimistic. The new Marin and Cedar voices offer enhanced naturalness and expressiveness with better instruction-following capabilities.
                   </p>
                 </div>
 
