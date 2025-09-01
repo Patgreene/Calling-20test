@@ -525,7 +525,7 @@ export default function RecordingAdmin() {
                     </CardDescription>
                   </div>
                   <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                    {recordings.length} total
+                    {filteredRecordings.length} {searchTerm ? 'found' : 'total'}
                   </Badge>
                 </div>
               </CardHeader>
