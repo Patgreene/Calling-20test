@@ -1,6 +1,6 @@
 // Vercel serverless function for /api/admin/recordings/chunk
-import { IncomingForm } from 'formidable';
-import crypto from 'crypto';
+const formidable = require('formidable');
+const crypto = require('crypto');
 
 const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
 const SUPABASE_ANON_KEY =
