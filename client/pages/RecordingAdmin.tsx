@@ -124,47 +124,60 @@ export default function RecordingAdmin() {
     try {
       console.log("🧪 TESTING: Direct transcriptions API call...");
 
-      // Test 1: Try to fetch transcriptions directly
-      const transcriptionsResponse = await fetch("/.netlify/functions/api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          path: "/rest/v1/transcriptions",
-          method: "GET",
-          headers: {
-            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik"
-          }
-        })
-      });
+      // Get recording IDs from the current loaded recordings
+      const testRecordingIds = recordings.slice(0, 3).map(r => r.id);
+      console.log("🔍 Testing with recording IDs:", testRecordingIds);
 
-      if (transcriptionsResponse.ok) {
-        const transcriptionsData = await transcriptionsResponse.json();
-        console.log("🎉 SUCCESS: Direct transcriptions API call returned:", transcriptionsData);
-      } else {
-        console.error("❌ FAILED: Direct transcriptions API call failed:", transcriptionsResponse.status);
-        const errorText = await transcriptionsResponse.text();
-        console.error("❌ Error details:", errorText);
-      }
-
-      // Test 2: Try to fetch with simple fetch
-      const simpleResponse = await fetch("https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/transcriptions?select=*", {
+      // Test: Direct Supabase API call to transcriptions table
+      console.log("📡 Calling Supabase transcriptions API directly...");
+      const supabaseResponse = await fetch("https://xbcmpkkqqfqsuapbvvkp.supabase.co/rest/v1/transcriptions?select=*", {
         headers: {
           "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik"
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN0.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik",
+          "Content-Type": "application/json"
         }
       });
 
-      if (simpleResponse.ok) {
-        const simpleData = await simpleResponse.json();
-        console.log("🎉 SUCCESS: Simple Supabase call returned:", simpleData);
-        console.log(`📊 Found ${simpleData.length} transcriptions in database`);
-        simpleData.forEach((t, i) => {
-          console.log(`📄 Transcription ${i + 1}: id=${t.id}, recording_id=${t.recording_id}, status=${t.status}, hasText=${!!t.transcript_text}`);
-        });
+      console.log(`📊 Supabase Response Status: ${supabaseResponse.status}`);
+
+      if (supabaseResponse.ok) {
+        const transcriptions = await supabaseResponse.json();
+        console.log("🎉 SUCCESS: Found transcriptions in database:", transcriptions);
+        console.log(`📊 Total transcriptions: ${transcriptions.length}`);
+
+        if (transcriptions.length > 0) {
+          console.log("📋 TRANSCRIPTION DETAILS:");
+          transcriptions.forEach((t, i) => {
+            console.log(`  📄 ${i + 1}. Transcription ID: ${t.id}`);
+            console.log(`     📎 Recording ID: ${t.recording_id}`);
+            console.log(`     📍 Status: ${t.status}`);
+            console.log(`     📝 Has Text: ${!!t.transcript_text} (${t.transcript_text?.length || 0} chars)`);
+            console.log(`     📅 Created: ${t.created_at}`);
+
+            // Check if this transcription matches any of our loaded recordings
+            const matchingRecording = recordings.find(r => r.id === t.recording_id);
+            if (matchingRecording) {
+              console.log(`     ✅ MATCHES Recording: ${matchingRecording.call_code}`);
+            } else {
+              console.log(`     ❌ NO MATCH: recording_id ${t.recording_id} not found in loaded recordings`);
+            }
+          });
+
+          // Show which recordings don't have transcriptions
+          console.log("📋 RECORDINGS WITHOUT TRANSCRIPTIONS:");
+          recordings.forEach(r => {
+            const hasTranscription = transcriptions.find(t => t.recording_id === r.id);
+            if (!hasTranscription) {
+              console.log(`  ❌ ${r.call_code} (${r.id}) - No transcription found`);
+            }
+          });
+
+        } else {
+          console.log("❌ No transcriptions found in database!");
+        }
       } else {
-        console.error("❌ FAILED: Simple Supabase call failed:", simpleResponse.status);
-        const errorText = await simpleResponse.text();
+        console.error("❌ FAILED: Supabase API call failed:", supabaseResponse.status);
+        const errorText = await supabaseResponse.text();
         console.error("❌ Error details:", errorText);
       }
 
