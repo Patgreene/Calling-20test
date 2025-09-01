@@ -690,10 +690,25 @@ export default function RecordingAdmin() {
                                   <span className="text-xs text-green-400 font-medium">Word-for-Word Transcript</span>
                                   <button
                                     onClick={() => navigator.clipboard.writeText(recording.transcription!.transcript_text!)}
-                                    className="text-xs text-blue-400 hover:text-blue-300 ml-auto"
+                                    className="text-xs text-blue-400 hover:text-blue-300"
                                     title="Copy transcript"
                                   >
                                     Copy
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      const blob = new Blob([recording.transcription!.transcript_text!], { type: 'text/plain' });
+                                      const url = URL.createObjectURL(blob);
+                                      const a = document.createElement('a');
+                                      a.href = url;
+                                      a.download = `transcript-${recording.call_code}.txt`;
+                                      a.click();
+                                      URL.revokeObjectURL(url);
+                                    }}
+                                    className="text-xs text-green-400 hover:text-green-300"
+                                    title="Download transcript as TXT"
+                                  >
+                                    Download
                                   </button>
                                 </div>
                                 <div className="text-xs text-white/80 leading-relaxed">
