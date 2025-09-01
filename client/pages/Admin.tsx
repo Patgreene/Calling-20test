@@ -88,7 +88,11 @@ export default function Admin() {
       if (response.ok) {
         setOriginalPrompt(prompt);
         setOriginalSessionConfig(sessionConfig);
-        setMessage({ type: 'success', text: 'Prompt and settings saved successfully!' });
+        setMessage({ type: 'success', text: 'Prompt and settings saved to Supabase successfully!' });
+        // Refresh history if it's currently shown
+        if (showHistory) {
+          loadPromptHistory();
+        }
       } else {
         const error = await response.json();
         setMessage({ type: 'error', text: error.error || 'Failed to save prompt' });
