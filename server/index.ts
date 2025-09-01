@@ -295,7 +295,7 @@ export function createServer() {
         instructions.length,
       );
       console.log(
-        "��� Instructions preview:",
+        "🔍 Instructions preview:",
         instructions.substring(0, 100) + "...",
       );
 
@@ -696,6 +696,145 @@ export function createServer() {
       }
     } else {
       res.status(400).json({ error: "Invalid action. Use 'start_recording'" });
+    }
+  });
+
+  // Setup multer for file uploads
+  const upload = multer({
+    dest: 'uploads/',
+    limits: {
+      fileSize: 50 * 1024 * 1024 // 50MB max chunk size
+    }
+  });
+
+  // Chunk upload endpoint
+  app.post("/api/admin/recordings/chunk", upload.single('chunk'), async (req, res) => {
+    try {
+      const { recording_id, chunk_index, password } = req.body;
+
+      // Simple password check
+      if (password !== "vouch2024admin") {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      if (!recording_id || chunk_index === undefined || !req.file) {
+        return res.status(400).json({
+          error: "recording_id, chunk_index, and chunk file are required"
+        });
+      }
+
+      const chunkIndexNum = parseInt(chunk_index);
+
+      // Read chunk data
+      const fs = await import('fs');
+      const chunkData = fs.readFileSync(req.file.path);
+
+      if (chunkData.length === 0) {
+        return res.status(400).json({ error: "Empty chunk data" });
+      }
+
+      console.log(`📤 Uploading chunk ${chunkIndexNum} for recording ${recording_id} (${chunkData.length} bytes)`);
+
+      // Upload chunk with retry logic
+      let uploadResult;
+      let retryCount = 0;
+      const maxRetries = 3;
+
+      while (retryCount < maxRetries) {
+        try {
+          uploadResult = await uploadChunkToSupabase(recording_id, chunkIndexNum, chunkData);
+          break; // Success, exit retry loop
+        } catch (error) {
+          retryCount++;
+          if (retryCount >= maxRetries) {
+            throw error; // Max retries reached, throw the error
+          }
+          console.log(`⚠️ Chunk upload attempt ${retryCount} failed, retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount)); // Exponential backoff
+        }
+      }
+
+      // Clean up temp file
+      fs.unlinkSync(req.file.path);
+
+      res.json({
+        success: true,
+        recording_id: recording_id,
+        chunk_index: chunkIndexNum,
+        chunk_size: chunkData.length,
+        hash: uploadResult.hash,
+        storage_path: uploadResult.storage_path,
+        retry_count: retryCount,
+        message: `Chunk ${chunkIndexNum} uploaded successfully`
+      });
+
+    } catch (error) {
+      // Clean up temp file on error
+      if (req.file) {
+        try {
+          const fs = await import('fs');
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.warn("Failed to cleanup temp file:", cleanupError);
+        }
+      }
+
+      console.error("Chunk upload error:", error);
+      res.status(500).json({
+        error: "Failed to upload chunk",
+        details: error.message
+      });
+    }
+  });
+
+  // Finalize recording endpoint
+  app.post("/api/admin/recordings/finalize", async (req, res) => {
+    const { recording_id, total_chunks, total_duration, password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!recording_id) {
+      return res.status(400).json({ error: "recording_id is required" });
+    }
+
+    try {
+      console.log(`🏁 Finalizing recording ${recording_id} (${total_chunks} chunks, ${total_duration}s)`);
+
+      const result = await finalizeRecording(recording_id, total_chunks, total_duration);
+
+      if (result.success) {
+        res.json({
+          success: true,
+          recording_id: recording_id,
+          verification_results: result.verification,
+          upload_status: result.upload_status,
+          verification_status: result.verification_status,
+          final_hash: result.final_hash,
+          total_size: result.total_size,
+          total_duration: result.total_duration,
+          message: "Recording finalized and verified successfully"
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          recording_id: recording_id,
+          verification_results: result.verification,
+          upload_status: result.upload_status,
+          verification_status: result.verification_status,
+          error: "Recording verification failed",
+          details: result.verification
+        });
+      }
+
+    } catch (error) {
+      console.error("Finalize recording error:", error);
+      res.status(500).json({
+        error: "Failed to finalize recording",
+        details: error.message
+      });
     }
   });
 
