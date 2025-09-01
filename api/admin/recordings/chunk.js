@@ -173,7 +173,7 @@ async function logRecordingEvent(recordingId, eventType, eventData = {}) {
 
 function parseForm(req) {
   return new Promise((resolve, reject) => {
-    const form = new IncomingForm({
+    const form = new formidable.IncomingForm({
       maxFileSize: 50 * 1024 * 1024, // 50MB max chunk size
       keepExtensions: true,
     });
