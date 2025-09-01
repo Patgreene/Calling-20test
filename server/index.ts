@@ -309,6 +309,61 @@ export function createServer() {
     }
   });
 
+  // Prompt history endpoint
+  app.get("/api/admin/prompt-history", async (req, res) => {
+    try {
+      const history = await getPromptHistoryFromSupabase();
+      res.json({
+        history: history.map(item => ({
+          id: item.id,
+          prompt: item.prompt,
+          created_at: item.created_at,
+          preview: item.prompt.substring(0, 150) + "...",
+          length: item.prompt.length
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching prompt history:", error);
+      res.status(500).json({ error: "Failed to fetch prompt history" });
+    }
+  });
+
+  // Load specific prompt by ID
+  app.get("/api/admin/prompt/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/interview_prompts?select=*&id=eq.${id}`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          res.json({
+            instructions: data[0].prompt,
+            sessionConfig: currentSessionConfig, // Use current session config
+            created_at: data[0].created_at
+          });
+        } else {
+          res.status(404).json({ error: "Prompt not found" });
+        }
+      } else {
+        res.status(500).json({ error: "Failed to load prompt" });
+      }
+    } catch (error) {
+      console.error("Error loading prompt:", error);
+      res.status(500).json({ error: "Failed to load prompt" });
+    }
+  });
+
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     const { name, email, comment } = req.body;
