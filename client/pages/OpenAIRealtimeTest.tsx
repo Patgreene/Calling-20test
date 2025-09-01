@@ -385,42 +385,6 @@ export default function OpenAIRealtimeTest() {
     }
   };
 
-  const updateRecordingMetadata = async (recordingId: string) => {
-    try {
-      const requestData = {
-        call_code: callCode,
-        voucher_name: preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName,
-        vouchee_name: preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName,
-        password: "vouch2024admin"
-      };
-
-      console.log("📝 Updating recording metadata:", {
-        recordingId,
-        requestData
-      });
-
-      // Update the recording with call metadata
-      const response = await fetch(`/api/admin/recordings/${recordingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestData),
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("✅ Recording metadata updated successfully:", responseData);
-      } else {
-        const errorText = await response.text();
-        console.error("❌ Failed to update recording metadata:", {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText
-        });
-      }
-    } catch (error) {
-      console.error("❌ Error updating recording metadata:", error);
-    }
-  };
 
   const toggleMute = () => {
     if (streamRef.current) {
