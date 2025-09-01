@@ -166,7 +166,7 @@ export default async function handler(req, res) {
       '0580c782-512f-460d-9f80-e8edbf039902'
     ];
 
-    const specificChecks = [];
+    let specificChecks = [];
     for (const recordingId of testRecordingIds) {
       console.log(`🔍 Test 5: Checking transcription for recording ${recordingId}...`);
       const specificResponse = await fetch(
