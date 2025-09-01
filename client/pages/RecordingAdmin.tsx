@@ -52,6 +52,7 @@ export default function RecordingAdmin() {
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [loadingAudio, setLoadingAudio] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<Map<string, HTMLAudioElement>>(new Map());
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState<{
     type: "success" | "error" | "warning";
     text: string;
