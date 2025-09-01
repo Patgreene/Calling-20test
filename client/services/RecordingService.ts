@@ -30,6 +30,7 @@ interface RecordingSession {
   finalChunkReceived: boolean;
   audioContext?: AudioContext;
   mixedStream?: MediaStream;
+  destination?: MediaStreamAudioDestinationNode;
 }
 
 class RecordingService {
@@ -309,6 +310,7 @@ class RecordingService {
         finalChunkReceived: false,
         audioContext,
         mixedStream: stream,
+        destination,
       };
 
       // Set up event handlers
@@ -336,7 +338,7 @@ class RecordingService {
       // Start recording with chunked intervals
       mediaRecorder.start(this.config.chunkDuration);
 
-      console.log(`✅ Recording session ${recording_id} started successfully`);
+      console.log(`�� Recording session ${recording_id} started successfully`);
       return recording_id;
 
     } catch (error) {
@@ -347,7 +349,7 @@ class RecordingService {
 
   // Connect AI audio to an existing recording session
   public connectAIAudioToRecording(remoteAudioElement: HTMLAudioElement): boolean {
-    if (!this.activeSession?.isActive || !this.activeSession.audioContext) {
+    if (!this.activeSession?.isActive || !this.activeSession.audioContext || !this.activeSession.destination) {
       console.warn('⚠️ No active recording session to connect AI audio to');
       return false;
     }
@@ -359,10 +361,9 @@ class RecordingService {
         const remoteGain = this.activeSession.audioContext.createGain();
         remoteGain.gain.value = 1.0; // Full volume for AI responses
 
-        // Find the destination (should be connected to the mixed stream)
-        const destination = this.activeSession.audioContext.destination;
+        // Connect to the MediaStreamDestination used for recording
         remoteSource.connect(remoteGain);
-        remoteGain.connect(destination);
+        remoteGain.connect(this.activeSession.destination);
 
         console.log('🤖 AI audio connected to existing recording session');
         return true;
