@@ -110,17 +110,6 @@ export default function RecordingAdmin() {
     setIsLoading(false);
   };
 
-  // Function to reload recordings and transcripts
-  const loadTranscriptsFromDB = async () => {
-    try {
-      setMessage({ type: "success", text: "Loading transcripts from database..." });
-      await loadRecordings();
-      setMessage({ type: "success", text: "Transcripts loaded from database!" });
-    } catch (error) {
-      console.error("Error loading transcripts:", error);
-      setMessage({ type: "error", text: "Failed to load transcripts from database" });
-    }
-  };
 
   const calculateStats = (recordings: Recording[]) => {
     const total = recordings.length;
