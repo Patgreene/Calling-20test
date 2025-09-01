@@ -285,6 +285,18 @@ export default function RecordingAdmin() {
     }
   };
 
+  // Filter recordings based on search term
+  const filteredRecordings = recordings.filter(recording => {
+    if (!searchTerm) return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      recording.call_code.toLowerCase().includes(searchLower) ||
+      recording.voucher_name?.toLowerCase().includes(searchLower) ||
+      recording.vouchee_name?.toLowerCase().includes(searchLower)
+    );
+  });
+
   const formatDuration = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
