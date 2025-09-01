@@ -644,7 +644,7 @@ export default function Admin() {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-white/60 text-xs leading-relaxed line-clamp-2">
+                        <p className="text-white/60 text-xs leading-relaxed truncate">
                           {item.prompt.substring(0, 80)}...
                         </p>
                         <div className="flex justify-between items-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
