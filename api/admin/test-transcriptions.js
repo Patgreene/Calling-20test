@@ -144,7 +144,7 @@ export default async function handler(req, res) {
     }
 
     // Check if recording_ids in transcriptions match actual recording IDs
-    const relationshipCheck = [];
+    let relationshipCheck = [];
     for (const transcription of transcriptionRecordingIds) {
       const matchingRecording = recordingIds.find(r => r.id === transcription.recording_id);
       const isValid = !!matchingRecording;
