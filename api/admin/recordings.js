@@ -186,78 +186,8 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const { test_columns, debug_last_request } = req.query;
 
-    if (debug_last_request === "true") {
-      // Return what the last request contained for debugging
-      res.json({
-        success: true,
-        message: "Debug endpoint - last request data would be logged server-side",
-        instructions: "Check server logs for the detailed request data"
-      });
-      return;
-    }
-
-    if (test_columns === "true") {
-      // Test if voucher_name and vouchee_name columns exist
-      try {
-        console.log("🔍 Testing if voucher_name and vouchee_name columns exist...");
-
-        const response = await fetch(
-          `${SUPABASE_URL}/rest/v1/interview_recordings?select=id,call_code,voucher_name,vouchee_name&limit=3`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("✅ Columns exist! Sample data:", data);
-
-          res.json({
-            success: true,
-            message: "voucher_name and vouchee_name columns exist",
-            sample_data: data,
-            columns_exist: true
-          });
-        } else {
-          const errorText = await response.text();
-          console.log("❌ Columns might not exist. Error:", response.status, errorText);
-
-          res.json({
-            success: false,
-            message: "Columns don't exist - you need to add them to Supabase",
-            error: errorText,
-            status: response.status,
-            columns_exist: false,
-            sql_to_run: `
-ALTER TABLE interview_recordings
-ADD COLUMN voucher_name TEXT,
-ADD COLUMN vouchee_name TEXT;
-            `
-          });
-        }
-        return;
-      } catch (error) {
-        console.error("❌ Error testing columns:", error);
-        res.status(500).json({
-          success: false,
-          error: error.message,
-          sql_to_run: `
-ALTER TABLE interview_recordings
-ADD COLUMN voucher_name TEXT,
-ADD COLUMN vouchee_name TEXT;
-          `
-        });
-        return;
-      }
-    }
-
-    // Load all recordings (default behavior)
+    // Load all recordings
     try {
       const recordings = await loadRecordings();
       res.json({
