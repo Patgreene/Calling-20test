@@ -648,7 +648,7 @@ export default function RecordingAdmin() {
             <CardTitle className="text-white">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               <Button
                 variant="outline"
                 className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
@@ -662,6 +662,21 @@ export default function RecordingAdmin() {
                 onClick={() => window.open("/openai-realtime-test", "_blank")}
               >
                 Test Interview
+              </Button>
+              <Button
+                variant="outline"
+                className="bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
+                onClick={async () => {
+                  try {
+                    await recordingService.current.cleanupOldBackups(7);
+                    setMessage({ type: "success", text: "Old backup files cleaned up successfully" });
+                  } catch (error) {
+                    setMessage({ type: "error", text: `Cleanup failed: ${error.message}` });
+                  }
+                }}
+              >
+                <Archive className="w-4 h-4 mr-2" />
+                Cleanup Backups
               </Button>
               <Button
                 variant="outline"
