@@ -93,27 +93,51 @@ export default function RecordingAdmin() {
   const loadRecordings = async () => {
     setIsLoading(true);
     try {
+      console.log("🔄 CLIENT: Starting to fetch recordings from API...");
       const response = await fetch("/api/admin/recordings");
+      console.log(`📡 CLIENT: API response status: ${response.status}`);
+
       if (response.ok) {
         const data = await response.json();
-        console.log("📊 Loaded recordings data:", data.recordings);
+        console.log("📊 CLIENT: Raw API response:", data);
+        console.log("📊 CLIENT: Recordings array:", data.recordings);
+
+        if (data.recordings && data.recordings.length > 0) {
+          console.log("🔍 CLIENT: Examining each recording for transcription data...");
+          data.recordings.forEach((recording, index) => {
+            console.log(`📝 Recording ${index + 1}: ${recording.call_code}`);
+            console.log(`   ID: ${recording.id}`);
+            console.log(`   Has transcription object: ${!!recording.transcription}`);
+            if (recording.transcription) {
+              console.log(`   Transcription ID: ${recording.transcription.id}`);
+              console.log(`   Transcription status: ${recording.transcription.status}`);
+              console.log(`   Has transcript_text: ${!!recording.transcription.transcript_text}`);
+              console.log(`   Transcript length: ${recording.transcription.transcript_text?.length || 0}`);
+              if (recording.transcription.transcript_text) {
+                console.log(`   Transcript preview: "${recording.transcription.transcript_text.substring(0, 100)}..."`);
+              }
+            } else {
+              console.log(`   ❌ NO transcription object found`);
+            }
+          });
+        }
+
         // Debug: Check for transcription data
         const recordingsWithTranscripts = data.recordings?.filter(r => r.transcription) || [];
-        console.log("📝 Recordings with transcripts:", recordingsWithTranscripts.length);
-        recordingsWithTranscripts.forEach(r => {
-          console.log(`📄 Recording ${r.call_code} has transcription:`, {
-            status: r.transcription?.status,
-            hasText: !!r.transcription?.transcript_text,
-            textLength: r.transcription?.transcript_text?.length || 0
-          });
-        });
+        const recordingsWithText = data.recordings?.filter(r => r.transcription?.transcript_text) || [];
+        console.log("📝 CLIENT: Recordings with transcription objects:", recordingsWithTranscripts.length);
+        console.log("📝 CLIENT: Recordings with transcript TEXT:", recordingsWithText.length);
 
         setRecordings(data.recordings || []);
         calculateStats(data.recordings || []);
       } else {
+        console.error("❌ CLIENT: API request failed:", response.status);
+        const errorText = await response.text();
+        console.error("❌ CLIENT: Error details:", errorText);
         setMessage({ type: "error", text: "Failed to load recordings" });
       }
     } catch (error) {
+      console.error("💥 CLIENT: Error loading recordings:", error);
       setMessage({ type: "error", text: "Error loading recordings" });
     }
     setIsLoading(false);
