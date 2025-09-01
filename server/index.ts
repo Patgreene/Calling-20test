@@ -269,6 +269,9 @@ export function createServer() {
       const promptId = "pmpt_68b0e33b10988196b3452dce0bc38d190bcafb85e4681be3";
       let instructions = currentInstructions;
 
+      console.log("🔍 OpenAI API called - Current instructions length:", instructions.length);
+      console.log("🔍 Instructions preview:", instructions.substring(0, 100) + "...");
+
       try {
         console.log(
           `Loading Sam (Vouch Reference Agent) instructions from prompt ID: ${promptId}`,
@@ -342,8 +345,12 @@ export function createServer() {
     if (saveSuccess) {
       // Update the in-memory instructions and session config only if save succeeded
       currentInstructions = instructions;
+      console.log("✅ Updated currentInstructions in memory, length:", instructions.length);
+      console.log("✅ Preview:", instructions.substring(0, 100) + "...");
+
       if (sessionConfig) {
         currentSessionConfig = { ...currentSessionConfig, ...sessionConfig };
+        console.log("✅ Updated session config:", currentSessionConfig);
       }
 
       console.log("Admin updated prompt and settings:", {
