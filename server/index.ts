@@ -302,7 +302,7 @@ export function createServer() {
     });
   });
 
-  app.put("/api/admin/prompt", (req, res) => {
+  app.put("/api/admin/prompt", async (req, res) => {
     const { instructions, sessionConfig, password } = req.body;
 
     // Simple password check - in production, use proper auth
