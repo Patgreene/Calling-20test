@@ -333,6 +333,7 @@ export default function OpenAIRealtimeTest() {
   // Automatic recording functions
   const startAutomaticRecording = async () => {
     try {
+      console.log('🔴 Starting automatic recording...');
       setRecordingStatus("Starting mixed audio recording...");
       setIsRecording(true);
 
@@ -342,6 +343,15 @@ export default function OpenAIRealtimeTest() {
       // Pass the AI audio element and names to capture both sides of conversation
       const voucherNameForRecording = preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName;
       const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
+
+      console.log('📋 Recording will be created with:', {
+        callCode,
+        voucherNameForRecording,
+        voucheeNameForRecording,
+        preparedNames,
+        fallbackVoucherName: voucherName,
+        fallbackVoucheeName: voucheeName
+      });
 
       const recordingId = await recordingService.current.startRecording(
         adminPassword,
