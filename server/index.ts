@@ -1530,6 +1530,7 @@ export function createServer() {
         vouchee_name: recording.vouchee_name
       };
 
+      // Try to upsert (insert or update) the transcription record
       const createTranscriptResponse = await fetch(
         `${SUPABASE_URL}/rest/v1/transcriptions`,
         {
@@ -1539,18 +1540,47 @@ export function createServer() {
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
             Prefer: "return=representation",
+            "Resolution": "merge-duplicates"
           },
           body: JSON.stringify(transcriptionData),
         }
       );
 
-      if (!createTranscriptResponse.ok) {
+      let transcription;
+      if (createTranscriptResponse.ok) {
+        const transcriptionArray = await createTranscriptResponse.json();
+        transcription = transcriptionArray[0];
+      } else if (createTranscriptResponse.status === 409) {
+        // Conflict - transcription already exists, update it instead
+        console.log(`📝 Transcription already exists for ${recording_id}, updating status`);
+        const updateResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/transcriptions?recording_id=eq.${recording_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              status: 'processing',
+              started_at: new Date().toISOString()
+            }),
+          }
+        );
+
+        if (updateResponse.ok) {
+          const transcriptionArray = await updateResponse.json();
+          transcription = transcriptionArray[0];
+        } else {
+          console.error('Failed to update existing transcription:', updateResponse.status);
+          return res.status(500).json({ error: 'Failed to update existing transcription record' });
+        }
+      } else {
         console.error('Failed to create transcription record:', createTranscriptResponse.status);
         return res.status(500).json({ error: 'Failed to create transcription record' });
       }
-
-      const transcriptionArray = await createTranscriptResponse.json();
-      const transcription = transcriptionArray[0];
 
       console.log(`📝 Transcription record created: ${transcription.id}`);
 

@@ -331,7 +331,11 @@ export default function RecordingAdmin() {
       if (response.ok) {
         const result = await response.json();
         setMessage({ type: "success", text: "Transcription completed successfully!" });
-        loadRecordings(); // Refresh to show updated transcription status
+
+        // Force refresh with a small delay to ensure data is saved
+        setTimeout(() => {
+          loadRecordings();
+        }, 1000);
       } else {
         let errorMessage = 'Unknown error';
         try {
@@ -604,9 +608,23 @@ export default function RecordingAdmin() {
                       Manage and monitor all recorded interviews
                     </CardDescription>
                   </div>
-                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                    {filteredRecordings.length} {searchTerm ? 'found' : 'total'}
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                      {filteredRecordings.length} {searchTerm ? 'found' : 'total'}
+                    </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setMessage({ type: "success", text: "Refreshing recordings..." });
+                        loadRecordings();
+                      }}
+                      className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
+                      title="Refresh recordings and transcripts"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
