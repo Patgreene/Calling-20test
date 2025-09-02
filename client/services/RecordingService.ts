@@ -429,7 +429,6 @@ class RecordingService {
       throw new Error('No active recording session');
     }
 
-    console.log('🛑 Stopping recording session...');
 
     this.activeSession.isActive = false;
     this.activeSession.isStopping = true;
@@ -446,9 +445,8 @@ class RecordingService {
     if (this.activeSession.audioContext) {
       try {
         await this.activeSession.audioContext.close();
-        console.log('🔇 Audio context closed');
       } catch (error) {
-        console.warn('⚠️ Error closing audio context:', error);
+        console.warn('⚠�� Error closing audio context:', error);
       }
     }
   }
