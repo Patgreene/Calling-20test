@@ -598,7 +598,7 @@ export default function OpenAIRealtimeTest() {
             {audioLevels.map((level, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-t from-cyan-500 to-blue-500 rounded-full transition-all duration-150 ease-out"
+                className="bg-gradient-to-t from-cyan-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
                 style={{
                   height: `${level * 100}%`,
                   width: "4px",
