@@ -598,7 +598,7 @@ export default function RecordingAdmin() {
         )}
 
         {/* Statistics Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
             <CardContent className="flex items-center p-6">
               <FileAudio className="h-8 w-8 text-blue-400" />
