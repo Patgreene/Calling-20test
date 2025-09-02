@@ -448,7 +448,7 @@ export default function OpenAIRealtimeTest() {
     { label: "Core Strengths", description: "Key qualities" },
     { label: "Performance", description: "Strengths & teamwork" },
     { label: "Development", description: "Growth areas" },
-    { label: "Perspectives", description: "Peer views" }
+    { label: "Final Rating", description: "Overall recommendation" }
   ];
 
   // Keywords to detect step transitions
