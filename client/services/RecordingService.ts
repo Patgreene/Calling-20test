@@ -263,7 +263,6 @@ class RecordingService {
           console.warn('⚠️ Could not connect AI audio to mixer:', remoteError);
         }
       } else {
-        console.warn('⚠️ No AI audio source provided, recording microphone only');
       }
 
       // Use the mixed stream for recording
@@ -361,7 +360,7 @@ class RecordingService {
   // Connect AI audio to an existing recording session
   public connectAIAudioToRecording(remoteAudioElement: HTMLAudioElement): boolean {
     if (!this.activeSession?.isActive || !this.activeSession.audioContext || !this.activeSession.destination) {
-      console.warn('⚠️ No active recording session to connect AI audio to');
+      console.warn('��️ No active recording session to connect AI audio to');
       return false;
     }
 
