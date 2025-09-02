@@ -499,7 +499,6 @@ class RecordingService {
       const result = await finalizeResponse.json();
       
       if (result.success) {
-        console.log(`✅ Recording ${this.activeSession.id} completed successfully`);
       } else {
         console.warn(`⚠️ Recording completed with issues:`, result.verification_results);
       }
@@ -524,11 +523,9 @@ class RecordingService {
         .filter(chunk => chunk.status === 'pending' || chunk.status === 'uploading');
 
       if (pendingChunks.length === 0) {
-        console.log('✅ All chunks processed');
         return;
       }
 
-      console.log(`⏳ Waiting for ${pendingChunks.length} chunks to complete...`);
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
