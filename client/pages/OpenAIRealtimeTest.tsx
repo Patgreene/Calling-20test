@@ -521,38 +521,6 @@ export default function OpenAIRealtimeTest() {
               )}
             </div>
 
-            {/* Show parsed names preview when call is prepared */}
-            {callCode && preparedNames && (
-              <div className="mt-4 p-4 bg-blue-500/10 border border-blue-400/20 rounded-xl">
-                <h4 className="text-white/80 text-sm font-medium mb-2">
-                  Names prepared for OpenAI:
-                </h4>
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="bg-white/5 p-2 rounded">
-                    <div className="text-white/60">Voucher (You):</div>
-                    <div className="text-white">
-                      First: "{preparedNames.voucher_first}"
-                    </div>
-                    <div className="text-white">
-                      Last: "{preparedNames.voucher_last}"
-                    </div>
-                  </div>
-                  <div className="bg-white/5 p-2 rounded">
-                    <div className="text-white/60">Vouchee:</div>
-                    <div className="text-white">
-                      First: "{preparedNames.vouchee_first}"
-                    </div>
-                    <div className="text-white">
-                      Last: "{preparedNames.vouchee_last}"
-                    </div>
-                  </div>
-                </div>
-                <div className="text-white/50 text-xs mt-2">
-                  Template variables will be substituted:{" "}
-                  {`{{voucher_first}} → ${preparedNames.voucher_first}, {{vouchee_first}} → ${preparedNames.vouchee_first}`}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
