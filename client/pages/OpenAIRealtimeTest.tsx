@@ -534,7 +534,7 @@ export default function OpenAIRealtimeTest() {
                   onClick={prepareCall}
                   className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
                 >
-                  Prepare Call
+                  Next
                 </button>
               ) : (
                 <>
@@ -674,7 +674,7 @@ export default function OpenAIRealtimeTest() {
         {/* Footer Info */}
         <div className="text-center mt-6">
           <p className="text-white/40 text-sm">
-            Powered by Vouch • English-only interviews
+            Powered by Vouch
           </p>
         </div>
       </div>
