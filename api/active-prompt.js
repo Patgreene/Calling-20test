@@ -99,11 +99,6 @@ export default async function handler(req, res) {
       const data = await response.json();
       if (data && data.length > 0) {
         const activePrompt = data[0];
-        console.log("🔄 Fetched active prompt for call:", {
-          id: activePrompt.id,
-          length: activePrompt.prompt.length,
-          created_at: activePrompt.created_at,
-        });
 
         // Return the prompt and session config
         res.json({
@@ -128,7 +123,6 @@ export default async function handler(req, res) {
         });
       } else {
         // No active prompt found, return fallback
-        console.log("⚠️ No active prompt found, using fallback");
         res.json({
           instructions: DEFAULT_INSTRUCTIONS,
           sessionConfig: {
