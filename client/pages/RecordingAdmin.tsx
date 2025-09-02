@@ -710,11 +710,6 @@ export default function RecordingAdmin() {
                               <div className="flex items-center gap-2 mb-1">
                                 <FileText className="w-3 h-3 text-green-400" />
                                 <span className="text-xs text-green-400 font-medium">Transcript</span>
-                                {recording.transcription?.status && (
-                                  <Badge className={getTranscriptionColor(recording.transcription.status)}>
-                                    {recording.transcription.status}
-                                  </Badge>
-                                )}
                               </div>
 
                               {/* Show transcript text if available */}
@@ -750,19 +745,11 @@ export default function RecordingAdmin() {
                                       Copy
                                     </button>
                                     <button
-                                      onClick={() => {
-                                        const blob = new Blob([recording.transcription!.transcript_text!], { type: 'text/plain' });
-                                        const url = URL.createObjectURL(blob);
-                                        const a = document.createElement('a');
-                                        a.href = url;
-                                        a.download = `transcript-${recording.call_code}.txt`;
-                                        a.click();
-                                        URL.revokeObjectURL(url);
-                                      }}
+                                      onClick={() => saveTranscriptChanges(recording.id, recording.transcription!.transcript_text!)}
                                       className="text-xs text-green-400 hover:text-green-300"
-                                      title="Download transcript as TXT"
+                                      title="Save transcript changes"
                                     >
-                                      Download
+                                      Save
                                     </button>
                                   </div>
                                 </>
