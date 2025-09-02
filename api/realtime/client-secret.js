@@ -33,8 +33,6 @@ export default async function handler(req, res) {
     // Generate client secret with configuration
     const clientSecret = openaiApiKey;
 
-    console.log("Generated client secret for OpenAI Realtime API");
-
     return res.status(200).json({
       client_secret: clientSecret,
       config: {
