@@ -431,8 +431,8 @@ export default function OpenAIRealtimeTest() {
   useEffect(() => {
     return () => {
       if (isRecording && currentRecordingId.current) {
-        recordingService.current.stopRecording().catch((error) => {
-          console.error("Failed to stop recording on cleanup:", error);
+        recordingService.current.stopRecording().catch(() => {
+          // Cleanup failed, but we're unmounting anyway
         });
       }
     };
