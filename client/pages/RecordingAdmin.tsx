@@ -643,11 +643,33 @@ export default function RecordingAdmin() {
           </Card>
 
           <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
-            <CardContent className="flex items-center p-6">
-              <Upload className="h-8 w-8 text-orange-400" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-white/70">Active Uploads</p>
-                <p className="text-2xl font-bold text-white">{stats.activeUploads}</p>
+            <CardContent className="p-4">
+              <h3 className="text-sm font-medium text-white/70 mb-3">Quick Actions</h3>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20 justify-start text-xs"
+                  onClick={() => window.open("/admin", "_blank")}
+                >
+                  Prompt Admin
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20 justify-start text-xs"
+                  onClick={() => window.open("/openai-realtime-test", "_blank")}
+                >
+                  Test Interview
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20 justify-start text-xs"
+                  onClick={() => setIsAuthenticated(false)}
+                >
+                  Logout
+                </Button>
               </div>
             </CardContent>
           </Card>
