@@ -565,11 +565,39 @@ export default function RecordingAdmin() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-            Recording Admin
-          </h1>
-          <p className="text-blue-200 text-lg">Interview Recording Management & Monitoring</p>
+        <div className="relative mb-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+              Recording Admin
+            </h1>
+            <p className="text-blue-200 text-lg">Interview Recording Management & Monitoring</p>
+          </div>
+          <div className="absolute top-0 right-0 flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
+              onClick={() => window.open("/admin", "_blank")}
+            >
+              Prompt Admin
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
+              onClick={() => window.open("/openai-realtime-test", "_blank")}
+            >
+              Test Interview
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
+              onClick={() => setIsAuthenticated(false)}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Status Messages */}
