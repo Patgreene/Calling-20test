@@ -460,7 +460,6 @@ class RecordingService {
 
       // Wait a moment for any final chunk to be processed
       if (this.activeSession.isStopping && !this.activeSession.finalChunkReceived) {
-        console.log('⏳ Waiting for final chunk to be processed...');
         let waitTime = 0;
         const maxWait = 5000; // 5 seconds max wait
 
@@ -477,7 +476,6 @@ class RecordingService {
       const totalDuration = Math.round((Date.now() - this.activeSession.startTime) / 1000);
       const totalChunks = this.activeSession.chunks.size;
 
-      console.log(`📊 Recording summary: ${totalChunks} chunks, ${totalDuration}s duration`);
 
       // Wait for all pending uploads to complete or fail
       await this.waitForUploadsToComplete();
