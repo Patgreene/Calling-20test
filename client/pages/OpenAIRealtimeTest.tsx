@@ -423,8 +423,8 @@ export default function OpenAIRealtimeTest() {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(streamRef.current);
 
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.9; // Smooth, slow movements
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.7; // More responsive but still smooth
       source.connect(analyser);
 
       const bufferLength = analyser.frequencyBinCount;
@@ -437,17 +437,17 @@ export default function OpenAIRealtimeTest() {
         if (audioAnalyserRef.current && audioDataRef.current) {
           audioAnalyserRef.current.getByteFrequencyData(audioDataRef.current);
 
-          // Create subtle, slow-moving visualization
+          // Create smooth, voice-responsive visualization
           const newLevels = Array(20).fill(0).map((_, index) => {
             // Sample different frequency ranges for each bar
             const dataIndex = Math.floor((index / 20) * audioDataRef.current!.length);
             const rawLevel = audioDataRef.current![dataIndex] / 255;
 
-            // Apply smoothing and make movements more subtle
-            const smoothedLevel = Math.pow(rawLevel, 2); // Square for more natural response
-            const subtleLevel = smoothedLevel * 0.6 + 0.1; // Scale down and add base level
+            // Apply gentle smoothing for natural voice response
+            const smoothedLevel = Math.pow(rawLevel, 1.3); // Less aggressive curve for better sensitivity
+            const responsiveLevel = smoothedLevel * 1.4 + 0.05; // More sensitive scaling with lower base
 
-            return Math.min(subtleLevel, 0.8); // Cap maximum height
+            return Math.min(responsiveLevel, 0.9); // Allow higher peaks
           });
 
           setAudioLevels(newLevels);
