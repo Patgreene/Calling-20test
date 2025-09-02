@@ -3,7 +3,7 @@ const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
-async function createRecordingSession(callCode, mimeType, voucherName = null, voucheeName = null) {
+async function createRecordingSession(callCode, mimeType, voucherName = null, voucheeName = null, voucherEmail = null, voucherPhone = null, voucheeEmail = null, voucheePhone = null) {
   try {
     const recordingData = {
       call_code: callCode,
@@ -14,7 +14,11 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
       retry_count: 0,
       chunks_uploaded: 0,
       voucher_name: voucherName,
-      vouchee_name: voucheeName
+      vouchee_name: voucheeName,
+      voucher_email: voucherEmail,
+      voucher_phone: voucherPhone,
+      vouchee_email: voucheeEmail,
+      vouchee_phone: voucheePhone
     };
 
     console.log('💾 About to insert recording data into Supabase:', recordingData);
@@ -46,7 +50,11 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
         call_code: callCode,
         mime_type: mimeType,
         voucher_name: voucherName,
-        vouchee_name: voucheeName
+        vouchee_name: voucheeName,
+        voucher_email: voucherEmail,
+        voucher_phone: voucherPhone,
+        vouchee_email: voucheeEmail,
+        vouchee_phone: voucheePhone
       });
 
       return data[0];
@@ -204,7 +212,7 @@ export default async function handler(req, res) {
     }
   } 
   else if (req.method === "POST") {
-    const { action, call_code, mime_type, password, voucher_name, vouchee_name } = req.body;
+    const { action, call_code, mime_type, password, voucher_name, vouchee_name, voucher_email, voucher_phone, vouchee_email, vouchee_phone } = req.body;
 
     console.log('��� Received POST request to /api/admin/recordings:', {
       action,
@@ -235,7 +243,7 @@ export default async function handler(req, res) {
           vouchee_name
         });
 
-        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name);
+        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name, voucher_email, voucher_phone, vouchee_email, vouchee_phone);
 
         if (recording) {
           console.log(`✅ Recording session created with names: voucher="${voucher_name}", vouchee="${vouchee_name}"`);
@@ -244,6 +252,10 @@ export default async function handler(req, res) {
             recording_id: recording.id,
             voucher_name: recording.voucher_name,
             vouchee_name: recording.vouchee_name,
+            voucher_email: recording.voucher_email,
+            voucher_phone: recording.voucher_phone,
+            vouchee_email: recording.vouchee_email,
+            vouchee_phone: recording.vouchee_phone,
             message: "Recording session created successfully"
           });
         } else {
