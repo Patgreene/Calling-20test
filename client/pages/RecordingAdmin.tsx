@@ -982,46 +982,6 @@ export default function RecordingAdmin() {
               </CardContent>
             </Card>
           </div>
-        {/* Quick Actions */}
-        <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
-          <CardHeader>
-            <CardTitle className="text-white">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4 flex-wrap">
-              <Button
-                variant="outline"
-                className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                onClick={() => window.open("/admin", "_blank")}
-              >
-                Prompt Admin
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                onClick={() => window.open("/openai-realtime-test", "_blank")}
-              >
-                Test Interview
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                onClick={loadRecordings}
-                disabled={isLoading}
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-                Refresh Recordings
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                onClick={() => setIsAuthenticated(false)}
-              >
-                Logout
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
