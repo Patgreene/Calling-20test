@@ -346,7 +346,6 @@ class RecordingService {
       // Start recording with chunked intervals
       mediaRecorder.start(this.config.chunkDuration);
 
-      console.log(`�� Recording session ${recording_id} started successfully`);
       return recording_id;
 
     } catch (error) {
