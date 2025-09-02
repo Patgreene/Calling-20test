@@ -634,7 +634,7 @@ export default function OpenAIRealtimeTest() {
           {!isConnected && !callCode && (
             <div className="mt-8 text-center">
               <p className="text-white/60 text-sm">
-                Enter both names and prepare call to start
+                Enter both names and prepare call, then push button to start
               </p>
             </div>
           )}
