@@ -363,6 +363,46 @@ export default function RecordingAdmin() {
     }
   };
 
+  const saveTranscriptChanges = async (recordingId: string, transcriptText: string) => {
+    try {
+      setMessage({ type: "success", text: "Saving transcript changes..." });
+
+      const response = await fetch('/api/admin/recordings/transcript', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recording_id: recordingId,
+          transcript_text: transcriptText,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        setMessage({ type: "success", text: "Transcript saved successfully!" });
+      } else {
+        let errorMessage = 'Unknown error';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || 'Unknown error';
+        } catch (jsonError) {
+          errorMessage = `${response.status} ${response.statusText}`;
+        }
+
+        console.error("❌ Save transcript failed:", errorMessage);
+        setMessage({
+          type: "error",
+          text: `Failed to save transcript: ${errorMessage}`
+        });
+      }
+    } catch (error) {
+      console.error("❌ Save transcript error:", error);
+      setMessage({
+        type: "error",
+        text: `Error saving transcript: ${error instanceof Error ? error.message : 'Unknown error'}`
+      });
+    }
+  };
+
   const getTranscriptionColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-500/20 text-green-300 border-green-500/30';
