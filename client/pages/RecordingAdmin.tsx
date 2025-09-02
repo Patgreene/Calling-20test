@@ -671,7 +671,7 @@ export default function RecordingAdmin() {
 
         {/* Recordings List */}
         <div className="w-full">
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
+            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 -mb-1 pb-14">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
