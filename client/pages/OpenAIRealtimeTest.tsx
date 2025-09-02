@@ -411,13 +411,47 @@ export default function OpenAIRealtimeTest() {
 
   // Audio visualization effect
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
+  const audioAnalyserRef = useRef<AnalyserNode | null>(null);
+  const audioDataRef = useRef<Uint8Array | null>(null);
 
   useEffect(() => {
     let animationFrame: number;
 
-    if (isConnected && !isMuted) {
+    if (isConnected && !isMuted && streamRef.current) {
+      // Set up audio analysis
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(streamRef.current);
+
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.9; // Smooth, slow movements
+      source.connect(analyser);
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      audioAnalyserRef.current = analyser;
+      audioDataRef.current = dataArray;
+
       const animate = () => {
-        setAudioLevels((prev) => prev.map(() => Math.random() * 0.8 + 0.2));
+        if (audioAnalyserRef.current && audioDataRef.current) {
+          audioAnalyserRef.current.getByteFrequencyData(audioDataRef.current);
+
+          // Create subtle, slow-moving visualization
+          const newLevels = Array(20).fill(0).map((_, index) => {
+            // Sample different frequency ranges for each bar
+            const dataIndex = Math.floor((index / 20) * audioDataRef.current!.length);
+            const rawLevel = audioDataRef.current![dataIndex] / 255;
+
+            // Apply smoothing and make movements more subtle
+            const smoothedLevel = Math.pow(rawLevel, 2); // Square for more natural response
+            const subtleLevel = smoothedLevel * 0.6 + 0.1; // Scale down and add base level
+
+            return Math.min(subtleLevel, 0.8); // Cap maximum height
+          });
+
+          setAudioLevels(newLevels);
+        }
         animationFrame = requestAnimationFrame(animate);
       };
       animate();
