@@ -626,11 +626,6 @@ export default function OpenAIRealtimeTest() {
               <p className="text-white/60 text-sm">
                 Speak naturally • Sam is listening • English only
               </p>
-              {callCode && (
-                <p className="text-white/40 text-xs mt-1">
-                  Call Code: {callCode}
-                </p>
-              )}
             </div>
           )}
 
