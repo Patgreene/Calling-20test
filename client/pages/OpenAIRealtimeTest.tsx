@@ -282,8 +282,8 @@ export default function OpenAIRealtimeTest() {
 
       setStatus(
         callCode
-          ? "Call ended. Ready to start a new interview."
-          : "Ready to start your interview.",
+          ? "Call ended. Push button to start a new interview."
+          : "Push button to start interview with Sam.",
       );
     } catch (error) {
       console.error("Error stopping call:", error);
