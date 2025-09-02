@@ -274,6 +274,7 @@ export default function OpenAIRealtimeTest() {
       setIsConnected(false);
       setIsConnecting(false);
       setIsMuted(false);
+      setShowHelloPopup(false);
 
       // Stop automatic recording when call ends
       await stopAutomaticRecording();
