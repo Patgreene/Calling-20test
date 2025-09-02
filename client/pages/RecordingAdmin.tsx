@@ -116,14 +116,12 @@ export default function RecordingAdmin() {
     const totalDuration = recordings.reduce((sum, r) => sum + (r.duration_seconds || 0), 0);
     const totalSize = recordings.reduce((sum, r) => sum + (r.file_size_bytes || 0), 0);
     const completed = recordings.filter(r => r.upload_status === 'completed').length;
-    const activeUploads = recordings.filter(r => r.upload_status === 'uploading').length;
-    
+
     setStats({
       totalRecordings: total,
       totalDuration,
       totalSize,
       successRate: total > 0 ? Math.round((completed / total) * 100) : 0,
-      activeUploads,
     });
   };
 
