@@ -3,7 +3,7 @@ const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
 
-async function createRecordingSession(callCode, mimeType, voucherName = null, voucheeName = null, voucherEmail = null, voucherPhone = null, voucheeEmail = null, voucheePhone = null) {
+async function createRecordingSession(callCode, mimeType, voucherName = null, voucheeName = null, voucherEmail = null, voucherPhone = null) {
   try {
     const recordingData = {
       call_code: callCode,
@@ -16,9 +16,7 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
       voucher_name: voucherName,
       vouchee_name: voucheeName,
       voucher_email: voucherEmail,
-      voucher_phone: voucherPhone,
-      vouchee_email: voucheeEmail,
-      vouchee_phone: voucheePhone
+      voucher_phone: voucherPhone
     };
 
     console.log('💾 About to insert recording data into Supabase:', recordingData);
