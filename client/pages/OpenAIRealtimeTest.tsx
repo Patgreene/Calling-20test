@@ -389,7 +389,7 @@ export default function OpenAIRealtimeTest() {
     setPreparedNames(null);
     setVoucherName("");
     setVoucheeName("");
-    setStatus("Ready to start test call");
+    setStatus("Ready to start your interview");
   };
 
   // Audio visualization effect
