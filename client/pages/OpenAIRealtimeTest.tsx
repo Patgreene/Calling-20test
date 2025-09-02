@@ -382,7 +382,7 @@ export default function OpenAIRealtimeTest() {
       // Store the fresh prompt data for use in the call
       (window as any).freshPromptData = promptData;
 
-      setStatus("Ready to start your interview with Sam.");
+      setStatus("Push green button to start call");
       setCurrentStep('call');
     } catch (error) {
       setStatus("Something went wrong. Please try again.");
@@ -553,17 +553,7 @@ export default function OpenAIRealtimeTest() {
         {/* Step 2: Calling Interface */}
         {currentStep === 'call' && (
           <>
-            {/* Back Button */}
-            <div className="mb-6">
-              <button
-                onClick={goBackToForm}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl transition-all duration-200 border border-white/20"
-              >
-                ← Back to Form
-              </button>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl relative">
           {/* Audio Visualization */}
           <div className="flex items-end justify-center space-x-1 h-32 mb-8">
             {audioLevels.map((level, index) => (
@@ -667,16 +657,17 @@ export default function OpenAIRealtimeTest() {
             </div>
           )}
 
-          {!isConnected && currentStep === 'call' && (
-            <div className="mt-8 text-center">
-              <p className="text-white/60 text-sm">
-                Push button to start your interview with Sam
-              </p>
-            </div>
-          )}
 
               {/* Hidden audio element for playing assistant responses */}
               <audio ref={audioRef} autoPlay style={{ display: "none" }} />
+
+              {/* Discrete Back Button - Bottom Left */}
+              <button
+                onClick={goBackToForm}
+                className="absolute bottom-4 left-4 text-white/40 hover:text-white/70 text-sm transition-all duration-200 underline"
+              >
+                ← Back
+              </button>
             </div>
           </>
         )}
@@ -693,7 +684,7 @@ export default function OpenAIRealtimeTest() {
           )}
           {currentStep === 'call' && (
             <p className="text-white/30 text-xs mt-2">
-              Step 2 of 2: Voice interview
+              Step 2 of 2
             </p>
           )}
         </div>
