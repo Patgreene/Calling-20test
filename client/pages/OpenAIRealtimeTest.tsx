@@ -42,16 +42,14 @@ export default function OpenAIRealtimeTest() {
       setIsConnecting(true);
       setStatus("Getting client secret...");
 
-      // Step 1: Get fresh prompt data (from prepareCall) or fetch it now
+      // Get fresh prompt data (from prepareCall) or fetch it now
       let promptData = (window as any).freshPromptData;
       if (!promptData) {
-        console.log("⚠️ No fresh prompt data found, fetching now...");
         const promptResponse = await fetch("/api/active-prompt");
         if (!promptResponse.ok) {
           throw new Error("Failed to fetch active prompt");
         }
         promptData = await promptResponse.json();
-        console.log("✅ Fetched prompt data for call:", promptData);
       }
 
       // Step 2: Fetch client secret from server (just for OpenAI API key)
@@ -79,13 +77,6 @@ export default function OpenAIRealtimeTest() {
         sessionConfig: promptData.sessionConfig,
         model: "gpt-4o-realtime-preview-2024-12-17",
       };
-
-      console.log("Using fresh prompt data for call:", {
-        instructionsLength: config.instructions.length,
-        sessionConfig: config.sessionConfig,
-        promptId: promptData.id,
-        fallback: promptData.fallback,
-      });
       setStatus("Getting microphone access...");
 
       // Step 2: Get microphone access
@@ -110,9 +101,6 @@ export default function OpenAIRealtimeTest() {
       const dataChannel = peerConnection.createDataChannel("oai-events");
 
       dataChannel.addEventListener("open", () => {
-        console.log(
-          "OpenAI data channel is open, sending session configuration...",
-        );
 
         // Substitute template variables in the instructions
         let instructions =
@@ -136,14 +124,6 @@ export default function OpenAIRealtimeTest() {
         instructions +=
           " You must respond only in English. Do not use any other language under any circumstances.";
 
-        console.log("✅ Final instructions after variable substitution:");
-        console.log("📏 Length:", instructions.length);
-        console.log("🔍 Preview:", instructions.substring(0, 200) + "...");
-        console.log(
-          "🔗 Contains template variables:",
-          instructions.includes("{{"),
-        );
-
         const sessionUpdateEvent = {
           type: "session.update",
           session: {
@@ -166,22 +146,6 @@ export default function OpenAIRealtimeTest() {
           },
         };
 
-        console.log(
-          "Sending session update to OpenAI with call code:",
-          callCode,
-        );
-        console.log("Prepared names used for substitution:", preparedNames);
-        console.log("Session config from server:", config?.sessionConfig);
-        console.log(
-          "Final session being sent to OpenAI:",
-          sessionUpdateEvent.session,
-        );
-        console.log("Voice settings:", {
-          voice: sessionUpdateEvent.session.voice,
-          speed: sessionUpdateEvent.session.speed,
-          temperature: sessionUpdateEvent.session.temperature,
-          turn_detection: sessionUpdateEvent.session.turn_detection,
-        });
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus(`Connected! Sam is ready for call ${callCode}.`);
 
@@ -192,15 +156,7 @@ export default function OpenAIRealtimeTest() {
       dataChannel.addEventListener("message", (event) => {
         try {
           const message = JSON.parse(event.data);
-          console.log("Received from OpenAI:", message);
-
-          // Handle different event types
-          if (message.type === "session.created") {
-            console.log("Session created successfully");
-          } else if (message.type === "session.updated") {
-            console.log("Session updated successfully");
-          } else if (message.type === "error") {
-            console.error("OpenAI error:", message.error);
+          if (message.type === "error") {
             setStatus(`OpenAI error: ${message.error.message}`);
           }
         } catch (error) {
@@ -209,7 +165,6 @@ export default function OpenAIRealtimeTest() {
       });
 
       dataChannel.addEventListener("error", (error) => {
-        console.error("Data channel error:", error);
         setStatus("Data channel error - configuration may have failed");
       });
 
@@ -222,14 +177,12 @@ export default function OpenAIRealtimeTest() {
 
           // If recording is already active, connect the AI audio to it
           if (isRecording && currentRecordingId.current) {
-            console.log('🔗 Connecting AI audio to existing recording session');
             recordingService.current.connectAIAudioToRecording(audioRef.current);
           }
         }
       };
 
       peerConnection.onconnectionstatechange = () => {
-        console.log("Connection state:", peerConnection.connectionState);
         if (peerConnection.connectionState === "connected") {
           setStatus("WebRTC connected, configuring OpenAI session...");
         } else if (peerConnection.connectionState === "failed") {
