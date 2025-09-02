@@ -453,11 +453,11 @@ export default function OpenAIRealtimeTest() {
 
   // Keywords to detect step transitions
   const stepKeywords = {
-    1: ["roles overlap", "day-to-day", "team", "environment", "work together"],
-    2: ["recommending", "describe them", "tell me more", "how would you describe"],
-    3: ["strengths", "performance", "teamwork", "good at", "excels"],
-    4: ["develop", "grow", "areas", "perfect", "improve", "weaknesses"],
-    5: ["scale", "1 to 10", "one to ten", "rate", "recommend", "work with them again", "strongly would you"]
+    1: ["can you set the scene", "how did your roles overlap"],
+    2: ["if you were recommending", "how would you describe them"],
+    3: ["performance or main strengths", "teamwork and working relationships"],
+    4: ["areas they could develop or grow", "nobody is perfect what are some"],
+    5: ["on a scale from one to ten", "how strongly would you recommend"]
   };
 
   useEffect(() => {
