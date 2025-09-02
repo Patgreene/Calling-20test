@@ -1102,6 +1102,64 @@ export function createServer() {
     }
   });
 
+  // Update transcript text endpoint
+  app.patch("/api/admin/recordings/transcript", async (req, res) => {
+    const { recording_id, transcript_text, password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!recording_id || !transcript_text) {
+      return res.status(400).json({
+        error: "recording_id and transcript_text are required"
+      });
+    }
+
+    try {
+      // Update the transcript text in the transcriptions table
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/transcriptions?recording_id=eq.${recording_id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            transcript_text: transcript_text,
+            updated_at: new Date().toISOString()
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        res.json({
+          success: true,
+          message: "Transcript updated successfully",
+          updated_transcription: data[0]
+        });
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to update transcript:", response.status, errorText);
+        res.status(500).json({
+          error: "Failed to update transcript in database",
+          details: errorText
+        });
+      }
+    } catch (error) {
+      console.error("PATCH /api/admin/recordings/transcript error:", error);
+      res.status(500).json({
+        error: "Failed to update transcript",
+        details: error.message
+      });
+    }
+  });
+
   // Setup multer for file uploads
   const upload = multer({
     dest: 'uploads/',
