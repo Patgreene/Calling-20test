@@ -509,7 +509,7 @@ export default function OpenAIRealtimeTest() {
               ) : (
                 <>
                   <div className="flex-1 bg-green-500/20 border border-green-400/30 text-green-300 px-4 py-3 rounded-xl font-medium text-center">
-                    Code: {callCode}
+                    Ready to Start
                   </div>
                   <button
                     onClick={resetCall}
