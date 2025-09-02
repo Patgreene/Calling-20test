@@ -24,7 +24,6 @@ export default function OpenAIRealtimeTest() {
 
   // Recording state
   const [isRecording, setIsRecording] = useState(false);
-  const [recordingStatus, setRecordingStatus] = useState<string>("");
   const recordingService = useRef(RecordingService.getInstance());
   const currentRecordingId = useRef<string | null>(null);
 
