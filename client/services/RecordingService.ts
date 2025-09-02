@@ -372,7 +372,6 @@ class RecordingService {
         remoteSource.connect(remoteGain);
         remoteGain.connect(this.activeSession.destination);
 
-        console.log('🤖 AI audio connected to existing recording session');
         return true;
       }
     } catch (error) {
