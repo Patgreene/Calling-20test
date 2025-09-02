@@ -454,114 +454,110 @@ export default function OpenAIRealtimeTest() {
           <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
             Voice Interview
           </h1>
-          <p className="text-blue-200 text-lg">Meet Sam, your AI interviewer</p>
+          <p className="text-blue-200 text-lg">
+            {currentStep === 'form' ? 'Fill in your details' : 'Meet Sam, your AI interviewer'}
+          </p>
         </div>
 
-        {/* Input Fields */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl mb-6">
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="voucher"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Your Name
-              </label>
-              <input
-                type="text"
-                id="voucher"
-                name="voucher"
-                value={voucherName}
-                onChange={(e) => setVoucherName(e.target.value)}
-                placeholder="Full name"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="vouchee"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Who are you Vouching for?
-              </label>
-              <input
-                type="text"
-                id="vouchee"
-                name="vouchee"
-                value={voucheeName}
-                onChange={(e) => setVoucheeName(e.target.value)}
-                placeholder="Full name"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="voucher-email"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Your Email
-              </label>
-              <input
-                type="email"
-                id="voucher-email"
-                name="voucher-email"
-                value={voucherEmail}
-                onChange={(e) => setVoucherEmail(e.target.value)}
-                placeholder="your.email@example.com"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="voucher-phone"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Your Phone
-              </label>
-              <input
-                type="tel"
-                id="voucher-phone"
-                name="voucher-phone"
-                value={voucherPhone}
-                onChange={(e) => setVoucherPhone(e.target.value)}
-                placeholder="+1 (555) 123-4567"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
+        {/* Step 1: Form */}
+        {currentStep === 'form' && (
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl mb-6">
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="voucher"
+                  className="block text-white/80 text-sm font-medium mb-2"
+                >
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  id="voucher"
+                  name="voucher"
+                  value={voucherName}
+                  onChange={(e) => setVoucherName(e.target.value)}
+                  placeholder="Full name"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="vouchee"
+                  className="block text-white/80 text-sm font-medium mb-2"
+                >
+                  Who are you Vouching for?
+                </label>
+                <input
+                  type="text"
+                  id="vouchee"
+                  name="vouchee"
+                  value={voucheeName}
+                  onChange={(e) => setVoucheeName(e.target.value)}
+                  placeholder="Full name"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="voucher-email"
+                  className="block text-white/80 text-sm font-medium mb-2"
+                >
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  id="voucher-email"
+                  name="voucher-email"
+                  value={voucherEmail}
+                  onChange={(e) => setVoucherEmail(e.target.value)}
+                  placeholder="your.email@example.com"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="voucher-phone"
+                  className="block text-white/80 text-sm font-medium mb-2"
+                >
+                  Your Phone
+                </label>
+                <input
+                  type="tel"
+                  id="voucher-phone"
+                  name="voucher-phone"
+                  value={voucherPhone}
+                  onChange={(e) => setVoucherPhone(e.target.value)}
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
 
-            {/* Call Preparation Controls */}
-            <div className="flex gap-3 pt-2">
-              {!callCode ? (
+              <div className="flex gap-3 pt-2">
                 <button
-                  onClick={prepareCall}
+                  onClick={proceedToCall}
                   className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
                 >
                   Next
                 </button>
-              ) : (
-                <>
-                  <div className="flex-1 bg-green-500/20 border border-green-400/30 text-green-300 px-4 py-3 rounded-xl font-medium text-center">
-                    Ready to Start
-                  </div>
-                  <button
-                    onClick={resetCall}
-                    className="bg-red-500/20 border border-red-400/30 text-red-300 px-4 py-3 rounded-xl hover:bg-red-500/30 transition-all duration-200"
-                  >
-                    Reset
-                  </button>
-                </>
-              )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Calling Interface */}
+        {currentStep === 'call' && (
+          <>
+            {/* Back Button */}
+            <div className="mb-6">
+              <button
+                onClick={goBackToForm}
+                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl transition-all duration-200 border border-white/20"
+              >
+                ← Back to Form
+              </button>
             </div>
 
-          </div>
-        </div>
-
-        {/* Main calling interface */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
           {/* Audio Visualization */}
           <div className="flex items-end justify-center space-x-1 h-32 mb-8">
             {audioLevels.map((level, index) => (
@@ -673,9 +669,11 @@ export default function OpenAIRealtimeTest() {
             </div>
           )}
 
-          {/* Hidden audio element for playing assistant responses */}
-          <audio ref={audioRef} autoPlay style={{ display: "none" }} />
-        </div>
+              {/* Hidden audio element for playing assistant responses */}
+              <audio ref={audioRef} autoPlay style={{ display: "none" }} />
+            </div>
+          </>
+        )}
 
         {/* Footer Info */}
         <div className="text-center mt-6">
