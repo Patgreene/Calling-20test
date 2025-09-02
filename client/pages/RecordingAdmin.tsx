@@ -481,6 +481,18 @@ export default function RecordingAdmin() {
     }
   };
 
+  const getCallStatus = (durationSeconds?: number): string => {
+    if (!durationSeconds) return 'Call incomplete';
+    return durationSeconds >= 120 ? 'Call complete' : 'Call incomplete';
+  };
+
+  const getCallStatusColor = (durationSeconds?: number) => {
+    const status = getCallStatus(durationSeconds);
+    return status === 'Call complete'
+      ? 'bg-green-500/20 text-green-300 border-green-500/30'
+      : 'bg-orange-500/20 text-orange-300 border-orange-500/30';
+  };
+
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
