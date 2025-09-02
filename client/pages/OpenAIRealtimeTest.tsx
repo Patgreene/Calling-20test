@@ -391,7 +391,7 @@ export default function OpenAIRealtimeTest() {
       // Store the fresh prompt data for use in the call
       (window as any).freshPromptData = promptData;
 
-      setStatus("Push button to start interview with Sam");
+      setStatus("Ready to start your interview with Sam.");
     } catch (error) {
       setStatus("Something went wrong. Please try again.");
     }
