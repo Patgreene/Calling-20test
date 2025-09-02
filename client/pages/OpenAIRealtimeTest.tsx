@@ -680,6 +680,16 @@ export default function OpenAIRealtimeTest() {
           <p className="text-white/40 text-sm">
             Powered by Vouch
           </p>
+          {currentStep === 'form' && (
+            <p className="text-white/30 text-xs mt-2">
+              Step 1 of 2: Enter your details
+            </p>
+          )}
+          {currentStep === 'call' && (
+            <p className="text-white/30 text-xs mt-2">
+              Step 2 of 2: Voice interview
+            </p>
+          )}
         </div>
       </div>
     </div>
