@@ -296,7 +296,6 @@ class RecordingService {
       }
 
       const sessionData = await sessionResponse.json();
-      console.log('✅ Recording session creation response:', sessionData);
 
       const { recording_id } = sessionData;
 
