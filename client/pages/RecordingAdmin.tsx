@@ -743,7 +743,7 @@ export default function RecordingAdmin() {
                                   <div className="flex items-center gap-2 mb-1">
                                     <h3 className="text-white font-medium">{titleInfo.title}</h3>
                                     <Badge className={getStatusColor(recording.upload_status)}>
-                                      {recording.upload_status}
+                                      {recording.upload_status === 'completed' ? 'upload complete' : recording.upload_status}
                                     </Badge>
                                     <Badge className={getCallStatusColor(recording.duration_seconds)}>
                                       {getCallStatus(recording.duration_seconds)}
