@@ -259,7 +259,6 @@ class RecordingService {
           remoteGain.gain.value = 1.0; // Full volume for AI responses
           remoteSource.connect(remoteGain);
           remoteGain.connect(destination);
-          console.log('🤖 AI audio connected to mixer');
         } catch (remoteError) {
           console.warn('⚠️ Could not connect AI audio to mixer:', remoteError);
           console.log('📝 Recording will continue with microphone only');
