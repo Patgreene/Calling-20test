@@ -152,6 +152,9 @@ export default function OpenAIRealtimeTest() {
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus("Say Hello");
 
+        // Reset conversation step when call starts
+        setConversationStep(0);
+
         // Change status to "Connected" after 10 seconds
         setTimeout(() => {
           setStatus("Connected");
