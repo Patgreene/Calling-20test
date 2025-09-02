@@ -249,7 +249,6 @@ class RecordingService {
       micSource.connect(micGain);
       micGain.connect(destination);
 
-      console.log('🎤 Microphone connected to mixer');
 
       // If we have AI audio, connect it to the mixer too
       if (remoteAudioElement && remoteAudioElement.srcObject) {
