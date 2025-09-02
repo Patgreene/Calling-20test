@@ -392,7 +392,6 @@ export default function OpenAIRealtimeTest() {
     setPreparedNames(null);
     setVoucherName("");
     setVoucheeName("");
-    setShowHelloPopup(false);
     setStatus("Push button to start interview with Sam");
   };
 
