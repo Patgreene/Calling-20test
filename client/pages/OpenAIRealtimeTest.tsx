@@ -20,6 +20,7 @@ export default function OpenAIRealtimeTest() {
     vouchee_last: string;
   } | null>(null);
   const [currentStep, setCurrentStep] = useState<'form' | 'call'>('form');
+  const [conversationStep, setConversationStep] = useState(0); // 0 = opening, 1-5 = exploration steps
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -413,6 +414,25 @@ export default function OpenAIRealtimeTest() {
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
   const audioAnalyserRef = useRef<AnalyserNode | null>(null);
   const audioDataRef = useRef<Uint8Array | null>(null);
+
+  // Conversation step definitions
+  const conversationSteps = [
+    { label: "Opening", description: "Setting the scene" },
+    { label: "Broad Context", description: "Daily collaboration" },
+    { label: "Core Strengths", description: "Key qualities" },
+    { label: "Performance", description: "Strengths & teamwork" },
+    { label: "Development", description: "Growth areas" },
+    { label: "Perspectives", description: "Peer views" }
+  ];
+
+  // Keywords to detect step transitions
+  const stepKeywords = {
+    1: ["roles overlap", "day-to-day", "team", "environment", "work together"],
+    2: ["recommending", "describe them", "tell me more", "how would you describe"],
+    3: ["strengths", "performance", "teamwork", "good at", "excels"],
+    4: ["develop", "grow", "areas", "perfect", "improve", "weaknesses"],
+    5: ["peers", "colleagues", "others describe", "team members"]
+  };
 
   useEffect(() => {
     let animationFrame: number;
