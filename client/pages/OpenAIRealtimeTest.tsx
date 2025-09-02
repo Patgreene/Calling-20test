@@ -380,7 +380,7 @@ export default function OpenAIRealtimeTest() {
 
       setStatus("Ready to start your interview with Sam.");
     } catch (error) {
-      setStatus("Error preparing call. Please try again.");
+      setStatus("Something went wrong. Please try again.");
     }
   };
 
