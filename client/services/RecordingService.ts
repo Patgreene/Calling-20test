@@ -389,7 +389,6 @@ class RecordingService {
       const chunkIndex = this.activeSession.chunks.size;
       const hash = await this.calculateHash(blob);
 
-      console.log(`📦 Processing chunk ${chunkIndex} (${blob.size} bytes, stopping: ${this.activeSession.isStopping})`);
 
       const chunkData: ChunkData = {
         id: `${this.activeSession.id}_${chunkIndex}`,
