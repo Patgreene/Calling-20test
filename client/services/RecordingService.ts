@@ -278,7 +278,6 @@ class RecordingService {
         vouchee_name: voucheeName,
       };
 
-      console.log('📤 Sending recording session creation request:', requestData);
 
       const sessionResponse = await fetch('/api/admin/recordings', {
         method: 'POST',
@@ -360,7 +359,7 @@ class RecordingService {
   // Connect AI audio to an existing recording session
   public connectAIAudioToRecording(remoteAudioElement: HTMLAudioElement): boolean {
     if (!this.activeSession?.isActive || !this.activeSession.audioContext || !this.activeSession.destination) {
-      console.warn('��️ No active recording session to connect AI audio to');
+      console.warn('⚠️ No active recording session to connect AI audio to');
       return false;
     }
 
