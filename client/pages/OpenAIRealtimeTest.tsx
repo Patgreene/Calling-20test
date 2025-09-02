@@ -457,7 +457,7 @@ export default function OpenAIRealtimeTest() {
     2: ["recommending", "describe them", "tell me more", "how would you describe"],
     3: ["strengths", "performance", "teamwork", "good at", "excels"],
     4: ["develop", "grow", "areas", "perfect", "improve", "weaknesses"],
-    5: ["peers", "colleagues", "others describe", "team members"]
+    5: ["scale", "1 to 10", "one to ten", "rate", "recommend", "work with them again", "strongly would you"]
   };
 
   useEffect(() => {
