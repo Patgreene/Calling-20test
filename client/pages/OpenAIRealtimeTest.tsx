@@ -151,6 +151,11 @@ export default function OpenAIRealtimeTest() {
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus("Say Hello");
 
+        // Change status to "Connected" after 10 seconds
+        setTimeout(() => {
+          setStatus("Connected");
+        }, 10000);
+
         // Start automatic recording when call is connected
         startAutomaticRecording();
       });
@@ -648,14 +653,6 @@ export default function OpenAIRealtimeTest() {
             )}
           </div>
 
-          {/* Additional Info */}
-          {isConnected && (
-            <div className="mt-8 text-center">
-              <p className="text-white/60 text-sm">
-                Speak naturally • Sam is listening • English only
-              </p>
-            </div>
-          )}
 
 
               {/* Hidden audio element for playing assistant responses */}
