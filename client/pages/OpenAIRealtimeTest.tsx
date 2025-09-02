@@ -540,6 +540,12 @@ export default function OpenAIRealtimeTest() {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4 text-center">
+                <p className="text-white/60 text-sm">
+                  Fill in all fields to proceed to the interview
+                </p>
+              </div>
             </div>
           </div>
         )}
