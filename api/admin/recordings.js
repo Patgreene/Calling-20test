@@ -261,7 +261,67 @@ export default async function handler(req, res) {
     } else {
       res.status(400).json({ error: "Invalid action. Use 'start_recording'" });
     }
-  } 
+  }
+  else if (req.method === "PATCH") {
+    const { action, recording_id, transcript_text, password } = req.body;
+
+    // Simple password check
+    if (password !== "vouch2024admin") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (action === "update_transcript" || !action) {
+      if (!recording_id || !transcript_text) {
+        return res.status(400).json({
+          error: "recording_id and transcript_text are required"
+        });
+      }
+
+      try {
+        // Update the transcript text in the transcriptions table
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/transcriptions?recording_id=eq.${recording_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              transcript_text: transcript_text,
+              updated_at: new Date().toISOString()
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          res.json({
+            success: true,
+            message: "Transcript updated successfully",
+            updated_transcription: data[0]
+          });
+        } else {
+          const errorText = await response.text();
+          console.error("Failed to update transcript:", response.status, errorText);
+          res.status(500).json({
+            error: "Failed to update transcript in database",
+            details: errorText
+          });
+        }
+      } catch (error) {
+        console.error("PATCH /api/admin/recordings error:", error);
+        res.status(500).json({
+          error: "Failed to update transcript",
+          details: error.message
+        });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid action. Use 'update_transcript' or omit action" });
+    }
+  }
   else {
     res.status(405).json({ error: "Method not allowed" });
   }
