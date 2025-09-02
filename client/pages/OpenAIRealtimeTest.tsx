@@ -40,7 +40,7 @@ export default function OpenAIRealtimeTest() {
       }
 
       setIsConnecting(true);
-      setStatus("Getting client secret...");
+      setStatus("Connecting to Sam...");
 
       // Get fresh prompt data (from prepareCall) or fetch it now
       let promptData = (window as any).freshPromptData;
@@ -77,12 +77,12 @@ export default function OpenAIRealtimeTest() {
         sessionConfig: promptData.sessionConfig,
         model: "gpt-4o-realtime-preview-2024-12-17",
       };
-      setStatus("Getting microphone access...");
+      setStatus("Setting up microphone...");
 
       // Step 2: Get microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      setStatus("Setting up WebRTC connection...");
+      setStatus("Establishing connection...");
 
       // Step 3: Set up RTCPeerConnection
       const configuration = {
@@ -147,7 +147,7 @@ export default function OpenAIRealtimeTest() {
         };
 
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
-        setStatus(`Connected! Sam is ready for call ${callCode}.`);
+        setStatus("Connected! Sam is ready to chat.");
 
         // Start automatic recording when call is connected
         startAutomaticRecording();
@@ -165,7 +165,7 @@ export default function OpenAIRealtimeTest() {
       });
 
       dataChannel.addEventListener("error", (error) => {
-        setStatus("Data channel error - configuration may have failed");
+        setStatus("Connection error - please try again");
       });
 
       // Handle incoming audio stream
@@ -184,18 +184,18 @@ export default function OpenAIRealtimeTest() {
 
       peerConnection.onconnectionstatechange = () => {
         if (peerConnection.connectionState === "connected") {
-          setStatus("WebRTC connected, configuring OpenAI session...");
+          setStatus("Almost ready...");
         } else if (peerConnection.connectionState === "failed") {
           setStatus("Connection failed");
         }
       };
 
       // Create and send SDP offer
-      setStatus("Creating SDP offer...");
+      setStatus("Finalizing connection...");
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
 
-      setStatus("Connecting to OpenAI Realtime API...");
+      setStatus("Connecting to Sam...");
 
       // Send SDP offer to OpenAI Realtime API
       const model = config?.model || "gpt-4o-realtime-preview-2024-12-17";
@@ -229,7 +229,7 @@ export default function OpenAIRealtimeTest() {
 
       setIsConnected(true);
       setIsConnecting(false);
-      setStatus("Connected! You can now speak to the AI assistant.");
+      setStatus("Connected! Start speaking whenever you're ready.");
     } catch (error) {
       console.error("Error starting call:", error);
       setStatus(
@@ -272,8 +272,8 @@ export default function OpenAIRealtimeTest() {
 
       setStatus(
         callCode
-          ? `Call ${callCode} ended. Names still prepared.`
-          : "Call ended. Ready to start new test call.",
+          ? "Call ended. Ready to start a new interview."
+          : "Ready to start your interview.",
       );
     } catch (error) {
       console.error("Error stopping call:", error);
