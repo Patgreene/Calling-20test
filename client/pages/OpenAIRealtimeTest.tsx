@@ -285,7 +285,6 @@ export default function OpenAIRealtimeTest() {
   // Automatic recording functions
   const startAutomaticRecording = async () => {
     try {
-      setRecordingStatus("Starting mixed audio recording...");
       setIsRecording(true);
 
       const adminPassword = "vouch2024admin";
@@ -300,9 +299,7 @@ export default function OpenAIRealtimeTest() {
         callCode || undefined
       );
       currentRecordingId.current = recordingId;
-      setRecordingStatus("Recording both sides of conversation");
     } catch (error) {
-      setRecordingStatus("Recording failed to start");
       setIsRecording(false);
     }
   };
@@ -311,17 +308,11 @@ export default function OpenAIRealtimeTest() {
     if (!currentRecordingId.current || !isRecording) return;
 
     try {
-      setRecordingStatus("Stopping recording...");
       await recordingService.current.stopRecording();
-      setRecordingStatus("Recording saved");
       setIsRecording(false);
       currentRecordingId.current = null;
 
-      setTimeout(() => {
-        setRecordingStatus("");
-      }, 3000);
     } catch (error) {
-      setRecordingStatus("Recording stop failed");
     }
   };
 
