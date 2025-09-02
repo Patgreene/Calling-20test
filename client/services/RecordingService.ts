@@ -673,12 +673,10 @@ class RecordingService {
           
           if (createdAt < cutoffDate && record.uploadStatus === 'uploaded') {
             cursor.delete();
-            console.log(`🗑️ Cleaned up old backup chunk: ${record.id}`);
           }
           
           cursor.continue();
         } else {
-          console.log('✅ Backup cleanup completed');
           resolve();
         }
       };
