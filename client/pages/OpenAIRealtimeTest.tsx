@@ -286,25 +286,12 @@ export default function OpenAIRealtimeTest() {
   // Automatic recording functions
   const startAutomaticRecording = async () => {
     try {
-      console.log('🔴 Starting automatic recording...');
       setRecordingStatus("Starting mixed audio recording...");
       setIsRecording(true);
 
-      // Use admin password for recording - you may want to configure this differently
       const adminPassword = "vouch2024admin";
-
-      // Pass the AI audio element and names to capture both sides of conversation
       const voucherNameForRecording = preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName;
       const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
-
-      console.log('📋 Recording will be created with:', {
-        callCode,
-        voucherNameForRecording,
-        voucheeNameForRecording,
-        preparedNames,
-        fallbackVoucherName: voucherName,
-        fallbackVoucheeName: voucheeName
-      });
 
       const recordingId = await recordingService.current.startRecording(
         adminPassword,
@@ -314,17 +301,8 @@ export default function OpenAIRealtimeTest() {
         callCode || undefined
       );
       currentRecordingId.current = recordingId;
-
       setRecordingStatus("Recording both sides of conversation");
-      console.log(`✅ Mixed audio recording started for call ${callCode}: ${recordingId}`);
-      console.log('🎯 Recording should now have names:', {
-        recordingId,
-        voucherName: voucherNameForRecording,
-        voucheeName: voucheeNameForRecording
-      });
-
     } catch (error) {
-      console.error("❌ Failed to start automatic recording:", error);
       setRecordingStatus("Recording failed to start");
       setIsRecording(false);
     }
@@ -335,21 +313,15 @@ export default function OpenAIRealtimeTest() {
 
     try {
       setRecordingStatus("Stopping recording...");
-
       await recordingService.current.stopRecording();
-
-      console.log(`✅ Automatic recording stopped for call ${callCode}: ${currentRecordingId.current}`);
       setRecordingStatus("Recording saved");
       setIsRecording(false);
       currentRecordingId.current = null;
 
-      // Clear recording status after a few seconds
       setTimeout(() => {
         setRecordingStatus("");
       }, 3000);
-
     } catch (error) {
-      console.error("❌ Failed to stop automatic recording:", error);
       setRecordingStatus("Recording stop failed");
     }
   };
@@ -367,23 +339,14 @@ export default function OpenAIRealtimeTest() {
 
   const parseNameToFirstLast = (fullName: string) => {
     const cleanName = fullName.trim();
-    console.log("Parsing name:", cleanName);
-
     if (!cleanName) return { first: "", last: "" };
 
-    const parts = cleanName.split(/\s+/); // Split on any whitespace
-    console.log("Name parts:", parts);
-
+    const parts = cleanName.split(/\s+/);
     if (parts.length === 0) return { first: "", last: "" };
-    if (parts.length === 1) {
-      console.log("Single name detected:", parts[0]);
-      return { first: parts[0], last: "" };
-    }
+    if (parts.length === 1) return { first: parts[0], last: "" };
 
     const first = parts[0];
     const last = parts.slice(1).join(" ");
-    console.log("Parsed result:", { first, last });
-
     return { first, last };
   };
 
@@ -401,22 +364,11 @@ export default function OpenAIRealtimeTest() {
 
     try {
       // Fetch the latest active prompt from Supabase
-      console.log("🔄 Fetching latest active prompt from Supabase...");
       const promptResponse = await fetch("/api/active-prompt");
-
       if (!promptResponse.ok) {
         throw new Error("Failed to fetch active prompt");
       }
-
       const promptData = await promptResponse.json();
-      console.log("✅ Fetched active prompt:", {
-        length: promptData.instructions.length,
-        id: promptData.id,
-        fallback: promptData.fallback,
-        created_at: promptData.created_at,
-      });
-
-      console.log("Preparing call with names:", { voucherName, voucheeName });
 
       const voucherParsed = parseNameToFirstLast(voucherName);
       const voucheeParsed = parseNameToFirstLast(voucheeName);
@@ -429,10 +381,6 @@ export default function OpenAIRealtimeTest() {
         vouchee_last: voucheeParsed.last,
       };
 
-      console.log(
-        "Final parsed names that will be sent to OpenAI:",
-        parsedNames,
-      );
 
       setPreparedNames(parsedNames);
       setCallCode(newCallCode);
@@ -441,10 +389,9 @@ export default function OpenAIRealtimeTest() {
       (window as any).freshPromptData = promptData;
 
       setStatus(
-        `Call prepared with code: ${newCallCode}. Using fresh prompt from Supabase${promptData.fallback ? " (fallback)" : ""}.`,
+        `Call prepared with code: ${newCallCode}. Ready to start.`,
       );
     } catch (error) {
-      console.error("Error preparing call:", error);
       setStatus("Error preparing call. Please try again.");
     }
   };
