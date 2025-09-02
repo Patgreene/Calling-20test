@@ -729,6 +729,9 @@ export default function RecordingAdmin() {
                                     <Badge className={getStatusColor(recording.upload_status)}>
                                       {recording.upload_status}
                                     </Badge>
+                                    <Badge className={getCallStatusColor(recording.duration_seconds)}>
+                                      {getCallStatus(recording.duration_seconds)}
+                                    </Badge>
                                     {recording.transcription && (
                                       <Badge className={getTranscriptionColor(recording.transcription.status)}>
                                         transcript: {recording.transcription.status}
