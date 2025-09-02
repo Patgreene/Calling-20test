@@ -7,7 +7,7 @@ export default function OpenAIRealtimeTest() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [status, setStatus] = useState("Ready to start test call");
+  const [status, setStatus] = useState("Ready to start your interview");
   const [voucherName, setVoucherName] = useState("");
   const [voucheeName, setVoucheeName] = useState("");
   const [callCode, setCallCode] = useState<string | null>(null);
