@@ -700,7 +700,7 @@ export default function RecordingAdmin() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mb-48 pb-14">
                 {/* Search Bar */}
                 <div className="mb-4">
                   <input
