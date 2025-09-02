@@ -12,8 +12,6 @@ export default function OpenAIRealtimeTest() {
   const [voucheeName, setVoucheeName] = useState("");
   const [voucherEmail, setVoucherEmail] = useState("");
   const [voucherPhone, setVoucherPhone] = useState("");
-  const [voucheeEmail, setVoucheeEmail] = useState("");
-  const [voucheePhone, setVoucheePhone] = useState("");
   const [callCode, setCallCode] = useState<string | null>(null);
   const [preparedNames, setPreparedNames] = useState<{
     voucher_first: string;
@@ -302,9 +300,7 @@ export default function OpenAIRealtimeTest() {
         voucheeNameForRecording,
         callCode || undefined,
         voucherEmail,
-        voucherPhone,
-        voucheeEmail,
-        voucheePhone
+        voucherPhone
       );
       currentRecordingId.current = recordingId;
     } catch (error) {
@@ -399,8 +395,6 @@ export default function OpenAIRealtimeTest() {
     setVoucheeName("");
     setVoucherEmail("");
     setVoucherPhone("");
-    setVoucheeEmail("");
-    setVoucheePhone("");
     setStatus("Push button to start interview with Sam");
   };
 
@@ -527,42 +521,6 @@ export default function OpenAIRealtimeTest() {
                 name="voucher-phone"
                 value={voucherPhone}
                 onChange={(e) => setVoucherPhone(e.target.value)}
-                placeholder="+1 (555) 123-4567"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="vouchee-email"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Their Email (Person you're vouching for)
-              </label>
-              <input
-                type="email"
-                id="vouchee-email"
-                name="vouchee-email"
-                value={voucheeEmail}
-                onChange={(e) => setVoucheeEmail(e.target.value)}
-                placeholder="their.email@example.com"
-                disabled={!!callCode}
-                className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="vouchee-phone"
-                className="block text-white/80 text-sm font-medium mb-2"
-              >
-                Their Phone (Person you're vouching for)
-              </label>
-              <input
-                type="tel"
-                id="vouchee-phone"
-                name="vouchee-phone"
-                value={voucheePhone}
-                onChange={(e) => setVoucheePhone(e.target.value)}
                 placeholder="+1 (555) 123-4567"
                 disabled={!!callCode}
                 className={`w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 ${callCode ? "opacity-50 cursor-not-allowed" : ""}`}
