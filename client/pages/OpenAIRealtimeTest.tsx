@@ -452,7 +452,7 @@ export default function OpenAIRealtimeTest() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-            Voice Interview
+            Vouch Interview
           </h1>
           <p className="text-blue-200 text-lg">
             {currentStep === 'form' ? 'Fill in your details' : 'Meet Sam, your AI interviewer'}
@@ -527,7 +527,7 @@ export default function OpenAIRealtimeTest() {
                   name="voucher-phone"
                   value={voucherPhone}
                   onChange={(e) => setVoucherPhone(e.target.value)}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+64 21 123 4567"
                   className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                 />
               </div>
@@ -535,17 +535,17 @@ export default function OpenAIRealtimeTest() {
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={proceedToCall}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+                  disabled={!voucherName.trim() || !voucheeName.trim() || !voucherEmail.trim() || !voucherPhone.trim()}
+                  className={`flex-1 px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                    voucherName.trim() && voucheeName.trim() && voucherEmail.trim() && voucherPhone.trim()
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:from-blue-600 hover:to-cyan-700 hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
+                      : "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
+                  }`}
                 >
                   Next
                 </button>
               </div>
 
-              <div className="mt-4 text-center">
-                <p className="text-white/60 text-sm">
-                  Fill in all fields to proceed to the interview
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -688,7 +688,7 @@ export default function OpenAIRealtimeTest() {
           </p>
           {currentStep === 'form' && (
             <p className="text-white/30 text-xs mt-2">
-              Step 1 of 2: Enter your details
+              Step 1 of 2
             </p>
           )}
           {currentStep === 'call' && (
