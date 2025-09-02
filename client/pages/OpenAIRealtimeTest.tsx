@@ -439,15 +439,27 @@ export default function OpenAIRealtimeTest() {
 
           // Create smooth, voice-responsive visualization
           const newLevels = Array(20).fill(0).map((_, index) => {
-            // Sample different frequency ranges for each bar
-            const dataIndex = Math.floor((index / 20) * audioDataRef.current!.length);
-            const rawLevel = audioDataRef.current![dataIndex] / 255;
+            // Focus on voice frequency range (0-40% of spectrum) and spread across all bars
+            const voiceRangeEnd = Math.floor(audioDataRef.current!.length * 0.4);
+            const dataIndex = Math.floor((index / 20) * voiceRangeEnd);
+
+            // Get base level from frequency data
+            let rawLevel = audioDataRef.current![dataIndex] / 255;
+
+            // Add some spreading from adjacent frequencies for more bars to react
+            const spread = 3; // Number of adjacent frequencies to include
+            for (let i = 1; i <= spread && dataIndex + i < audioDataRef.current!.length; i++) {
+              rawLevel = Math.max(rawLevel, (audioDataRef.current![dataIndex + i] / 255) * (0.7 / i));
+            }
+            for (let i = 1; i <= spread && dataIndex - i >= 0; i++) {
+              rawLevel = Math.max(rawLevel, (audioDataRef.current![dataIndex - i] / 255) * (0.7 / i));
+            }
 
             // Apply gentle smoothing for natural voice response
-            const smoothedLevel = Math.pow(rawLevel, 1.3); // Less aggressive curve for better sensitivity
-            const responsiveLevel = smoothedLevel * 1.4 + 0.05; // More sensitive scaling with lower base
+            const smoothedLevel = Math.pow(rawLevel, 1.2);
+            const responsiveLevel = smoothedLevel * 1.6 + 0.03;
 
-            return Math.min(responsiveLevel, 0.9); // Allow higher peaks
+            return Math.min(responsiveLevel, 0.95);
           });
 
           setAudioLevels(newLevels);
