@@ -323,8 +323,6 @@ export default function OpenAIRealtimeTest() {
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         setIsMuted(!audioTrack.enabled);
-        // Hide popup when user interacts with microphone
-        setShowHelloPopup(false);
       }
     }
   };
