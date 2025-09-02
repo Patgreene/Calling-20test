@@ -236,7 +236,6 @@ export default function OpenAIRealtimeTest() {
       );
       setIsConnecting(false);
       setIsConnected(false);
-      setShowHelloPopup(false);
 
       // Cleanup on error
       if (peerConnectionRef.current) {
