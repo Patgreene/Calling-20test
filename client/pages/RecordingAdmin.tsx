@@ -740,6 +740,9 @@ export default function RecordingAdmin() {
                                 {recording.file_size_bytes && (
                                   <span>Size: {formatFileSize(recording.file_size_bytes)}</span>
                                 )}
+                                {recording.chunks_total && recording.chunks_uploaded && (
+                                  <span>Chunks: {recording.chunks_uploaded}/{recording.chunks_total}</span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -922,19 +925,6 @@ export default function RecordingAdmin() {
 
 
 
-                        {/* Upload Progress */}
-                        {recording.chunks_total && recording.chunks_uploaded && (
-                          <div className="mb-3">
-                            <div className="flex justify-between text-xs text-white/60 mb-1">
-                              <span>Upload Progress</span>
-                              <span>{recording.chunks_uploaded}/{recording.chunks_total} chunks</span>
-                            </div>
-                            <Progress
-                              value={(recording.chunks_uploaded / recording.chunks_total) * 100}
-                              className="h-2"
-                            />
-                          </div>
-                        )}
 
                         {/* Error Message */}
                         {recording.last_error_message && (
