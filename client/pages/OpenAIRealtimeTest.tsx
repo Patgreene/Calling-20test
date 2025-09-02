@@ -288,7 +288,7 @@ export default function OpenAIRealtimeTest() {
     } catch (error) {
       console.error("Error stopping call:", error);
       setStatus(
-        `Error stopping call: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "Error ending call. Push button to start interview with Sam.",
       );
     }
   };
