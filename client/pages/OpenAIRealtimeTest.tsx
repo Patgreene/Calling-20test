@@ -645,6 +645,31 @@ export default function OpenAIRealtimeTest() {
           </p>
         </div>
       </div>
+
+      {/* Hello Popup */}
+      {showHelloPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-2xl max-w-md mx-4 animate-in fade-in duration-300">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mic className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Connected to Sam!
+              </h3>
+              <p className="text-white/70 mb-6">
+                Say "Hello" to start your interview. Sam will respond once you begin speaking.
+              </p>
+              <button
+                onClick={() => setShowHelloPopup(false)}
+                className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-200"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
