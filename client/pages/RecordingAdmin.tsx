@@ -712,7 +712,7 @@ export default function RecordingAdmin() {
                   />
                 </div>
 
-                <div className="space-y-4 max-h-[600px] overflow-y-auto mb-48 pb-14">
+                <div className="space-y-4 max-h-[600px] overflow-y-auto">
                   {filteredRecordings.length === 0 ? (
                     <div className="text-center py-8">
                       <FileAudio className="w-12 h-12 text-white/30 mx-auto mb-4" />
