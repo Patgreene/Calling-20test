@@ -166,6 +166,12 @@ export default function OpenAIRealtimeTest() {
           const message = JSON.parse(event.data);
           if (message.type === "error") {
             setStatus(`OpenAI error: ${message.error.message}`);
+          } else if (message.type === "response.audio_transcript.done" && message.transcript) {
+            // Detect conversation step from AI's transcript
+            detectConversationStep(message.transcript);
+          } else if (message.type === "conversation.item.created" && message.item?.content?.[0]?.transcript) {
+            // Alternative transcript location
+            detectConversationStep(message.item.content[0].transcript);
           }
         } catch (error) {
           console.error("Error parsing OpenAI message:", error);
@@ -408,6 +414,23 @@ export default function OpenAIRealtimeTest() {
 
   const goBackToForm = () => {
     setCurrentStep('form');
+  };
+
+  // Detect conversation step based on AI response content
+  const detectConversationStep = (text: string) => {
+    const lowerText = text.toLowerCase();
+
+    // Check each step's keywords
+    for (let step = 5; step >= 1; step--) {
+      const keywords = stepKeywords[step as keyof typeof stepKeywords];
+      const hasKeyword = keywords.some(keyword => lowerText.includes(keyword.toLowerCase()));
+
+      if (hasKeyword && step > conversationStep) {
+        console.log(`🎯 Detected transition to Step ${step}: ${conversationSteps[step].label}`);
+        setConversationStep(step);
+        return;
+      }
+    }
   };
 
   // Audio visualization effect
