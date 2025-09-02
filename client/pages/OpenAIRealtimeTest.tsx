@@ -19,6 +19,7 @@ export default function OpenAIRealtimeTest() {
     vouchee_first: string;
     vouchee_last: string;
   } | null>(null);
+  const [currentStep, setCurrentStep] = useState<'form' | 'call'>('form');
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -348,9 +349,9 @@ export default function OpenAIRealtimeTest() {
     return "CALL-" + Math.random().toString(36).substr(2, 9).toUpperCase();
   };
 
-  const prepareCall = async () => {
+  const proceedToCall = async () => {
     if (!voucherName.trim() || !voucheeName.trim()) {
-      alert("Please enter both names before preparing the call.");
+      alert("Please enter both names before proceeding.");
       return;
     }
 
@@ -375,7 +376,6 @@ export default function OpenAIRealtimeTest() {
         vouchee_last: voucheeParsed.last,
       };
 
-
       setPreparedNames(parsedNames);
       setCallCode(newCallCode);
 
@@ -383,6 +383,7 @@ export default function OpenAIRealtimeTest() {
       (window as any).freshPromptData = promptData;
 
       setStatus("Ready to start your interview with Sam.");
+      setCurrentStep('call');
     } catch (error) {
       setStatus("Something went wrong. Please try again.");
     }
@@ -395,7 +396,12 @@ export default function OpenAIRealtimeTest() {
     setVoucheeName("");
     setVoucherEmail("");
     setVoucherPhone("");
+    setCurrentStep('form');
     setStatus("Push button to start interview with Sam");
+  };
+
+  const goBackToForm = () => {
+    setCurrentStep('form');
   };
 
   // Audio visualization effect
