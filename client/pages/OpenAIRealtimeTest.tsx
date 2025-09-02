@@ -589,17 +589,6 @@ export default function OpenAIRealtimeTest() {
               <span className="text-white font-medium">{status}</span>
             </div>
 
-            {/* Recording Status Indicator */}
-            {(isRecording || recordingStatus) && (
-              <div className="mt-3">
-                <div className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-red-500/30">
-                  <div className={`w-2 h-2 rounded-full ${isRecording ? "bg-red-500 animate-pulse" : "bg-gray-500"}`}></div>
-                  <span className="text-red-300 text-sm font-medium">
-                    {isRecording ? `🔴 REC • ${recordingStatus}` : recordingStatus}
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Control Buttons */}
