@@ -77,7 +77,6 @@ export default function RecordingAdmin() {
     totalDuration: 0,
     totalSize: 0,
     successRate: 0,
-    activeUploads: 0,
   });
 
   // Simple admin authentication
