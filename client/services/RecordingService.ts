@@ -261,7 +261,6 @@ class RecordingService {
           remoteGain.connect(destination);
         } catch (remoteError) {
           console.warn('⚠️ Could not connect AI audio to mixer:', remoteError);
-          console.log('📝 Recording will continue with microphone only');
         }
       } else {
         console.warn('⚠️ No AI audio source provided, recording microphone only');
