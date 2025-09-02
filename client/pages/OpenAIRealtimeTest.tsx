@@ -350,7 +350,7 @@ export default function OpenAIRealtimeTest() {
       return;
     }
 
-    setStatus("Preparing call and fetching latest prompt...");
+    setStatus("Getting ready...");
 
     try {
       // Fetch the latest active prompt from Supabase
