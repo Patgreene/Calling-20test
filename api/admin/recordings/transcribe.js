@@ -195,10 +195,60 @@ export default async function handler(req, res) {
     const transcriptionResult = await whisperResponse.json();
     console.log(`✅ Received transcription from OpenAI (${transcriptionResult.text.length} characters)`);
 
+    // Add speaker diarization using ChatGPT
+    let diarizedTranscript = transcriptionResult.text;
+    try {
+      console.log(`🎯 Adding speaker identification...`);
+
+      const diarizationPrompt = `Please analyze this interview transcript and add speaker labels. This is an interview between:
+- AI Sam (the interviewer, an AI assistant)
+- ${recording.voucher_name || 'The interviewee'} (the human being interviewed)
+
+Format the output with clear speaker labels like:
+AI Sam: "Hello, how are you?"
+${recording.voucher_name || 'Interviewee'}: "I'm doing well, thanks."
+
+Here's the transcript to process:
+
+${transcriptionResult.text}
+
+Please return the formatted transcript with speaker labels:`;
+
+      const diarizationResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'user',
+              content: diarizationPrompt
+            }
+          ],
+          temperature: 0.1,
+          max_tokens: 4000
+        }),
+      });
+
+      if (diarizationResponse.ok) {
+        const diarizationResult = await diarizationResponse.json();
+        diarizedTranscript = diarizationResult.choices[0].message.content;
+        console.log(`✅ Speaker diarization completed`);
+      } else {
+        console.error('❌ Speaker diarization failed, using original transcript');
+      }
+    } catch (diarizationError) {
+      console.error('❌ Speaker diarization error:', diarizationError);
+      // Continue with original transcript if diarization fails
+    }
+
     // Update transcription record with results
     const updateData = {
       status: 'completed',
-      transcript_text: transcriptionResult.text,
+      transcript_text: diarizedTranscript,
       transcript_json: transcriptionResult,
       completed_at: new Date().toISOString(),
       duration: transcriptionResult.duration,
