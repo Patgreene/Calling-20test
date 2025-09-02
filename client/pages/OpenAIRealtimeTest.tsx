@@ -661,10 +661,10 @@ export default function OpenAIRealtimeTest() {
             </div>
           )}
 
-          {!isConnected && !callCode && (
+          {!isConnected && currentStep === 'call' && (
             <div className="mt-8 text-center">
               <p className="text-white/60 text-sm">
-                Enter both names and prepare call, then push button to start
+                Push button to start your interview with Sam
               </p>
             </div>
           )}
