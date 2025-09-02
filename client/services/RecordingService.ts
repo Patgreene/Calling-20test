@@ -401,7 +401,6 @@ class RecordingService {
 
       this.activeSession.chunks.set(chunkIndex, chunkData);
 
-      console.log(`📊 Chunk ${chunkIndex} queued (${blob.size} bytes, hash: ${hash.substring(0, 8)}...)`);
 
       // Save to IndexedDB as backup (async, don't wait)
       if (this.activeSession.backupEnabled) {
@@ -417,7 +416,6 @@ class RecordingService {
 
       // If this chunk has a very small size and we're stopping, it might be the final chunk
       if (this.activeSession.isStopping && blob.size < 1024) {
-        console.log(`📝 Small chunk detected during stop (${blob.size} bytes) - likely final chunk`);
       }
 
     } catch (error) {
