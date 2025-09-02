@@ -388,9 +388,7 @@ export default function OpenAIRealtimeTest() {
       // Store the fresh prompt data for use in the call
       (window as any).freshPromptData = promptData;
 
-      setStatus(
-        `Call prepared with code: ${newCallCode}. Ready to start.`,
-      );
+      setStatus("Ready to start your interview with Sam.");
     } catch (error) {
       setStatus("Error preparing call. Please try again.");
     }
