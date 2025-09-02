@@ -50,9 +50,7 @@ async function createRecordingSession(callCode, mimeType, voucherName = null, vo
         voucher_name: voucherName,
         vouchee_name: voucheeName,
         voucher_email: voucherEmail,
-        voucher_phone: voucherPhone,
-        vouchee_email: voucheeEmail,
-        vouchee_phone: voucheePhone
+        voucher_phone: voucherPhone
       });
 
       return data[0];
@@ -210,7 +208,7 @@ export default async function handler(req, res) {
     }
   } 
   else if (req.method === "POST") {
-    const { action, call_code, mime_type, password, voucher_name, vouchee_name, voucher_email, voucher_phone, vouchee_email, vouchee_phone } = req.body;
+    const { action, call_code, mime_type, password, voucher_name, vouchee_name, voucher_email, voucher_phone } = req.body;
 
     console.log('��� Received POST request to /api/admin/recordings:', {
       action,
@@ -241,7 +239,7 @@ export default async function handler(req, res) {
           vouchee_name
         });
 
-        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name, voucher_email, voucher_phone, vouchee_email, vouchee_phone);
+        const recording = await createRecordingSession(call_code, mime_type, voucher_name, vouchee_name, voucher_email, voucher_phone);
 
         if (recording) {
           console.log(`✅ Recording session created with names: voucher="${voucher_name}", vouchee="${vouchee_name}"`);
@@ -252,8 +250,6 @@ export default async function handler(req, res) {
             vouchee_name: recording.vouchee_name,
             voucher_email: recording.voucher_email,
             voucher_phone: recording.voucher_phone,
-            vouchee_email: recording.vouchee_email,
-            vouchee_phone: recording.vouchee_phone,
             message: "Recording session created successfully"
           });
         } else {
