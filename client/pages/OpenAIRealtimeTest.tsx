@@ -651,7 +651,38 @@ export default function OpenAIRealtimeTest() {
         {currentStep === 'call' && (
           <>
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl relative">
-          {/* Audio Visualization */}
+              {/* Conversation Progress Bar */}
+              {isConnected && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white/70 text-sm font-medium">
+                      {conversationStep === 0 ? "Opening" : conversationSteps[conversationStep]?.label || "Opening"}
+                    </span>
+                    <span className="text-white/50 text-xs">
+                      {conversationStep === 0 ? "Getting started" : `${conversationStep}/5`}
+                    </span>
+                  </div>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((step) => (
+                      <div
+                        key={step}
+                        className={`h-2 flex-1 rounded-full transition-all duration-500 ${
+                          step <= conversationStep
+                            ? "bg-gradient-to-r from-blue-400 to-cyan-400"
+                            : "bg-white/20"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-white/50 text-xs mt-1">
+                    {conversationStep === 0
+                      ? "Setting the scene and context"
+                      : conversationSteps[conversationStep]?.description || ""}
+                  </p>
+                </div>
+              )}
+
+              {/* Audio Visualization */}
           <div className="flex items-end justify-center space-x-1 h-32 mb-8">
             {audioLevels.map((level, index) => (
               <div
