@@ -149,6 +149,14 @@ export default function OpenAIRealtimeTest() {
         dataChannel.send(JSON.stringify(sessionUpdateEvent));
         setStatus("Connected! Sam is ready to chat.");
 
+        // Show hello popup to guide user
+        setShowHelloPopup(true);
+
+        // Hide popup after 5 seconds
+        setTimeout(() => {
+          setShowHelloPopup(false);
+        }, 5000);
+
         // Start automatic recording when call is connected
         startAutomaticRecording();
       });
