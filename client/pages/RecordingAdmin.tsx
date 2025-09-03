@@ -224,7 +224,7 @@ export default function RecordingAdmin() {
       const response = await fetch(`/api/admin/recordings/${recordingId}/fix`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: password })
+        body: JSON.stringify({})
       });
 
       if (response.ok) {
