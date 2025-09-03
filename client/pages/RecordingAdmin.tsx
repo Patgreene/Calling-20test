@@ -356,8 +356,7 @@ export default function RecordingAdmin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recording_id: recordingId,
-          transcript_text: transcriptText,
-          password: password
+          transcript_text: transcriptText
         })
       });
 
