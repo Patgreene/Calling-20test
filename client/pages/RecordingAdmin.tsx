@@ -477,19 +477,21 @@ export default function RecordingAdmin() {
   };
 
   useEffect(() => {
+    loadRecordings();
+  }, []);
+
+  useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
 
-  // Auto-refresh recordings every 30 seconds if authenticated
+  // Auto-refresh recordings every 30 seconds
   useEffect(() => {
-    if (isAuthenticated) {
-      const interval = setInterval(loadRecordings, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated]);
+    const interval = setInterval(loadRecordings, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Cleanup audio on component unmount
   useEffect(() => {
