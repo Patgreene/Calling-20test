@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 
 export default function Admin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
   const [prompt, setPrompt] = useState("");
   const [originalPrompt, setOriginalPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -53,16 +51,6 @@ export default function Admin() {
   const [showHistory, setShowHistory] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  // Simple admin authentication
-  const handleAuth = () => {
-    // Simple password check - in production, use proper auth
-    if (password === "vouch2024admin") {
-      setIsAuthenticated(true);
-      loadPrompt();
-    } else {
-      setMessage({ type: "error", text: "Invalid admin password" });
-    }
-  };
 
   const loadPrompt = async () => {
     setIsLoading(true);
@@ -102,7 +90,6 @@ export default function Admin() {
         body: JSON.stringify({
           instructions: prompt,
           sessionConfig: sessionConfig,
-          password: password, // Include password for additional security
         }),
       });
 
@@ -215,52 +202,16 @@ export default function Admin() {
   };
 
   useEffect(() => {
+    loadPrompt();
+  }, []);
+
+  useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Lock className="w-5 h-5" />
-              Admin Access
-            </CardTitle>
-            <CardDescription className="text-white/70">
-              Enter admin password to manage prompts
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin password"
-              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-              onKeyDown={(e) => e.key === "Enter" && handleAuth()}
-            />
-            <Button
-              onClick={handleAuth}
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
-              Access Admin
-            </Button>
-            {message && message.type === "error" && (
-              <Alert className="border-red-500/50 bg-red-500/10">
-                <AlertDescription className="text-red-300">
-                  {message.text}
-                </AlertDescription>
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-4">
@@ -824,14 +775,6 @@ export default function Admin() {
                   onClick={() => window.open("/openai-realtime-test", "_blank")}
                 >
                   Test Interview Page
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-                  onClick={() => setIsAuthenticated(false)}
-                >
-                  Logout
                 </Button>
               </CardContent>
             </Card>
