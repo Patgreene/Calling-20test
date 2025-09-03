@@ -537,14 +537,6 @@ export default function RecordingAdmin() {
             >
               Test Interview
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-              onClick={() => setIsAuthenticated(false)}
-            >
-              Logout
-            </Button>
           </div>
         </div>
 
