@@ -312,8 +312,7 @@ export default function RecordingAdmin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recording_id: recordingId,
-          password: password
+          recording_id: recordingId
         })
       });
 
