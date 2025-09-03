@@ -6,6 +6,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import AdminProtectedRoute from "@/components/AdminProtectedRoute";
 import Index from "./pages/Index";
 import Form from "./pages/Form";
 import AICall from "./pages/AICall";
@@ -22,29 +24,31 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/form" element={<Form />} />
-          <Route path="/ai-call" element={<AICall />} />
-          <Route path="/nps" element={<NPS />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          <Route
-            path="/openai-realtime-test"
-            element={<OpenAIRealtimeTest />}
-          />
-          <Route path="/admin1224" element={<AdminLandingPage />} />
-          <Route path="/admin1224-prompt" element={<Admin />} />
-          <Route path="/admin1224-recording" element={<RecordingAdmin />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/form" element={<Form />} />
+            <Route path="/ai-call" element={<AICall />} />
+            <Route path="/nps" element={<NPS />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/thank-you" element={<ThankYou />} />
+            <Route
+              path="/openai-realtime-test"
+              element={<OpenAIRealtimeTest />}
+            />
+            <Route path="/admin1224" element={<AdminProtectedRoute><AdminLandingPage /></AdminProtectedRoute>} />
+            <Route path="/admin1224-prompt" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
+            <Route path="/admin1224-recording" element={<AdminProtectedRoute><RecordingAdmin /></AdminProtectedRoute>} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
