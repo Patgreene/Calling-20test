@@ -81,15 +81,15 @@ export default function AdminLandingPage() {
           {/* Profile Admin Card */}
           <Card className="bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer group">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-500/30 transition-colors">
-                <User className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-sky-500/30 transition-colors">
+                <User className="w-8 h-8 text-sky-400" />
               </div>
               <CardTitle className="text-white text-xl">Profile Admin</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <Button
                 onClick={() => window.open("https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW", "_blank")}
-                className="w-full bg-purple-600 hover:bg-purple-700 group-hover:bg-purple-500 transition-colors"
+                className="w-full bg-sky-600 hover:bg-sky-700 group-hover:bg-sky-500 transition-colors"
                 size="lg"
               >
                 Access
