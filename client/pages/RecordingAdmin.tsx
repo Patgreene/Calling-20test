@@ -56,8 +56,6 @@ interface Recording {
 }
 
 export default function RecordingAdmin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
