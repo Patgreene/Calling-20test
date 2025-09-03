@@ -274,7 +274,7 @@ export default function RecordingAdmin() {
       const response = await fetch(`/api/admin/recordings/${recordingId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: password }),
+        body: JSON.stringify({}),
       });
 
       if (response.ok) {
