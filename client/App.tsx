@@ -15,6 +15,7 @@ import ThankYou from "./pages/ThankYou";
 import OpenAIRealtimeTest from "./pages/OpenAIRealtimeTest";
 import Admin from "./pages/Admin";
 import RecordingAdmin from "./pages/RecordingAdmin";
+import AdminLandingPage from "./pages/AdminLandingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,8 +37,9 @@ const App = () => (
             path="/openai-realtime-test"
             element={<OpenAIRealtimeTest />}
           />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/recording-admin" element={<RecordingAdmin />} />
+          <Route path="/admin1224" element={<AdminLandingPage />} />
+          <Route path="/admin1224-prompt" element={<Admin />} />
+          <Route path="/admin1224-recording" element={<RecordingAdmin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
