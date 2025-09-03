@@ -77,15 +77,6 @@ export default function RecordingAdmin() {
     successRate: 0,
   });
 
-  // Simple admin authentication
-  const handleAuth = () => {
-    if (password === "vouch2024admin") {
-      setIsAuthenticated(true);
-      loadRecordings();
-    } else {
-      setMessage({ type: "error", text: "Invalid admin password" });
-    }
-  };
 
   const loadRecordings = async () => {
     setIsLoading(true);
