@@ -121,7 +121,7 @@ export default function RecordingAdmin() {
       const response = await fetch(`/api/admin/recordings/${recordingId}/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: password })
+        body: JSON.stringify({})
       });
 
       if (response.ok) {
