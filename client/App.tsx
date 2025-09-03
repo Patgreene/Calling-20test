@@ -40,9 +40,30 @@ const App = () => (
               path="/openai-realtime-test"
               element={<OpenAIRealtimeTest />}
             />
-            <Route path="/admin1224" element={<AdminProtectedRoute><AdminLandingPage /></AdminProtectedRoute>} />
-            <Route path="/admin1224-prompt" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
-            <Route path="/admin1224-recording" element={<AdminProtectedRoute><RecordingAdmin /></AdminProtectedRoute>} />
+            <Route
+              path="/admin1224"
+              element={
+                <AdminProtectedRoute>
+                  <AdminLandingPage />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin1224-prompt"
+              element={
+                <AdminProtectedRoute>
+                  <Admin />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin1224-recording"
+              element={
+                <AdminProtectedRoute>
+                  <RecordingAdmin />
+                </AdminProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

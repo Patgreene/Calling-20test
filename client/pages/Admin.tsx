@@ -51,7 +51,6 @@ export default function Admin() {
   const [showHistory, setShowHistory] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-
   const loadPrompt = async () => {
     setIsLoading(true);
     try {
@@ -211,7 +210,6 @@ export default function Admin() {
       return () => clearTimeout(timer);
     }
   }, [message]);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-4">

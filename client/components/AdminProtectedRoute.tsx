@@ -1,31 +1,33 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Lock } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Lock } from "lucide-react";
 
 interface AdminProtectedRouteProps {
   children: React.ReactNode;
 }
 
-export default function AdminProtectedRoute({ children }: AdminProtectedRouteProps) {
+export default function AdminProtectedRoute({
+  children,
+}: AdminProtectedRouteProps) {
   const { isAuthenticated, login } = useAuth();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = () => {
     if (login(password)) {
-      setPassword('');
-      setError('');
+      setPassword("");
+      setError("");
     } else {
-      setError('Invalid admin password');
-      setPassword('');
+      setError("Invalid admin password");
+      setPassword("");
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleLogin();
     }
   };
@@ -33,7 +35,7 @@ export default function AdminProtectedRoute({ children }: AdminProtectedRoutePro
   // Clear error after 3 seconds
   useEffect(() => {
     if (error) {
-      const timer = setTimeout(() => setError(''), 3000);
+      const timer = setTimeout(() => setError(""), 3000);
       return () => clearTimeout(timer);
     }
   }, [error]);

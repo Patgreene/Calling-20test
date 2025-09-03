@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, Mic, User, ArrowRight, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,7 +59,9 @@ export default function AdminLandingPage() {
               <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500/30 transition-colors">
                 <Mic className="w-8 h-8 text-orange-400" />
               </div>
-              <CardTitle className="text-white text-xl">Recording Admin</CardTitle>
+              <CardTitle className="text-white text-xl">
+                Recording Admin
+              </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <Button
@@ -84,11 +81,18 @@ export default function AdminLandingPage() {
               <div className="w-16 h-16 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-sky-500/30 transition-colors">
                 <User className="w-8 h-8 text-sky-400" />
               </div>
-              <CardTitle className="text-white text-xl">Profile Admin</CardTitle>
+              <CardTitle className="text-white text-xl">
+                Profile Admin
+              </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <Button
-                onClick={() => window.open("https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW", "_blank")}
+                onClick={() =>
+                  window.open(
+                    "https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW",
+                    "_blank",
+                  )
+                }
                 className="w-full bg-sky-600 hover:bg-sky-700 group-hover:bg-sky-500 transition-colors"
                 size="lg"
               >

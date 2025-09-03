@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,7 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -29,18 +35,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Check for existing session on mount
   useEffect(() => {
-    const savedAuth = localStorage.getItem('admin_auth');
-    const savedActivity = localStorage.getItem('admin_last_activity');
-    
-    if (savedAuth === 'true' && savedActivity) {
+    const savedAuth = localStorage.getItem("admin_auth");
+    const savedActivity = localStorage.getItem("admin_last_activity");
+
+    if (savedAuth === "true" && savedActivity) {
       const timeSinceActivity = Date.now() - parseInt(savedActivity);
       if (timeSinceActivity < SESSION_TIMEOUT) {
         setIsAuthenticated(true);
         setLastActivity(parseInt(savedActivity));
       } else {
         // Session expired
-        localStorage.removeItem('admin_auth');
-        localStorage.removeItem('admin_last_activity');
+        localStorage.removeItem("admin_auth");
+        localStorage.removeItem("admin_last_activity");
       }
     }
   }, []);
@@ -51,19 +57,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const now = Date.now();
       setLastActivity(now);
       if (isAuthenticated) {
-        localStorage.setItem('admin_last_activity', now.toString());
+        localStorage.setItem("admin_last_activity", now.toString());
       }
     };
 
     // Track various user interactions
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
-    events.forEach(event => {
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+      "click",
+    ];
+
+    events.forEach((event) => {
       document.addEventListener(event, updateActivity, true);
     });
 
     return () => {
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, updateActivity, true);
       });
     };
@@ -88,8 +101,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const now = Date.now();
       setIsAuthenticated(true);
       setLastActivity(now);
-      localStorage.setItem('admin_auth', 'true');
-      localStorage.setItem('admin_last_activity', now.toString());
+      localStorage.setItem("admin_auth", "true");
+      localStorage.setItem("admin_last_activity", now.toString());
       return true;
     }
     return false;
@@ -97,8 +110,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('admin_auth');
-    localStorage.removeItem('admin_last_activity');
+    localStorage.removeItem("admin_auth");
+    localStorage.removeItem("admin_last_activity");
   };
 
   return (
