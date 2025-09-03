@@ -5,8 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Settings, Mic, User, ArrowRight } from "lucide-react";
+import { Settings, Mic, User, ArrowRight, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AdminLandingPage() {
   const navigate = useNavigate();
