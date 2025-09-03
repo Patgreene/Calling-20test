@@ -17,10 +17,23 @@ export default function AdminLandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-            Vouch Admin Portal
-          </h1>
+        <div className="relative mb-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+              Vouch Admin Portal
+            </h1>
+          </div>
+          <div className="absolute top-0 right-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="bg-red-500/10 border-red-500/30 text-red-300 hover:bg-red-500/20"
+            >
+              <LogOut className="w-4 h-4 mr-1" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Admin Options */}
