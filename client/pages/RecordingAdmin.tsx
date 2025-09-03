@@ -508,46 +508,6 @@ export default function RecordingAdmin() {
   }, []);
 
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Lock className="w-5 h-5" />
-              Recording Admin Access
-            </CardTitle>
-            <CardDescription className="text-white/70">
-              Enter admin password to manage interview recordings
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin password"
-              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-              onKeyDown={(e) => e.key === "Enter" && handleAuth()}
-            />
-            <Button
-              onClick={handleAuth}
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
-              Access Recording Admin
-            </Button>
-            {message && message.type === "error" && (
-              <Alert className="border-red-500/50 bg-red-500/10">
-                <AlertDescription className="text-red-300">
-                  {message.text}
-                </AlertDescription>
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-4">
