@@ -61,15 +61,15 @@ export default function AdminLandingPage() {
           {/* Recording Admin Card */}
           <Card className="bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer group">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-500/30 transition-colors">
-                <Mic className="w-8 h-8 text-green-400" />
+              <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500/30 transition-colors">
+                <Mic className="w-8 h-8 text-orange-400" />
               </div>
               <CardTitle className="text-white text-xl">Recording Admin</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <Button
                 onClick={() => navigate("/admin1224-recording")}
-                className="w-full bg-green-600 hover:bg-green-700 group-hover:bg-green-500 transition-colors"
+                className="w-full bg-orange-600 hover:bg-orange-700 group-hover:bg-orange-500 transition-colors"
                 size="lg"
               >
                 Access
