@@ -71,7 +71,15 @@ export const handler = async (event: any, context: any) => {
     }
   }
 
+  console.log("🔐 Auth check:", {
+    authHeader,
+    password,
+    bodyPassword,
+    hasValidAuth: password === "Tim&Pat95" || bodyPassword === "Tim&Pat95"
+  });
+
   if (password !== "Tim&Pat95" && bodyPassword !== "Tim&Pat95") {
+    console.error("❌ Authentication failed for download request");
     return {
       statusCode: 401,
       headers: {
