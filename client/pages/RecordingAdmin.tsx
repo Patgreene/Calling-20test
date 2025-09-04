@@ -178,7 +178,7 @@ Recording ID: ${recordingId}
 Filename: ${fileName}
 Created: ${new Date().toISOString()}
 This is a development mock file.`;
-        return new Blob([text], { type: 'text/plain' });
+        return new Blob([text], { type: "text/plain" });
       };
 
       const blob = createMockDownloadBlob();
@@ -256,7 +256,7 @@ This is a development mock file.`;
           const sampleRate = 44100;
           const duration = 1; // 1 second
           const numSamples = duration * sampleRate;
-          const arrayBuffer = new ArrayBuffer(44 + (numSamples * 2));
+          const arrayBuffer = new ArrayBuffer(44 + numSamples * 2);
           const view = new DataView(arrayBuffer);
 
           // WAV header
@@ -266,10 +266,10 @@ This is a development mock file.`;
             }
           };
 
-          writeString(0, 'RIFF');
-          view.setUint32(4, 36 + (numSamples * 2), true);
-          writeString(8, 'WAVE');
-          writeString(12, 'fmt ');
+          writeString(0, "RIFF");
+          view.setUint32(4, 36 + numSamples * 2, true);
+          writeString(8, "WAVE");
+          writeString(12, "fmt ");
           view.setUint32(16, 16, true);
           view.setUint16(20, 1, true);
           view.setUint16(22, 1, true);
@@ -277,16 +277,17 @@ This is a development mock file.`;
           view.setUint32(28, sampleRate * 2, true);
           view.setUint16(32, 2, true);
           view.setUint16(34, 16, true);
-          writeString(36, 'data');
+          writeString(36, "data");
           view.setUint32(40, numSamples * 2, true);
 
           // Generate a simple beep
           for (let i = 0; i < numSamples; i++) {
-            const amplitude = Math.sin(2 * Math.PI * 440 * i / sampleRate) * 0.1;
-            view.setInt16(44 + (i * 2), amplitude * 32767, true);
+            const amplitude =
+              Math.sin((2 * Math.PI * 440 * i) / sampleRate) * 0.1;
+            view.setInt16(44 + i * 2, amplitude * 32767, true);
           }
 
-          return new Blob([arrayBuffer], { type: 'audio/wav' });
+          return new Blob([arrayBuffer], { type: "audio/wav" });
         };
 
         const blob = createMockWavBlob();
