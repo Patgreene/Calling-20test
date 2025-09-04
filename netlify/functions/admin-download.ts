@@ -57,8 +57,9 @@ export const handler = async (event: any, context: any) => {
     }
   }
 
-  // Check authentication
-  const authHeader = event.headers.authorization || event.headers.Authorization;
+  // Check authentication (case insensitive)
+  const headers = event.headers || {};
+  const authHeader = headers.authorization || headers.Authorization || headers['Authorization'] || headers['authorization'];
   const password = authHeader ? authHeader.replace('Bearer ', '') : null;
   let bodyPassword = null;
 
