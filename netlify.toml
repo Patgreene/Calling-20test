@@ -13,6 +13,21 @@
   status = 200
 
 [[redirects]]
+  from = "/api/contact"
+  to = "/.netlify/functions/contact"
+  status = 200
+
+[[redirects]]
+  from = "/api/submit-vouch"
+  to = "/.netlify/functions/submit-vouch"
+  status = 200
+
+[[redirects]]
+  from = "/api/upload-image"
+  to = "/.netlify/functions/upload-image"
+  status = 200
+
+[[redirects]]
   from = "/api/realtime/client-secret"
   to = "/.netlify/functions/client-secret"
   status = 200
@@ -60,6 +75,16 @@
 [[redirects]]
   from = "/api/admin/recordings/:id"
   to = "/.netlify/functions/admin-delete?id=:id"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/prompt-history"
+  to = "/.netlify/functions/admin-prompt-history"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/prompt/:id"
+  to = "/.netlify/functions/admin-prompt-by-id?id=:id"
   status = 200
 
 [[redirects]]
