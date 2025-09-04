@@ -18,6 +18,16 @@
   status = 200
 
 [[redirects]]
+  from = "/api/admin/recordings"
+  to = "/.netlify/functions/admin-recordings"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/prompt"
+  to = "/.netlify/functions/admin-prompt"
+  status = 200
+
+[[redirects]]
   from = "/api/test"
   to = "/.netlify/functions/test"
   status = 200
