@@ -202,8 +202,14 @@ export const handler = async (event: any, context: any) => {
 
     // Create form data for OpenAI Whisper API
     const audioBlob = new Blob([concatenatedBuffer], { type: "audio/webm" });
+
+    // Use node-fetch compatible FormData
+    const FormData = require('form-data');
     const formData = new FormData();
-    formData.append("file", audioBlob, `${recording_id}.webm`);
+    formData.append("file", Buffer.from(concatenatedBuffer), {
+      filename: `${recording_id}.webm`,
+      contentType: "audio/webm"
+    });
     formData.append("model", "whisper-1");
     formData.append("response_format", "verbose_json");
     formData.append("timestamp_granularities[]", "word");
@@ -218,6 +224,7 @@ export const handler = async (event: any, context: any) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${openaiApiKey}`,
+          ...formData.getHeaders(),
         },
         body: formData,
       },

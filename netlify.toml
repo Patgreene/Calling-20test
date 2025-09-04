@@ -23,21 +23,6 @@
   status = 200
 
 [[redirects]]
-  from = "/api/admin/recordings/*/download"
-  to = "/.netlify/functions/admin-download"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/*/fix"
-  to = "/.netlify/functions/admin-fix"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/retry"
-  to = "/.netlify/functions/admin-retry"
-  status = 200
-
-[[redirects]]
   from = "/api/admin/recordings/transcribe"
   to = "/.netlify/functions/admin-transcribe"
   status = 200
@@ -48,8 +33,23 @@
   status = 200
 
 [[redirects]]
-  from = "/api/admin/recordings/*"
-  to = "/.netlify/functions/admin-delete"
+  from = "/api/admin/recordings/retry"
+  to = "/.netlify/functions/admin-retry"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/recordings/:id/download"
+  to = "/.netlify/functions/admin-download?id=:id"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/recordings/:id/fix"
+  to = "/.netlify/functions/admin-fix?id=:id"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/recordings/:id"
+  to = "/.netlify/functions/admin-delete?id=:id"
   status = 200
 
 [[redirects]]

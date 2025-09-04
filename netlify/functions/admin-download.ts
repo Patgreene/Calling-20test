@@ -27,10 +27,31 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
-  // Extract recording ID from path
-  const pathParts = event.path.split("/");
-  const idIndex = pathParts.findIndex((part) => part === "recordings") + 1;
-  const id = pathParts[idIndex];
+  // Extract recording ID from path or query parameters
+  let id = event.queryStringParameters?.id;
+
+  if (!id) {
+    // Try to extract from path
+    const pathParts = event.path.split("/");
+    const recordingsIndex = pathParts.findIndex((part) => part === "recordings");
+    if (recordingsIndex >= 0 && recordingsIndex + 1 < pathParts.length) {
+      id = pathParts[recordingsIndex + 1];
+      // Remove 'download' suffix if present
+      if (id === 'download' && recordingsIndex + 2 < pathParts.length) {
+        id = pathParts[recordingsIndex - 1];
+      }
+    }
+  }
+
+  // Also try to get from request body
+  if (!id && event.body) {
+    try {
+      const body = JSON.parse(event.body);
+      id = body.recording_id || body.id;
+    } catch (e) {
+      // Ignore JSON parse errors
+    }
+  }
 
   if (!id) {
     return {
