@@ -85,7 +85,10 @@ export default function RecordingAdmin() {
     try {
       // TEMPORARY: Mock data for development since Netlify functions aren't working locally
       console.log("🔧 DEV MODE: Using mock recordings data");
-      setMessage({ type: "warning", text: "Development mode: Using mock data" });
+      setMessage({
+        type: "warning",
+        text: "Development mode: Using mock data",
+      });
 
       // Mock recordings data
       const mockRecordings = [
@@ -106,10 +109,11 @@ export default function RecordingAdmin() {
           transcription: {
             id: "trans_123",
             status: "completed",
-            transcript_text: "Hey there, Patrick. I'm Sam. How are you going? Just to confirm, you're vouching for Tim, right?",
-            completed_at: "2025-09-02T09:00:00Z"
-          }
-        }
+            transcript_text:
+              "Hey there, Patrick. I'm Sam. How are you going? Just to confirm, you're vouching for Tim, right?",
+            completed_at: "2025-09-02T09:00:00Z",
+          },
+        },
       ];
 
       setRecordings(mockRecordings);
@@ -172,7 +176,7 @@ export default function RecordingAdmin() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer Tim&Pat95"
+            Authorization: "Bearer Tim&Pat95",
           },
           body: JSON.stringify({ password: "Tim&Pat95" }),
         },
@@ -227,7 +231,7 @@ export default function RecordingAdmin() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer Tim&Pat95"
+              Authorization: "Bearer Tim&Pat95",
             },
             body: JSON.stringify({ password: "Tim&Pat95" }),
           },
@@ -238,7 +242,7 @@ export default function RecordingAdmin() {
         console.log("✅ Mock audio blob created:", {
           size: blob.size,
           type: blob.type,
-          recordingId
+          recordingId,
         });
         const audioUrl = window.URL.createObjectURL(blob);
 

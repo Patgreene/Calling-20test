@@ -29,8 +29,12 @@ export const handler = async (event: any, context: any) => {
 
   // Check authentication FIRST (case insensitive)
   const headers = event.headers || {};
-  const authHeader = headers.authorization || headers.Authorization || headers['Authorization'] || headers['authorization'];
-  const password = authHeader ? authHeader.replace('Bearer ', '') : null;
+  const authHeader =
+    headers.authorization ||
+    headers.Authorization ||
+    headers["Authorization"] ||
+    headers["authorization"];
+  const password = authHeader ? authHeader.replace("Bearer ", "") : null;
   let bodyPassword = null;
 
   if (event.body) {
@@ -50,14 +54,14 @@ export const handler = async (event: any, context: any) => {
     password,
     bodyPassword,
     allHeaders: Object.keys(headers),
-    hasValidAuth: password === "Tim&Pat95" || bodyPassword === "Tim&Pat95"
+    hasValidAuth: password === "Tim&Pat95" || bodyPassword === "Tim&Pat95",
   });
 
   if (password !== "Tim&Pat95" && bodyPassword !== "Tim&Pat95") {
     console.error("❌ Authentication failed for download request", {
       password,
       bodyPassword,
-      expectedPassword: "Tim&Pat95"
+      expectedPassword: "Tim&Pat95",
     });
     return {
       statusCode: 401,
@@ -105,7 +109,7 @@ export const handler = async (event: any, context: any) => {
     console.error("❌ No recording ID found in request", {
       path: event.path,
       queryParams: event.queryStringParameters,
-      body: event.body ? event.body.substring(0, 100) : null
+      body: event.body ? event.body.substring(0, 100) : null,
     });
     return {
       statusCode: 400,
@@ -124,7 +128,7 @@ export const handler = async (event: any, context: any) => {
     console.log(`🔽 Downloading recording ${id}`, {
       path: event.path,
       method: event.httpMethod,
-      hasBody: !!event.body
+      hasBody: !!event.body,
     });
 
     // Get recording details

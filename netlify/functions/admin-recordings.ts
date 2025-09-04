@@ -78,8 +78,12 @@ export const handler = async (event: any, context: any) => {
 
   // Check authentication (case insensitive)
   const headers = event.headers || {};
-  const authHeader = headers.authorization || headers.Authorization || headers['Authorization'] || headers['authorization'];
-  const password = authHeader ? authHeader.replace('Bearer ', '') : null;
+  const authHeader =
+    headers.authorization ||
+    headers.Authorization ||
+    headers["Authorization"] ||
+    headers["authorization"];
+  const password = authHeader ? authHeader.replace("Bearer ", "") : null;
 
   if (password !== "Tim&Pat95") {
     return {
