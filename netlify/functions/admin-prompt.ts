@@ -97,12 +97,15 @@ async function getCurrentPrompt() {
             voice: activePrompt.voice || "alloy",
             speed: parseFloat(activePrompt.speed) || 1.0,
             temperature: parseFloat(activePrompt.temperature) || 0.8,
-            max_response_output_tokens: parseInt(activePrompt.max_response_tokens) || 4096,
+            max_response_output_tokens:
+              parseInt(activePrompt.max_response_tokens) || 4096,
             turn_detection: {
               type: "server_vad",
               threshold: parseFloat(activePrompt.vad_threshold) || 0.5,
-              prefix_padding_ms: parseInt(activePrompt.prefix_padding_ms) || 300,
-              silence_duration_ms: parseInt(activePrompt.silence_duration_ms) || 500,
+              prefix_padding_ms:
+                parseInt(activePrompt.prefix_padding_ms) || 300,
+              silence_duration_ms:
+                parseInt(activePrompt.silence_duration_ms) || 500,
             },
           },
           promptId: activePrompt.id,
@@ -125,19 +128,19 @@ async function getCurrentPrompt() {
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod === 'GET') {
+  if (event.httpMethod === "GET") {
     try {
       const promptData = await getCurrentPrompt();
       return {
@@ -146,21 +149,21 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS"
+          "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
         },
-        body: JSON.stringify(promptData)
+        body: JSON.stringify(promptData),
       };
     } catch (error: any) {
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           error: "Failed to get prompt",
-          details: error.message
-        })
+          details: error.message,
+        }),
       };
     }
   }
@@ -170,8 +173,8 @@ export const handler = async (event: any, context: any) => {
     statusCode: 405,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+      "Access-Control-Allow-Origin": "*",
     },
-    body: JSON.stringify({ error: "Method not allowed" })
+    body: JSON.stringify({ error: "Method not allowed" }),
   };
 };

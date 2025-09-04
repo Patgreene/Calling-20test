@@ -34,7 +34,7 @@ async function loadRecordings() {
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (transcriptionsResponse.ok) {
@@ -46,10 +46,12 @@ async function loadRecordings() {
 
     // Combine recordings with their transcriptions
     const recordingsWithTranscriptions = recordings.map((recording: any) => {
-      const transcription = transcriptions.find((t: any) => t.recording_id === recording.id);
+      const transcription = transcriptions.find(
+        (t: any) => t.recording_id === recording.id,
+      );
       return {
         ...recording,
-        transcription: transcription || null
+        transcription: transcription || null,
       };
     });
 
@@ -62,26 +64,26 @@ async function loadRecordings() {
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'GET') {
+  if (event.httpMethod !== "GET") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
@@ -93,13 +95,13 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
         recordings: recordings,
-        total: recordings.length
-      })
+        total: recordings.length,
+      }),
     };
   } catch (error: any) {
     console.error("GET /api/admin/recordings error:", error);
@@ -107,12 +109,12 @@ export const handler = async (event: any, context: any) => {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: "Failed to load recordings",
-        details: error.message
-      })
+        details: error.message,
+      }),
     };
   }
 };
