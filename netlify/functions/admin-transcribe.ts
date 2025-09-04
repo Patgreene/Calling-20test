@@ -200,72 +200,16 @@ export const handler = async (event: any, context: any) => {
 
     console.log(`📦 Downloaded ${concatenatedBuffer.byteLength} bytes`);
 
-    // Create form data for OpenAI Whisper API manually
-    const boundary = `----formdata-${Date.now()}`;
-    const CRLF = '\r\n';
+    // Create simple form data using FormData web API
+    // Note: Using native FormData which should work in Netlify Functions
+    const formData = new FormData();
 
-    const formDataParts = [];
+    // Create a Blob from the buffer
+    const audioBlob = new Blob([concatenatedBuffer], { type: "audio/webm" });
 
-    // Add file part
-    formDataParts.push(
-      `--${boundary}${CRLF}` +
-      `Content-Disposition: form-data; name="file"; filename="${recording_id}.webm"${CRLF}` +
-      `Content-Type: audio/webm${CRLF}${CRLF}`
-    );
-    formDataParts.push(concatenatedBuffer);
-    formDataParts.push(`${CRLF}`);
-
-    // Add model part
-    formDataParts.push(
-      `--${boundary}${CRLF}` +
-      `Content-Disposition: form-data; name="model"${CRLF}${CRLF}` +
-      `whisper-1${CRLF}`
-    );
-
-    // Add response_format part
-    formDataParts.push(
-      `--${boundary}${CRLF}` +
-      `Content-Disposition: form-data; name="response_format"${CRLF}${CRLF}` +
-      `verbose_json${CRLF}`
-    );
-
-    // Add timestamp_granularities parts
-    formDataParts.push(
-      `--${boundary}${CRLF}` +
-      `Content-Disposition: form-data; name="timestamp_granularities[]"${CRLF}${CRLF}` +
-      `word${CRLF}`
-    );
-
-    formDataParts.push(
-      `--${boundary}${CRLF}` +
-      `Content-Disposition: form-data; name="timestamp_granularities[]"${CRLF}${CRLF}` +
-      `segment${CRLF}`
-    );
-
-    // Add final boundary
-    formDataParts.push(`--${boundary}--${CRLF}`);
-
-    // Calculate total length and create final buffer
-    let totalLength = 0;
-    const stringParts = formDataParts.filter((part, i) => i !== 1); // All except the audio buffer
-    const stringPartsBuffer = Buffer.from(stringParts.join(''));
-    totalLength = stringPartsBuffer.length + concatenatedBuffer.length;
-
-    const formDataBuffer = Buffer.alloc(totalLength);
-    let offset = 0;
-
-    // Copy string parts before audio
-    const beforeAudio = Buffer.from(formDataParts.slice(0, 2).join(''));
-    beforeAudio.copy(formDataBuffer, offset);
-    offset += beforeAudio.length;
-
-    // Copy audio buffer
-    concatenatedBuffer.copy(formDataBuffer, offset);
-    offset += concatenatedBuffer.length;
-
-    // Copy remaining string parts
-    const afterAudio = Buffer.from(formDataParts.slice(2).join(''));
-    afterAudio.copy(formDataBuffer, offset);
+    formData.append("file", audioBlob, `${recording_id}.webm`);
+    formData.append("model", "whisper-1");
+    formData.append("response_format", "verbose_json");
 
     console.log(`🤖 Sending to OpenAI Whisper API...`);
 
@@ -276,9 +220,9 @@ export const handler = async (event: any, context: any) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${openaiApiKey}`,
-          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          // Let fetch set the Content-Type with boundary automatically
         },
-        body: formDataBuffer,
+        body: formData,
       },
     );
 
