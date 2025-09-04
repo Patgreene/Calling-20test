@@ -31,7 +31,7 @@ export const handler = async (event: any, context: any) => {
   console.log("🔧 DEBUG: Download request received:", {
     path: event.path,
     method: event.httpMethod,
-    hasBody: !!event.body
+    hasBody: !!event.body,
   });
 
   // TODO: Re-enable authentication once we confirm the function works
