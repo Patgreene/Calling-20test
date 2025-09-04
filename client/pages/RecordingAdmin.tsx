@@ -83,11 +83,7 @@ export default function RecordingAdmin() {
   const loadRecordings = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/recordings", {
-        headers: {
-          Authorization: "Bearer Tim&Pat95",
-        },
-      });
+      const response = await fetch("/.netlify/functions/admin-recordings");
 
       if (response.ok) {
         const data = await response.json();
