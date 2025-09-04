@@ -423,7 +423,7 @@ export default function RecordingAdmin() {
     try {
       setMessage({ type: "success", text: "Saving transcript changes..." });
 
-      const response = await fetch("/api/admin/recordings/transcript", {
+      const response = await fetch("/.netlify/functions/admin-transcript", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
