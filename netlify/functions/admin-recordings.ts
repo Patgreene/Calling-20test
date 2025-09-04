@@ -75,7 +75,6 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
-
   // Handle GET requests (list recordings)
   if (event.httpMethod === "GET") {
     try {
@@ -113,7 +112,7 @@ export const handler = async (event: any, context: any) => {
   // Handle POST requests (create new recording session)
   if (event.httpMethod === "POST") {
     try {
-      const body = JSON.parse(event.body || '{}');
+      const body = JSON.parse(event.body || "{}");
       const {
         action,
         call_code,
@@ -121,10 +120,10 @@ export const handler = async (event: any, context: any) => {
         voucher_name,
         vouchee_name,
         voucher_email,
-        voucher_phone
+        voucher_phone,
       } = body;
 
-      if (action !== 'start_recording') {
+      if (action !== "start_recording") {
         return {
           statusCode: 400,
           headers: {
@@ -139,30 +138,30 @@ export const handler = async (event: any, context: any) => {
       const recordingData = {
         call_code: call_code || `REC-${Date.now()}`,
         file_name: `${call_code || `REC-${Date.now()}`}.webm`,
-        mime_type: mime_type || 'audio/webm',
-        upload_status: 'uploading',
-        verification_status: 'pending',
+        mime_type: mime_type || "audio/webm",
+        upload_status: "uploading",
+        verification_status: "pending",
         voucher_name: voucher_name || null,
         vouchee_name: vouchee_name || null,
         voucher_email: voucher_email || null,
         voucher_phone: voucher_phone || null,
         chunks_total: 0,
         chunks_uploaded: 0,
-        retry_count: 0
+        retry_count: 0,
       };
 
       const response = await fetch(
         `${SUPABASE_URL}/rest/v1/interview_recordings`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
             apikey: SUPABASE_ANON_KEY,
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
           },
-          body: JSON.stringify(recordingData)
-        }
+          body: JSON.stringify(recordingData),
+        },
       );
 
       if (!response.ok) {
@@ -173,7 +172,7 @@ export const handler = async (event: any, context: any) => {
       const recordingId = recording[0]?.id;
 
       if (!recordingId) {
-        throw new Error('No recording ID returned from database');
+        throw new Error("No recording ID returned from database");
       }
 
       return {
@@ -185,7 +184,7 @@ export const handler = async (event: any, context: any) => {
         body: JSON.stringify({
           success: true,
           recording_id: recordingId,
-          message: 'Recording session created successfully'
+          message: "Recording session created successfully",
         }),
       };
     } catch (error: any) {
@@ -213,5 +212,4 @@ export const handler = async (event: any, context: any) => {
     },
     body: JSON.stringify({ error: "Method not allowed" }),
   };
-
 };

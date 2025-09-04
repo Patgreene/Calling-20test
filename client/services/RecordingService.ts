@@ -14,7 +14,7 @@ interface ChunkData {
   blob: Blob;
   hash: string;
   uploadAttempts: number;
-  status: 'pending' | 'uploading' | 'uploaded' | 'failed';
+  status: "pending" | "uploading" | "uploaded" | "failed";
   lastError?: string;
 }
 
@@ -37,7 +37,7 @@ class RecordingService {
   private static instance: RecordingService;
   private config: RecordingConfig;
   private activeSession: RecordingSession | null = null;
-  private indexedDBName = 'VouchRecordings';
+  private indexedDBName = "VouchRecordings";
   private indexedDBVersion = 1;
   private db: IDBDatabase | null = null;
 
@@ -67,24 +67,28 @@ class RecordingService {
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
         this.db = request.result;
-        console.log('✅ IndexedDB initialized for recording backup');
+        console.log("✅ IndexedDB initialized for recording backup");
         resolve();
       };
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         // Create object store for recording chunks
-        if (!db.objectStoreNames.contains('chunks')) {
-          const chunkStore = db.createObjectStore('chunks', { keyPath: 'id' });
-          chunkStore.createIndex('recordingId', 'recordingId', { unique: false });
-          chunkStore.createIndex('chunkIndex', 'chunkIndex', { unique: false });
+        if (!db.objectStoreNames.contains("chunks")) {
+          const chunkStore = db.createObjectStore("chunks", { keyPath: "id" });
+          chunkStore.createIndex("recordingId", "recordingId", {
+            unique: false,
+          });
+          chunkStore.createIndex("chunkIndex", "chunkIndex", { unique: false });
         }
 
         // Create object store for recording metadata
-        if (!db.objectStoreNames.contains('recordings')) {
-          const recordingStore = db.createObjectStore('recordings', { keyPath: 'id' });
-          recordingStore.createIndex('status', 'status', { unique: false });
+        if (!db.objectStoreNames.contains("recordings")) {
+          const recordingStore = db.createObjectStore("recordings", {
+            keyPath: "id",
+          });
+          recordingStore.createIndex("status", "status", { unique: false });
         }
       };
     });
@@ -93,11 +97,11 @@ class RecordingService {
   // Determine the best supported MIME type for recording
   private getBestMimeType(): string {
     const preferredTypes = [
-      'audio/webm;codecs=opus',
-      'audio/mp4;codecs=mp4a.40.2',
-      'audio/wav',
-      'audio/webm',
-      'audio/ogg;codecs=opus'
+      "audio/webm;codecs=opus",
+      "audio/mp4;codecs=mp4a.40.2",
+      "audio/wav",
+      "audio/webm",
+      "audio/ogg;codecs=opus",
     ];
 
     for (const mimeType of preferredTypes) {
@@ -107,28 +111,31 @@ class RecordingService {
       }
     }
 
-    console.warn('⚠️ No preferred MIME type supported, using default');
-    return 'audio/webm';
+    console.warn("⚠️ No preferred MIME type supported, using default");
+    return "audio/webm";
   }
 
   // Calculate SHA-256 hash of a blob
   private async calculateHash(blob: Blob): Promise<string> {
     const arrayBuffer = await blob.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   // Save chunk to IndexedDB as backup
-  private async saveChunkToIndexedDB(recordingId: string, chunkData: ChunkData): Promise<void> {
+  private async saveChunkToIndexedDB(
+    recordingId: string,
+    chunkData: ChunkData,
+  ): Promise<void> {
     if (!this.db) {
-      console.warn('⚠️ IndexedDB not available for backup');
+      console.warn("⚠️ IndexedDB not available for backup");
       return;
     }
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(['chunks'], 'readwrite');
-      const store = transaction.objectStore('chunks');
+      const transaction = this.db!.transaction(["chunks"], "readwrite");
+      const store = transaction.objectStore("chunks");
 
       const chunkRecord = {
         id: `${recordingId}_chunk_${chunkData.index}`,
@@ -137,42 +144,50 @@ class RecordingService {
         blob: chunkData.blob,
         hash: chunkData.hash,
         createdAt: new Date().toISOString(),
-        uploadStatus: chunkData.status
+        uploadStatus: chunkData.status,
       };
 
       const request = store.put(chunkRecord);
-      
+
       request.onsuccess = () => {
         console.log(`💾 Chunk ${chunkData.index} backed up to IndexedDB`);
         resolve();
       };
-      
+
       request.onerror = () => {
-        console.error(`❌ Failed to backup chunk ${chunkData.index} to IndexedDB:`, request.error);
+        console.error(
+          `❌ Failed to backup chunk ${chunkData.index} to IndexedDB:`,
+          request.error,
+        );
         reject(request.error);
       };
     });
   }
 
   // Upload chunk with retry logic and exponential backoff
-  private async uploadChunkWithRetry(recordingId: string, chunkData: ChunkData): Promise<boolean> {
+  private async uploadChunkWithRetry(
+    recordingId: string,
+    chunkData: ChunkData,
+  ): Promise<boolean> {
     let attempt = 0;
     let delay = this.config.retryDelay;
 
     while (attempt < this.config.maxRetries) {
       try {
         chunkData.uploadAttempts = attempt + 1;
-        chunkData.status = 'uploading';
+        chunkData.status = "uploading";
 
-        console.log(`📤 Uploading chunk ${chunkData.index} (attempt ${attempt + 1}/${this.config.maxRetries})`);
+        console.log(
+          `📤 Uploading chunk ${chunkData.index} (attempt ${attempt + 1}/${this.config.maxRetries})`,
+        );
 
         const formData = new FormData();
-        formData.append('chunk', chunkData.blob);
-        formData.append('recording_id', recordingId);
-        formData.append('chunk_index', chunkData.index.toString());
+        formData.append("chunk", chunkData.blob);
+        formData.append("recording_id", recordingId);
+        formData.append("chunk_index", chunkData.index.toString());
 
-        const response = await fetch('/.netlify/functions/admin-chunk', {
-          method: 'POST',
+        const response = await fetch("/.netlify/functions/admin-chunk", {
+          method: "POST",
           body: formData,
         });
 
@@ -181,34 +196,40 @@ class RecordingService {
         }
 
         const result = await response.json();
-        
+
         if (result.success) {
-          chunkData.status = 'uploaded';
+          chunkData.status = "uploaded";
           console.log(`✅ Chunk ${chunkData.index} uploaded successfully`);
           return true;
         } else {
-          throw new Error(result.error || 'Upload failed');
+          throw new Error(result.error || "Upload failed");
         }
-
       } catch (error) {
         attempt++;
         chunkData.lastError = error.message;
-        
-        console.error(`❌ Chunk ${chunkData.index} upload attempt ${attempt} failed:`, error.message);
+
+        console.error(
+          `❌ Chunk ${chunkData.index} upload attempt ${attempt} failed:`,
+          error.message,
+        );
 
         if (attempt >= this.config.maxRetries) {
-          chunkData.status = 'failed';
-          console.error(`💥 Chunk ${chunkData.index} upload failed after ${this.config.maxRetries} attempts`);
+          chunkData.status = "failed";
+          console.error(
+            `💥 Chunk ${chunkData.index} upload failed after ${this.config.maxRetries} attempts`,
+          );
           return false;
         }
 
         // Exponential backoff with jitter
         const jitter = Math.random() * 1000; // 0-1000ms jitter
         const waitTime = delay + jitter;
-        
-        console.log(`⏳ Retrying chunk ${chunkData.index} in ${Math.round(waitTime)}ms...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        
+
+        console.log(
+          `⏳ Retrying chunk ${chunkData.index} in ${Math.round(waitTime)}ms...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+
         delay *= 2; // Exponential backoff
       }
     }
@@ -217,12 +238,18 @@ class RecordingService {
   }
 
   // Start a new recording session with mixed audio
-  public async startRecording(remoteAudioElement?: HTMLAudioElement, voucherName?: string, voucheeName?: string, callCode?: string, voucherEmail?: string, voucherPhone?: string): Promise<string> {
+  public async startRecording(
+    remoteAudioElement?: HTMLAudioElement,
+    voucherName?: string,
+    voucheeName?: string,
+    callCode?: string,
+    voucherEmail?: string,
+    voucherPhone?: string,
+  ): Promise<string> {
     try {
       if (this.activeSession?.isActive) {
-        throw new Error('Recording session already active');
+        throw new Error("Recording session already active");
       }
-
 
       // Get microphone access with high-quality settings
       const micStream = await navigator.mediaDevices.getUserMedia({
@@ -248,18 +275,18 @@ class RecordingService {
       micSource.connect(micGain);
       micGain.connect(destination);
 
-
       // If we have AI audio, connect it to the mixer too
       if (remoteAudioElement && remoteAudioElement.srcObject) {
         try {
           const remoteStream = remoteAudioElement.srcObject as MediaStream;
-          const remoteSource = audioContext.createMediaStreamSource(remoteStream);
+          const remoteSource =
+            audioContext.createMediaStreamSource(remoteStream);
           const remoteGain = audioContext.createGain();
           remoteGain.gain.value = 1.0; // Full volume for AI responses
           remoteSource.connect(remoteGain);
           remoteGain.connect(destination);
         } catch (remoteError) {
-          console.warn('⚠️ Could not connect AI audio to mixer:', remoteError);
+          console.warn("⚠️ Could not connect AI audio to mixer:", remoteError);
         }
       } else {
       }
@@ -269,7 +296,7 @@ class RecordingService {
 
       // Create recording session on server
       const requestData = {
-        action: 'start_recording',
+        action: "start_recording",
         call_code: callCode || `REC-${Date.now()}`,
         mime_type: this.config.mimeType,
         voucher_name: voucherName,
@@ -278,21 +305,25 @@ class RecordingService {
         voucher_phone: voucherPhone,
       };
 
-
-      const sessionResponse = await fetch('/.netlify/functions/admin-recordings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData),
-      });
+      const sessionResponse = await fetch(
+        "/.netlify/functions/admin-recordings",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestData),
+        },
+      );
 
       if (!sessionResponse.ok) {
         const errorText = await sessionResponse.text();
-        console.error('❌ Failed to create recording session:', {
+        console.error("❌ Failed to create recording session:", {
           status: sessionResponse.status,
           statusText: sessionResponse.statusText,
-          error: errorText
+          error: errorText,
         });
-        throw new Error(`Failed to create recording session on server: ${sessionResponse.status} ${errorText}`);
+        throw new Error(
+          `Failed to create recording session on server: ${sessionResponse.status} ${errorText}`,
+        );
       }
 
       const sessionData = await sessionResponse.json();
@@ -328,9 +359,12 @@ class RecordingService {
         }
 
         // If we're stopping and this is likely the final chunk, mark it
-        if (this.activeSession?.isStopping && mediaRecorder.state === 'inactive') {
+        if (
+          this.activeSession?.isStopping &&
+          mediaRecorder.state === "inactive"
+        ) {
           this.activeSession.finalChunkReceived = true;
-          console.log('📝 Final chunk received and processed');
+          console.log("📝 Final chunk received and processed");
         }
       };
 
@@ -339,32 +373,38 @@ class RecordingService {
       };
 
       mediaRecorder.onerror = (event) => {
-        console.error('❌ MediaRecorder error:', event);
-        this.handleRecordingError(new Error('MediaRecorder error'));
+        console.error("❌ MediaRecorder error:", event);
+        this.handleRecordingError(new Error("MediaRecorder error"));
       };
 
       // Start recording with chunked intervals
       mediaRecorder.start(this.config.chunkDuration);
 
       return recording_id;
-
     } catch (error) {
-      console.error('💥 Failed to start recording:', error);
+      console.error("💥 Failed to start recording:", error);
       throw error;
     }
   }
 
   // Connect AI audio to an existing recording session
-  public connectAIAudioToRecording(remoteAudioElement: HTMLAudioElement): boolean {
-    if (!this.activeSession?.isActive || !this.activeSession.audioContext || !this.activeSession.destination) {
-      console.warn('⚠️ No active recording session to connect AI audio to');
+  public connectAIAudioToRecording(
+    remoteAudioElement: HTMLAudioElement,
+  ): boolean {
+    if (
+      !this.activeSession?.isActive ||
+      !this.activeSession.audioContext ||
+      !this.activeSession.destination
+    ) {
+      console.warn("⚠️ No active recording session to connect AI audio to");
       return false;
     }
 
     try {
       if (remoteAudioElement.srcObject) {
         const remoteStream = remoteAudioElement.srcObject as MediaStream;
-        const remoteSource = this.activeSession.audioContext.createMediaStreamSource(remoteStream);
+        const remoteSource =
+          this.activeSession.audioContext.createMediaStreamSource(remoteStream);
         const remoteGain = this.activeSession.audioContext.createGain();
         remoteGain.gain.value = 1.0; // Full volume for AI responses
 
@@ -375,7 +415,7 @@ class RecordingService {
         return true;
       }
     } catch (error) {
-      console.warn('⚠️ Failed to connect AI audio to recording:', error);
+      console.warn("⚠️ Failed to connect AI audio to recording:", error);
     }
 
     return false;
@@ -389,56 +429,59 @@ class RecordingService {
       const chunkIndex = this.activeSession.chunks.size;
       const hash = await this.calculateHash(blob);
 
-
       const chunkData: ChunkData = {
         id: `${this.activeSession.id}_${chunkIndex}`,
         index: chunkIndex,
         blob: blob,
         hash: hash,
         uploadAttempts: 0,
-        status: 'pending',
+        status: "pending",
       };
 
       this.activeSession.chunks.set(chunkIndex, chunkData);
 
-
       // Save to IndexedDB as backup (async, don't wait)
       if (this.activeSession.backupEnabled) {
-        this.saveChunkToIndexedDB(this.activeSession.id, chunkData).catch(error => {
-          console.warn('⚠️ Failed to backup chunk to IndexedDB:', error);
-        });
+        this.saveChunkToIndexedDB(this.activeSession.id, chunkData).catch(
+          (error) => {
+            console.warn("⚠️ Failed to backup chunk to IndexedDB:", error);
+          },
+        );
       }
 
       // Upload immediately (async, don't block recording)
-      this.uploadChunkWithRetry(this.activeSession.id, chunkData).catch(error => {
-        console.error(`💥 Failed to upload chunk ${chunkIndex}:`, error);
-      });
+      this.uploadChunkWithRetry(this.activeSession.id, chunkData).catch(
+        (error) => {
+          console.error(`💥 Failed to upload chunk ${chunkIndex}:`, error);
+        },
+      );
 
       // If this chunk has a very small size and we're stopping, it might be the final chunk
       if (this.activeSession.isStopping && blob.size < 1024) {
       }
-
     } catch (error) {
-      console.error('❌ Error handling chunk:', error);
+      console.error("❌ Error handling chunk:", error);
     }
   }
 
   // Stop the current recording session
   public async stopRecording(): Promise<void> {
     if (!this.activeSession?.isActive) {
-      throw new Error('No active recording session');
+      throw new Error("No active recording session");
     }
-
 
     this.activeSession.isActive = false;
     this.activeSession.isStopping = true;
 
-    if (this.activeSession.mediaRecorder && this.activeSession.mediaRecorder.state === 'recording') {
+    if (
+      this.activeSession.mediaRecorder &&
+      this.activeSession.mediaRecorder.state === "recording"
+    ) {
       this.activeSession.mediaRecorder.stop();
     }
 
     if (this.activeSession.stream) {
-      this.activeSession.stream.getTracks().forEach(track => track.stop());
+      this.activeSession.stream.getTracks().forEach((track) => track.stop());
     }
 
     // Clean up audio context
@@ -446,7 +489,7 @@ class RecordingService {
       try {
         await this.activeSession.audioContext.close();
       } catch (error) {
-        console.warn('⚠�� Error closing audio context:', error);
+        console.warn("⚠�� Error closing audio context:", error);
       }
     }
   }
@@ -456,99 +499,113 @@ class RecordingService {
     if (!this.activeSession) return;
 
     try {
-      console.log('🏁 Processing recording completion...');
+      console.log("🏁 Processing recording completion...");
 
       // Wait a moment for any final chunk to be processed
-      if (this.activeSession.isStopping && !this.activeSession.finalChunkReceived) {
+      if (
+        this.activeSession.isStopping &&
+        !this.activeSession.finalChunkReceived
+      ) {
         let waitTime = 0;
         const maxWait = 5000; // 5 seconds max wait
 
         while (!this.activeSession.finalChunkReceived && waitTime < maxWait) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           waitTime += 100;
         }
 
         if (waitTime >= maxWait) {
-          console.warn('⚠️ Timeout waiting for final chunk, proceeding anyway');
+          console.warn("⚠️ Timeout waiting for final chunk, proceeding anyway");
         }
       }
 
-      const totalDuration = Math.round((Date.now() - this.activeSession.startTime) / 1000);
+      const totalDuration = Math.round(
+        (Date.now() - this.activeSession.startTime) / 1000,
+      );
       const totalChunks = this.activeSession.chunks.size;
-
 
       // Wait for all pending uploads to complete or fail
       await this.waitForUploadsToComplete();
 
       // Finalize recording on server
-      const finalizeResponse = await fetch('/.netlify/functions/admin-finalize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recording_id: this.activeSession.id,
-          total_chunks: totalChunks,
-          total_duration: totalDuration,
-        }),
-      });
+      const finalizeResponse = await fetch(
+        "/.netlify/functions/admin-finalize",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recording_id: this.activeSession.id,
+            total_chunks: totalChunks,
+            total_duration: totalDuration,
+          }),
+        },
+      );
 
       if (!finalizeResponse.ok) {
-        throw new Error('Failed to finalize recording on server');
+        throw new Error("Failed to finalize recording on server");
       }
 
       const result = await finalizeResponse.json();
-      
+
       if (result.success) {
       } else {
-        console.warn(`⚠️ Recording completed with issues:`, result.verification_results);
+        console.warn(
+          `⚠️ Recording completed with issues:`,
+          result.verification_results,
+        );
       }
 
       // Clean up session
       this.activeSession = null;
-
     } catch (error) {
-      console.error('💥 Error during recording completion:', error);
+      console.error("💥 Error during recording completion:", error);
       this.handleRecordingError(error);
     }
   }
 
   // Wait for all uploads to complete or fail
-  private async waitForUploadsToComplete(timeout: number = 60000): Promise<void> {
+  private async waitForUploadsToComplete(
+    timeout: number = 60000,
+  ): Promise<void> {
     if (!this.activeSession) return;
 
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
-      const pendingChunks = Array.from(this.activeSession.chunks.values())
-        .filter(chunk => chunk.status === 'pending' || chunk.status === 'uploading');
+      const pendingChunks = Array.from(
+        this.activeSession.chunks.values(),
+      ).filter(
+        (chunk) => chunk.status === "pending" || chunk.status === "uploading",
+      );
 
       if (pendingChunks.length === 0) {
         return;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
-    console.warn('⚠️ Upload completion timeout reached');
+    console.warn("⚠️ Upload completion timeout reached");
   }
 
   // Handle recording errors
   private handleRecordingError(error: Error): void {
-    console.error('💥 Recording error:', error);
+    console.error("💥 Recording error:", error);
 
     if (this.activeSession) {
       this.activeSession.isActive = false;
-      
+
       // Stop media recorder and stream
       if (this.activeSession.mediaRecorder) {
         try {
           this.activeSession.mediaRecorder.stop();
         } catch (e) {
-          console.warn('Warning stopping MediaRecorder:', e);
+          console.warn("Warning stopping MediaRecorder:", e);
         }
       }
 
       if (this.activeSession.stream) {
-        this.activeSession.stream.getTracks().forEach(track => track.stop());
+        this.activeSession.stream.getTracks().forEach((track) => track.stop());
       }
     }
 
@@ -558,29 +615,31 @@ class RecordingService {
   // Retry failed uploads from IndexedDB backup
   public async retryFailedUploads(recordingId: string): Promise<void> {
     if (!this.db) {
-      throw new Error('IndexedDB not available for recovery');
+      throw new Error("IndexedDB not available for recovery");
     }
 
-    console.log(`🔄 Attempting to retry failed uploads for recording ${recordingId}`);
+    console.log(
+      `🔄 Attempting to retry failed uploads for recording ${recordingId}`,
+    );
 
     // Get chunks from IndexedDB
     const chunks = await this.getChunksFromIndexedDB(recordingId);
-    
+
     for (const chunkRecord of chunks) {
-      if (chunkRecord.uploadStatus !== 'uploaded') {
+      if (chunkRecord.uploadStatus !== "uploaded") {
         const chunkData: ChunkData = {
           id: chunkRecord.id,
           index: chunkRecord.chunkIndex,
           blob: chunkRecord.blob,
           hash: chunkRecord.hash,
           uploadAttempts: 0,
-          status: 'pending',
+          status: "pending",
         };
 
         const success = await this.uploadChunkWithRetry(recordingId, chunkData);
         if (success) {
           // Update IndexedDB record
-          await this.updateChunkInIndexedDB(chunkRecord.id, 'uploaded');
+          await this.updateChunkInIndexedDB(chunkRecord.id, "uploaded");
         }
       }
     }
@@ -591,9 +650,9 @@ class RecordingService {
     if (!this.db) return [];
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(['chunks'], 'readonly');
-      const store = transaction.objectStore('chunks');
-      const index = store.index('recordingId');
+      const transaction = this.db!.transaction(["chunks"], "readonly");
+      const store = transaction.objectStore("chunks");
+      const index = store.index("recordingId");
       const request = index.getAll(recordingId);
 
       request.onsuccess = () => resolve(request.result || []);
@@ -602,12 +661,15 @@ class RecordingService {
   }
 
   // Update chunk status in IndexedDB
-  private async updateChunkInIndexedDB(chunkId: string, status: string): Promise<void> {
+  private async updateChunkInIndexedDB(
+    chunkId: string,
+    status: string,
+  ): Promise<void> {
     if (!this.db) return;
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(['chunks'], 'readwrite');
-      const store = transaction.objectStore('chunks');
+      const transaction = this.db!.transaction(["chunks"], "readwrite");
+      const store = transaction.objectStore("chunks");
       const getRequest = store.get(chunkId);
 
       getRequest.onsuccess = () => {
@@ -615,7 +677,7 @@ class RecordingService {
         if (record) {
           record.uploadStatus = status;
           record.updatedAt = new Date().toISOString();
-          
+
           const putRequest = store.put(record);
           putRequest.onsuccess = () => resolve();
           putRequest.onerror = () => reject(putRequest.error);
@@ -640,15 +702,17 @@ class RecordingService {
     if (!this.activeSession) return null;
 
     const chunks = Array.from(this.activeSession.chunks.values());
-    const duration = Math.round((Date.now() - this.activeSession.startTime) / 1000);
+    const duration = Math.round(
+      (Date.now() - this.activeSession.startTime) / 1000,
+    );
 
     return {
       isActive: this.activeSession.isActive,
       recordingId: this.activeSession.id,
       duration,
       chunksTotal: chunks.length,
-      chunksUploaded: chunks.filter(c => c.status === 'uploaded').length,
-      chunksFailed: chunks.filter(c => c.status === 'failed').length,
+      chunksUploaded: chunks.filter((c) => c.status === "uploaded").length,
+      chunksFailed: chunks.filter((c) => c.status === "failed").length,
     };
   }
 
@@ -660,8 +724,8 @@ class RecordingService {
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(['chunks'], 'readwrite');
-      const store = transaction.objectStore('chunks');
+      const transaction = this.db!.transaction(["chunks"], "readwrite");
+      const store = transaction.objectStore("chunks");
       const request = store.openCursor();
 
       request.onsuccess = (event) => {
@@ -669,11 +733,11 @@ class RecordingService {
         if (cursor) {
           const record = cursor.value;
           const createdAt = new Date(record.createdAt);
-          
-          if (createdAt < cutoffDate && record.uploadStatus === 'uploaded') {
+
+          if (createdAt < cutoffDate && record.uploadStatus === "uploaded") {
             cursor.delete();
           }
-          
+
           cursor.continue();
         } else {
           resolve();

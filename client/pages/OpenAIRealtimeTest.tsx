@@ -7,7 +7,9 @@ export default function OpenAIRealtimeTest() {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [status, setStatus] = useState("Push button to start interview with Sam");
+  const [status, setStatus] = useState(
+    "Push button to start interview with Sam",
+  );
   const [voucherName, setVoucherName] = useState("");
   const [voucheeName, setVoucheeName] = useState("");
   const [voucherEmail, setVoucherEmail] = useState("");
@@ -19,7 +21,7 @@ export default function OpenAIRealtimeTest() {
     vouchee_first: string;
     vouchee_last: string;
   } | null>(null);
-  const [currentStep, setCurrentStep] = useState<'form' | 'call'>('form');
+  const [currentStep, setCurrentStep] = useState<"form" | "call">("form");
   const [conversationStep, setConversationStep] = useState(0); // 0 = opening, 1-5 = exploration steps
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
@@ -104,7 +106,6 @@ export default function OpenAIRealtimeTest() {
       const dataChannel = peerConnection.createDataChannel("oai-events");
 
       dataChannel.addEventListener("open", () => {
-
         // Substitute template variables in the instructions
         let instructions =
           config?.instructions || "You are a helpful assistant.";
@@ -169,10 +170,16 @@ export default function OpenAIRealtimeTest() {
           const message = JSON.parse(event.data);
           if (message.type === "error") {
             setStatus(`OpenAI error: ${message.error.message}`);
-          } else if (message.type === "response.audio_transcript.done" && message.transcript) {
+          } else if (
+            message.type === "response.audio_transcript.done" &&
+            message.transcript
+          ) {
             // Detect conversation step from AI's transcript
             detectConversationStep(message.transcript);
-          } else if (message.type === "conversation.item.created" && message.item?.content?.[0]?.transcript) {
+          } else if (
+            message.type === "conversation.item.created" &&
+            message.item?.content?.[0]?.transcript
+          ) {
             // Alternative transcript location
             detectConversationStep(message.item.content[0].transcript);
           }
@@ -194,7 +201,9 @@ export default function OpenAIRealtimeTest() {
 
           // If recording is already active, connect the AI audio to it
           if (isRecording && currentRecordingId.current) {
-            recordingService.current.connectAIAudioToRecording(audioRef.current);
+            recordingService.current.connectAIAudioToRecording(
+              audioRef.current,
+            );
           }
         }
       };
@@ -294,9 +303,7 @@ export default function OpenAIRealtimeTest() {
       );
     } catch (error) {
       console.error("Error stopping call:", error);
-      setStatus(
-        "Error ending call. Push button to start interview with Sam.",
-      );
+      setStatus("Error ending call. Push button to start interview with Sam.");
     }
   };
 
@@ -305,8 +312,12 @@ export default function OpenAIRealtimeTest() {
     try {
       setIsRecording(true);
 
-      const voucherNameForRecording = preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName;
-      const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
+      const voucherNameForRecording = preparedNames
+        ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim()
+        : voucherName;
+      const voucheeNameForRecording = preparedNames
+        ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim()
+        : voucheeName;
 
       const recordingId = await recordingService.current.startRecording(
         audioRef.current || undefined,
@@ -314,7 +325,7 @@ export default function OpenAIRealtimeTest() {
         voucheeNameForRecording,
         callCode || undefined,
         voucherEmail,
-        voucherPhone
+        voucherPhone,
       );
       currentRecordingId.current = recordingId;
     } catch (error) {
@@ -329,11 +340,8 @@ export default function OpenAIRealtimeTest() {
       await recordingService.current.stopRecording();
       setIsRecording(false);
       currentRecordingId.current = null;
-
-    } catch (error) {
-    }
+    } catch (error) {}
   };
-
 
   const toggleMute = () => {
     if (streamRef.current) {
@@ -396,7 +404,7 @@ export default function OpenAIRealtimeTest() {
       (window as any).freshPromptData = promptData;
 
       setStatus("Push green button to start call");
-      setCurrentStep('call');
+      setCurrentStep("call");
     } catch (error) {
       setStatus("Something went wrong. Please try again.");
     }
@@ -409,12 +417,12 @@ export default function OpenAIRealtimeTest() {
     setVoucheeName("");
     setVoucherEmail("");
     setVoucherPhone("");
-    setCurrentStep('form');
+    setCurrentStep("form");
     setStatus("Push button to start interview with Sam");
   };
 
   const goBackToForm = () => {
-    setCurrentStep('form');
+    setCurrentStep("form");
   };
 
   // Detect conversation step based on AI response content
@@ -424,10 +432,14 @@ export default function OpenAIRealtimeTest() {
     // Check each step's keywords
     for (let step = 5; step >= 1; step--) {
       const keywords = stepKeywords[step as keyof typeof stepKeywords];
-      const hasKeyword = keywords.some(keyword => lowerText.includes(keyword.toLowerCase()));
+      const hasKeyword = keywords.some((keyword) =>
+        lowerText.includes(keyword.toLowerCase()),
+      );
 
       if (hasKeyword && step > conversationStep) {
-        console.log(`🎯 Detected transition to Step ${step}: ${conversationSteps[step].label}`);
+        console.log(
+          `🎯 Detected transition to Step ${step}: ${conversationSteps[step].label}`,
+        );
         setConversationStep(step);
         return;
       }
@@ -446,7 +458,7 @@ export default function OpenAIRealtimeTest() {
     { label: "Core Strengths", description: "Key qualities" },
     { label: "Performance", description: "Strengths & teamwork" },
     { label: "Development", description: "Growth areas" },
-    { label: "Final Rating", description: "Overall recommendation" }
+    { label: "Final Rating", description: "Overall recommendation" },
   ];
 
   // Keywords to detect step transitions
@@ -455,7 +467,7 @@ export default function OpenAIRealtimeTest() {
     2: ["if you were recommending", "how would you describe them"],
     3: ["performance or main strengths", "teamwork and working relationships"],
     4: ["areas they could develop or grow", "nobody is perfect what are some"],
-    5: ["on a scale from one to ten", "how strongly would you recommend"]
+    5: ["on a scale from one to ten", "how strongly would you recommend"],
   };
 
   useEffect(() => {
@@ -482,29 +494,43 @@ export default function OpenAIRealtimeTest() {
           audioAnalyserRef.current.getByteFrequencyData(audioDataRef.current);
 
           // Create smooth, voice-responsive visualization
-          const newLevels = Array(20).fill(0).map((_, index) => {
-            // Focus on voice frequency range (0-40% of spectrum) and spread across all bars
-            const voiceRangeEnd = Math.floor(audioDataRef.current!.length * 0.4);
-            const dataIndex = Math.floor((index / 20) * voiceRangeEnd);
+          const newLevels = Array(20)
+            .fill(0)
+            .map((_, index) => {
+              // Focus on voice frequency range (0-40% of spectrum) and spread across all bars
+              const voiceRangeEnd = Math.floor(
+                audioDataRef.current!.length * 0.4,
+              );
+              const dataIndex = Math.floor((index / 20) * voiceRangeEnd);
 
-            // Get base level from frequency data
-            let rawLevel = audioDataRef.current![dataIndex] / 255;
+              // Get base level from frequency data
+              let rawLevel = audioDataRef.current![dataIndex] / 255;
 
-            // Add some spreading from adjacent frequencies for more bars to react
-            const spread = 3; // Number of adjacent frequencies to include
-            for (let i = 1; i <= spread && dataIndex + i < audioDataRef.current!.length; i++) {
-              rawLevel = Math.max(rawLevel, (audioDataRef.current![dataIndex + i] / 255) * (0.7 / i));
-            }
-            for (let i = 1; i <= spread && dataIndex - i >= 0; i++) {
-              rawLevel = Math.max(rawLevel, (audioDataRef.current![dataIndex - i] / 255) * (0.7 / i));
-            }
+              // Add some spreading from adjacent frequencies for more bars to react
+              const spread = 3; // Number of adjacent frequencies to include
+              for (
+                let i = 1;
+                i <= spread && dataIndex + i < audioDataRef.current!.length;
+                i++
+              ) {
+                rawLevel = Math.max(
+                  rawLevel,
+                  (audioDataRef.current![dataIndex + i] / 255) * (0.7 / i),
+                );
+              }
+              for (let i = 1; i <= spread && dataIndex - i >= 0; i++) {
+                rawLevel = Math.max(
+                  rawLevel,
+                  (audioDataRef.current![dataIndex - i] / 255) * (0.7 / i),
+                );
+              }
 
-            // Apply gentle smoothing for natural voice response
-            const smoothedLevel = Math.pow(rawLevel, 1.2);
-            const responsiveLevel = smoothedLevel * 1.6 + 0.03;
+              // Apply gentle smoothing for natural voice response
+              const smoothedLevel = Math.pow(rawLevel, 1.2);
+              const responsiveLevel = smoothedLevel * 1.6 + 0.03;
 
-            return Math.min(responsiveLevel, 0.95);
-          });
+              return Math.min(responsiveLevel, 0.95);
+            });
 
           setAudioLevels(newLevels);
         }
@@ -550,12 +576,14 @@ export default function OpenAIRealtimeTest() {
             Vouch Interview
           </h1>
           <p className="text-blue-200 text-lg">
-            {currentStep === 'form' ? 'Fill in your details' : 'Meet Sam, your AI interviewer'}
+            {currentStep === "form"
+              ? "Fill in your details"
+              : "Meet Sam, your AI interviewer"}
           </p>
         </div>
 
         {/* Step 1: Form */}
-        {currentStep === 'form' && (
+        {currentStep === "form" && (
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl mb-6">
             <div className="space-y-4">
               <div>
@@ -630,9 +658,17 @@ export default function OpenAIRealtimeTest() {
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={proceedToCall}
-                  disabled={!voucherName.trim() || !voucheeName.trim() || !voucherEmail.trim() || !voucherPhone.trim()}
+                  disabled={
+                    !voucherName.trim() ||
+                    !voucheeName.trim() ||
+                    !voucherEmail.trim() ||
+                    !voucherPhone.trim()
+                  }
                   className={`flex-1 px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
-                    voucherName.trim() && voucheeName.trim() && voucherEmail.trim() && voucherPhone.trim()
+                    voucherName.trim() &&
+                    voucheeName.trim() &&
+                    voucherEmail.trim() &&
+                    voucherPhone.trim()
                       ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:from-blue-600 hover:to-cyan-700 hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
                       : "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
                   }`}
@@ -640,13 +676,12 @@ export default function OpenAIRealtimeTest() {
                   Next
                 </button>
               </div>
-
             </div>
           </div>
         )}
 
         {/* Step 2: Calling Interface */}
-        {currentStep === 'call' && (
+        {currentStep === "call" && (
           <>
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl relative">
               {/* Conversation Progress Bar */}
@@ -654,10 +689,15 @@ export default function OpenAIRealtimeTest() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-white/70 text-sm font-medium">
-                      {conversationStep === 0 ? "Opening" : conversationSteps[conversationStep]?.label || "Opening"}
+                      {conversationStep === 0
+                        ? "Opening"
+                        : conversationSteps[conversationStep]?.label ||
+                          "Opening"}
                     </span>
                     <span className="text-white/50 text-xs">
-                      {conversationStep === 0 ? "Getting started" : `${conversationStep}/5`}
+                      {conversationStep === 0
+                        ? "Getting started"
+                        : `${conversationStep}/5`}
                     </span>
                   </div>
                   <div className="flex gap-1">
@@ -681,100 +721,97 @@ export default function OpenAIRealtimeTest() {
               )}
 
               {/* Audio Visualization */}
-          <div className="flex items-end justify-center space-x-1 h-32 mb-8">
-            {audioLevels.map((level, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-t from-cyan-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
-                style={{
-                  height: `${level * 100}%`,
-                  width: "4px",
-                  minHeight: "8px",
-                  opacity: isConnected ? 0.8 : 0.3,
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Status Display */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10">
-              <div
-                className={`w-3 h-3 rounded-full ${
-                  isConnected
-                    ? "bg-green-400 animate-pulse"
-                    : isConnecting
-                      ? "bg-yellow-400 animate-pulse"
-                      : "bg-gray-400"
-                }`}
-              ></div>
-              <span className="text-white font-medium">{status}</span>
-            </div>
-
-          </div>
-
-          {/* Control Buttons */}
-          <div className="flex justify-center gap-4">
-            {!isConnected && !isConnecting && (
-              <button
-                onClick={startCall}
-                disabled={!callCode}
-                className={`group relative w-20 h-20 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
-                  callCode
-                    ? "bg-gradient-to-r from-green-500 to-emerald-600 cursor-pointer"
-                    : "bg-gray-500 cursor-not-allowed opacity-50"
-                }`}
-              >
-                <Phone className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                {callCode && (
-                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
-                )}
-              </button>
-            )}
-
-            {isConnecting && (
-              <div className="w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full shadow-lg flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex items-end justify-center space-x-1 h-32 mb-8">
+                {audioLevels.map((level, index) => (
+                  <div
+                    key={index}
+                    className="bg-gradient-to-t from-cyan-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      height: `${level * 100}%`,
+                      width: "4px",
+                      minHeight: "8px",
+                      opacity: isConnected ? 0.8 : 0.3,
+                    }}
+                  />
+                ))}
               </div>
-            )}
 
-            {isConnected && (
-              <>
-                {/* Mute Button */}
-                <button
-                  onClick={toggleMute}
-                  className={`group relative w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
-                    isMuted
-                      ? "bg-gradient-to-r from-red-500 to-pink-600"
-                      : "bg-gradient-to-r from-blue-500 to-cyan-600"
-                  }`}
-                >
-                  {isMuted ? (
-                    <MicOff className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  ) : (
-                    <Mic className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  )}
-                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
-                </button>
-
-                {/* Stop Call Button */}
-                <button
-                  onClick={stopCall}
-                  className="group relative w-20 h-20 bg-gradient-to-r from-red-500 to-rose-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
-                >
-                  <PhoneOff className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
-                </button>
-
-                {/* Volume Indicator */}
-                <div className="w-16 h-16 bg-white/10 rounded-full shadow-lg flex items-center justify-center border border-white/20">
-                  <Volume2 className="w-6 h-6 text-white/70" />
+              {/* Status Display */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10">
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      isConnected
+                        ? "bg-green-400 animate-pulse"
+                        : isConnecting
+                          ? "bg-yellow-400 animate-pulse"
+                          : "bg-gray-400"
+                    }`}
+                  ></div>
+                  <span className="text-white font-medium">{status}</span>
                 </div>
-              </>
-            )}
-          </div>
+              </div>
 
+              {/* Control Buttons */}
+              <div className="flex justify-center gap-4">
+                {!isConnected && !isConnecting && (
+                  <button
+                    onClick={startCall}
+                    disabled={!callCode}
+                    className={`group relative w-20 h-20 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
+                      callCode
+                        ? "bg-gradient-to-r from-green-500 to-emerald-600 cursor-pointer"
+                        : "bg-gray-500 cursor-not-allowed opacity-50"
+                    }`}
+                  >
+                    <Phone className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    {callCode && (
+                      <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                    )}
+                  </button>
+                )}
 
+                {isConnecting && (
+                  <div className="w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full shadow-lg flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+
+                {isConnected && (
+                  <>
+                    {/* Mute Button */}
+                    <button
+                      onClick={toggleMute}
+                      className={`group relative w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 ${
+                        isMuted
+                          ? "bg-gradient-to-r from-red-500 to-pink-600"
+                          : "bg-gradient-to-r from-blue-500 to-cyan-600"
+                      }`}
+                    >
+                      {isMuted ? (
+                        <MicOff className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                      ) : (
+                        <Mic className="w-6 h-6 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                      )}
+                      <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                    </button>
+
+                    {/* Stop Call Button */}
+                    <button
+                      onClick={stopCall}
+                      className="group relative w-20 h-20 bg-gradient-to-r from-red-500 to-rose-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                    >
+                      <PhoneOff className="w-8 h-8 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                      <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+                    </button>
+
+                    {/* Volume Indicator */}
+                    <div className="w-16 h-16 bg-white/10 rounded-full shadow-lg flex items-center justify-center border border-white/20">
+                      <Volume2 className="w-6 h-6 text-white/70" />
+                    </div>
+                  </>
+                )}
+              </div>
 
               {/* Hidden audio element for playing assistant responses */}
               <audio ref={audioRef} autoPlay style={{ display: "none" }} />
@@ -792,18 +829,12 @@ export default function OpenAIRealtimeTest() {
 
         {/* Footer Info */}
         <div className="text-center mt-6">
-          <p className="text-white/40 text-sm">
-            Powered by Vouch
-          </p>
-          {currentStep === 'form' && (
-            <p className="text-white/30 text-xs mt-2">
-              Step 1 of 2
-            </p>
+          <p className="text-white/40 text-sm">Powered by Vouch</p>
+          {currentStep === "form" && (
+            <p className="text-white/30 text-xs mt-2">Step 1 of 2</p>
           )}
-          {currentStep === 'call' && (
-            <p className="text-white/30 text-xs mt-2">
-              Step 2 of 2
-            </p>
+          {currentStep === "call" && (
+            <p className="text-white/30 text-xs mt-2">Step 2 of 2</p>
           )}
         </div>
       </div>
