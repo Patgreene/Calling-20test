@@ -127,7 +127,7 @@ export default function RecordingAdmin() {
       setMessage({ type: "success", text: "Preparing download..." });
 
       const response = await fetch(
-        `/api/admin/recordings/${recordingId}/download`,
+        `/.netlify/functions/admin-download?id=${recordingId}`,
         {
           method: "POST",
           headers: {
@@ -180,7 +180,7 @@ export default function RecordingAdmin() {
         setMessage({ type: "success", text: "Loading audio..." });
 
         const response = await fetch(
-          `/api/admin/recordings/${recordingId}/download`,
+          `/.netlify/functions/admin-download?id=${recordingId}`,
           {
             method: "POST",
             headers: {
@@ -270,10 +270,10 @@ export default function RecordingAdmin() {
         text: "Attempting to fix stuck recording...",
       });
 
-      const response = await fetch(`/api/admin/recordings/${recordingId}/fix`, {
+      const response = await fetch(`/.netlify/functions/admin-fix`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ recording_id: recordingId }),
       });
 
       if (response.ok) {
@@ -295,7 +295,7 @@ export default function RecordingAdmin() {
     try {
       setMessage({ type: "success", text: "Starting retry process..." });
 
-      const response = await fetch("/api/admin/recordings/retry", {
+      const response = await fetch("/.netlify/functions/admin-retry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -327,10 +327,10 @@ export default function RecordingAdmin() {
     try {
       setMessage({ type: "warning", text: "Deleting recording..." });
 
-      const response = await fetch(`/api/admin/recordings/${recordingId}`, {
+      const response = await fetch(`/.netlify/functions/admin-delete`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ recording_id: recordingId }),
       });
 
       if (response.ok) {
@@ -367,7 +367,7 @@ export default function RecordingAdmin() {
         text: "Starting transcription with OpenAI Whisper...",
       });
 
-      const response = await fetch("/api/admin/recordings/transcribe", {
+      const response = await fetch("/.netlify/functions/admin-transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
