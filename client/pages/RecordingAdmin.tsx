@@ -184,51 +184,6 @@ export default function RecordingAdmin() {
         setLoadingAudio(recordingId);
         setMessage({ type: "success", text: "Loading audio..." });
 
-        // DEVELOPMENT MOCK: Create a working mock audio file
-        console.log("🔧 DEV MODE: Creating mock audio for playback testing");
-
-        // Create a simple WAV audio file with a beep for testing
-        const createMockWavBlob = () => {
-          const sampleRate = 44100;
-          const duration = 1; // 1 second
-          const numSamples = duration * sampleRate;
-          const arrayBuffer = new ArrayBuffer(44 + numSamples * 2);
-          const view = new DataView(arrayBuffer);
-
-          // WAV header
-          const writeString = (offset: number, string: string) => {
-            for (let i = 0; i < string.length; i++) {
-              view.setUint8(offset + i, string.charCodeAt(i));
-            }
-          };
-
-          writeString(0, "RIFF");
-          view.setUint32(4, 36 + numSamples * 2, true);
-          writeString(8, "WAVE");
-          writeString(12, "fmt ");
-          view.setUint32(16, 16, true);
-          view.setUint16(20, 1, true);
-          view.setUint16(22, 1, true);
-          view.setUint32(24, sampleRate, true);
-          view.setUint32(28, sampleRate * 2, true);
-          view.setUint16(32, 2, true);
-          view.setUint16(34, 16, true);
-          writeString(36, "data");
-          view.setUint32(40, numSamples * 2, true);
-
-          // Generate a simple beep
-          for (let i = 0; i < numSamples; i++) {
-            const amplitude =
-              Math.sin((2 * Math.PI * 440 * i) / sampleRate) * 0.1;
-            view.setInt16(44 + i * 2, amplitude * 32767, true);
-          }
-
-          return new Blob([arrayBuffer], { type: "audio/wav" });
-        };
-
-        const blob = createMockWavBlob();
-
-        /* TODO: Re-enable when backend functions work in development
         const response = await fetch(
           `/api/admin/recordings/${recordingId}/download`,
           {
@@ -259,7 +214,6 @@ export default function RecordingAdmin() {
         }
 
         const blob = await response.blob();
-        */
         console.log("✅ Audio blob loaded:", {
           size: blob.size,
           type: blob.type,
