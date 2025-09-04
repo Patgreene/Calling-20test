@@ -58,6 +58,11 @@ export const handler = async (event: any, context: any) => {
   }
 
   if (!id) {
+    console.error("❌ No recording ID found in request", {
+      path: event.path,
+      queryParams: event.queryStringParameters,
+      body: event.body ? event.body.substring(0, 100) : null
+    });
     return {
       statusCode: 400,
       headers: {
@@ -72,7 +77,11 @@ export const handler = async (event: any, context: any) => {
   // No additional password check needed
 
   try {
-    console.log(`🔽 Downloading recording ${id}`);
+    console.log(`🔽 Downloading recording ${id}`, {
+      path: event.path,
+      method: event.httpMethod,
+      hasBody: !!event.body
+    });
 
     // Get recording details
     const recordingResponse = await fetch(
