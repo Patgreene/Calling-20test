@@ -136,9 +136,8 @@ export default function RecordingAdmin() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer Tim&Pat95",
           },
-          body: JSON.stringify({ password: "Tim&Pat95" }),
+          body: JSON.stringify({}),
         },
       );
 
@@ -190,9 +189,8 @@ export default function RecordingAdmin() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer Tim&Pat95",
             },
-            body: JSON.stringify({ password: "Tim&Pat95" }),
+            body: JSON.stringify({}),
           },
         );
 
