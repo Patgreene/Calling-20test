@@ -83,6 +83,40 @@ export default function RecordingAdmin() {
   const loadRecordings = async () => {
     setIsLoading(true);
     try {
+      // TEMPORARY: Mock data for development since Netlify functions aren't working locally
+      console.log("🔧 DEV MODE: Using mock recordings data");
+      setMessage({ type: "warning", text: "Development mode: Using mock data" });
+
+      // Mock recordings data
+      const mockRecordings = [
+        {
+          id: "d955efe3-91a8-43ea-9fc5-4eacc2d9305b",
+          created_at: "2025-09-02T08:56:25.727584+00:00",
+          call_code: "CALL-YY62G4OSF",
+          voucher_name: "Patrick Greene",
+          vouchee_name: "Tim Greene",
+          duration_seconds: 120,
+          file_name: "test_recording.webm",
+          file_size_bytes: 1024000,
+          upload_status: "completed",
+          verification_status: "verified",
+          retry_count: 0,
+          chunks_total: 4,
+          chunks_uploaded: 4,
+          transcription: {
+            id: "trans_123",
+            status: "completed",
+            transcript_text: "Hey there, Patrick. I'm Sam. How are you going? Just to confirm, you're vouching for Tim, right?",
+            completed_at: "2025-09-02T09:00:00Z"
+          }
+        }
+      ];
+
+      setRecordings(mockRecordings);
+      calculateStats(mockRecordings);
+
+      /*
+      // TODO: Re-enable when Netlify functions are working in production
       const response = await fetch("/api/admin/recordings", {
         headers: {
           "Authorization": "Bearer Tim&Pat95"
@@ -97,6 +131,7 @@ export default function RecordingAdmin() {
         console.error("Failed to load recordings:", response.status);
         setMessage({ type: "error", text: "Failed to load recordings" });
       }
+      */
     } catch (error) {
       console.error("Error loading recordings:", error);
       setMessage({ type: "error", text: "Error loading recordings" });
