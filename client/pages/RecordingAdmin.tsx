@@ -224,7 +224,50 @@ export default function RecordingAdmin() {
         setLoadingAudio(recordingId);
         setMessage({ type: "success", text: "Loading audio..." });
 
-        // Download the audio file and create a blob URL
+        // DEVELOPMENT MOCK: Create a working mock audio file
+        console.log("🔧 DEV MODE: Creating mock audio for playback testing");
+
+        // Create a simple WAV audio file with a beep for testing
+        const createMockWavBlob = () => {
+          const sampleRate = 44100;
+          const duration = 1; // 1 second
+          const numSamples = duration * sampleRate;
+          const arrayBuffer = new ArrayBuffer(44 + (numSamples * 2));
+          const view = new DataView(arrayBuffer);
+
+          // WAV header
+          const writeString = (offset: number, string: string) => {
+            for (let i = 0; i < string.length; i++) {
+              view.setUint8(offset + i, string.charCodeAt(i));
+            }
+          };
+
+          writeString(0, 'RIFF');
+          view.setUint32(4, 36 + (numSamples * 2), true);
+          writeString(8, 'WAVE');
+          writeString(12, 'fmt ');
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true);
+          view.setUint16(22, 1, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, sampleRate * 2, true);
+          view.setUint16(32, 2, true);
+          view.setUint16(34, 16, true);
+          writeString(36, 'data');
+          view.setUint32(40, numSamples * 2, true);
+
+          // Generate a simple beep
+          for (let i = 0; i < numSamples; i++) {
+            const amplitude = Math.sin(2 * Math.PI * 440 * i / sampleRate) * 0.1;
+            view.setInt16(44 + (i * 2), amplitude * 32767, true);
+          }
+
+          return new Blob([arrayBuffer], { type: 'audio/wav' });
+        };
+
+        const blob = createMockWavBlob();
+
+        /* TODO: Re-enable when backend functions work in development
         const response = await fetch(
           `/api/admin/recordings/${recordingId}/download`,
           {
@@ -237,8 +280,25 @@ export default function RecordingAdmin() {
           },
         );
 
-        // Use mock blob for development
-        const blob = mockAudioBlob;
+        if (!response.ok) {
+          let errorText = "Unknown error";
+          try {
+            errorText = await response.text();
+          } catch (readError) {
+            console.warn("Could not read response text:", readError);
+            errorText = `HTTP ${response.status} ${response.statusText}`;
+          }
+          console.error("Audio download failed:", {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText,
+            recordingId
+          });
+          throw new Error(`Failed to load audio: ${response.status} ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        */
         console.log("✅ Mock audio blob created:", {
           size: blob.size,
           type: blob.type,
