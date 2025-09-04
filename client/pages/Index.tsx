@@ -94,7 +94,7 @@ export default function Index() {
 
         {/* Hero Heading */}
         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight font-sans">
-          Profiles that capture your reputation.
+          Profiles that capture your reputation
           <br />
         </h1>
 
