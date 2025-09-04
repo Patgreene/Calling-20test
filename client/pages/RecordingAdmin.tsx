@@ -594,17 +594,17 @@ export default function RecordingAdmin() {
               variant="outline"
               size="sm"
               className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-              onClick={() => window.open("/admin", "_blank")}
+              onClick={() => window.open("/admin1224-prompt", "_blank")}
             >
               Prompt Admin
             </Button>
             <Button
               variant="outline"
               size="sm"
-              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-              onClick={() => window.open("/openai-realtime-test", "_blank")}
+              className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
+              onClick={() => window.open("https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW", "_blank")}
             >
-              Test Interview
+              Admin Profile
             </Button>
           </div>
         </div>
