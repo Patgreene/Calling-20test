@@ -310,7 +310,6 @@ export default function OpenAIRealtimeTest() {
       const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
 
       const recordingId = await recordingService.current.startRecording(
-        adminPassword,
         audioRef.current || undefined,
         voucherNameForRecording,
         voucheeNameForRecording,
