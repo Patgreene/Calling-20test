@@ -483,14 +483,13 @@ class RecordingService {
       await this.waitForUploadsToComplete();
 
       // Finalize recording on server
-      const finalizeResponse = await fetch('/api/admin/recordings/finalize', {
+      const finalizeResponse = await fetch('/.netlify/functions/admin-finalize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recording_id: this.activeSession.id,
           total_chunks: totalChunks,
           total_duration: totalDuration,
-          password: password,
         }),
       });
 
