@@ -9,9 +9,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AdminProtectedRoute from "@/components/AdminProtectedRoute";
 import Index from "./pages/Index";
-import Form from "./pages/Form";
-import AICall from "./pages/AICall";
-import NPS from "./pages/NPS";
 import Profile from "./pages/Profile";
 import ThankYou from "./pages/ThankYou";
 import OpenAIRealtimeTest from "./pages/OpenAIRealtimeTest";
@@ -31,9 +28,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/form" element={<Form />} />
-            <Route path="/ai-call" element={<AICall />} />
-            <Route path="/nps" element={<NPS />} />
+            <Route path="/form" element={<OpenAIRealtimeTest />} />
+            <Route path="/ai-call" element={<OpenAIRealtimeTest />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/thank-you" element={<ThankYou />} />
             <Route
