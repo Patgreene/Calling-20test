@@ -155,7 +155,7 @@ class RecordingService {
   }
 
   // Upload chunk with retry logic and exponential backoff
-  private async uploadChunkWithRetry(recordingId: string, chunkData: ChunkData, password: string): Promise<boolean> {
+  private async uploadChunkWithRetry(recordingId: string, chunkData: ChunkData): Promise<boolean> {
     let attempt = 0;
     let delay = this.config.retryDelay;
 
@@ -170,7 +170,6 @@ class RecordingService {
         formData.append('chunk', chunkData.blob);
         formData.append('recording_id', recordingId);
         formData.append('chunk_index', chunkData.index.toString());
-        formData.append('password', password);
 
         const response = await fetch('/.netlify/functions/admin-chunk', {
           method: 'POST',
@@ -218,7 +217,7 @@ class RecordingService {
   }
 
   // Start a new recording session with mixed audio
-  public async startRecording(password: string, remoteAudioElement?: HTMLAudioElement, voucherName?: string, voucheeName?: string, callCode?: string, voucherEmail?: string, voucherPhone?: string): Promise<string> {
+  public async startRecording(remoteAudioElement?: HTMLAudioElement, voucherName?: string, voucheeName?: string, callCode?: string, voucherEmail?: string, voucherPhone?: string): Promise<string> {
     try {
       if (this.activeSession?.isActive) {
         throw new Error('Recording session already active');
@@ -273,7 +272,6 @@ class RecordingService {
         action: 'start_recording',
         call_code: callCode || `REC-${Date.now()}`,
         mime_type: this.config.mimeType,
-        password: password,
         voucher_name: voucherName,
         vouchee_name: voucheeName,
         voucher_email: voucherEmail,
@@ -326,7 +324,7 @@ class RecordingService {
       // Set up event handlers
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0) {
-          await this.handleChunkAvailable(event.data, password);
+          await this.handleChunkAvailable(event.data);
         }
 
         // If we're stopping and this is likely the final chunk, mark it
@@ -337,7 +335,7 @@ class RecordingService {
       };
 
       mediaRecorder.onstop = async () => {
-        await this.handleRecordingStop(password);
+        await this.handleRecordingStop();
       };
 
       mediaRecorder.onerror = (event) => {
@@ -384,7 +382,7 @@ class RecordingService {
   }
 
   // Handle new chunk availability
-  private async handleChunkAvailable(blob: Blob, password: string): Promise<void> {
+  private async handleChunkAvailable(blob: Blob): Promise<void> {
     if (!this.activeSession) return;
 
     try {
@@ -412,7 +410,7 @@ class RecordingService {
       }
 
       // Upload immediately (async, don't block recording)
-      this.uploadChunkWithRetry(this.activeSession.id, chunkData, password).catch(error => {
+      this.uploadChunkWithRetry(this.activeSession.id, chunkData).catch(error => {
         console.error(`💥 Failed to upload chunk ${chunkIndex}:`, error);
       });
 
@@ -454,7 +452,7 @@ class RecordingService {
   }
 
   // Handle recording stop event
-  private async handleRecordingStop(password: string): Promise<void> {
+  private async handleRecordingStop(): Promise<void> {
     if (!this.activeSession) return;
 
     try {
@@ -558,7 +556,7 @@ class RecordingService {
   }
 
   // Retry failed uploads from IndexedDB backup
-  public async retryFailedUploads(recordingId: string, password: string): Promise<void> {
+  public async retryFailedUploads(recordingId: string): Promise<void> {
     if (!this.db) {
       throw new Error('IndexedDB not available for recovery');
     }
@@ -579,7 +577,7 @@ class RecordingService {
           status: 'pending',
         };
 
-        const success = await this.uploadChunkWithRetry(recordingId, chunkData, password);
+        const success = await this.uploadChunkWithRetry(recordingId, chunkData);
         if (success) {
           // Update IndexedDB record
           await this.updateChunkInIndexedDB(chunkRecord.id, 'uploaded');
