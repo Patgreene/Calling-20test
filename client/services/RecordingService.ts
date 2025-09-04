@@ -172,7 +172,7 @@ class RecordingService {
         formData.append('chunk_index', chunkData.index.toString());
         formData.append('password', password);
 
-        const response = await fetch('/api/admin/recordings/chunk', {
+        const response = await fetch('/.netlify/functions/admin-chunk', {
           method: 'POST',
           body: formData,
         });
@@ -281,7 +281,7 @@ class RecordingService {
       };
 
 
-      const sessionResponse = await fetch('/api/admin/recordings', {
+      const sessionResponse = await fetch('/.netlify/functions/admin-recordings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData),
