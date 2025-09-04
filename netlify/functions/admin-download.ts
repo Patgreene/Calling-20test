@@ -27,6 +27,50 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
+  // Check authentication FIRST (case insensitive)
+  const headers = event.headers || {};
+  const authHeader = headers.authorization || headers.Authorization || headers['Authorization'] || headers['authorization'];
+  const password = authHeader ? authHeader.replace('Bearer ', '') : null;
+  let bodyPassword = null;
+
+  if (event.body) {
+    try {
+      const body = JSON.parse(event.body);
+      bodyPassword = body.password;
+    } catch (e) {
+      // Ignore JSON parse errors
+    }
+  }
+
+  console.log("🔐 Download auth check:", {
+    path: event.path,
+    method: event.httpMethod,
+    hasAuthHeader: !!authHeader,
+    authHeader,
+    password,
+    bodyPassword,
+    allHeaders: Object.keys(headers),
+    hasValidAuth: password === "Tim&Pat95" || bodyPassword === "Tim&Pat95"
+  });
+
+  if (password !== "Tim&Pat95" && bodyPassword !== "Tim&Pat95") {
+    console.error("❌ Authentication failed for download request", {
+      password,
+      bodyPassword,
+      expectedPassword: "Tim&Pat95"
+    });
+    return {
+      statusCode: 401,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({ error: "Unauthorized - Invalid credentials" }),
+    };
+  }
+
+  console.log("✅ Authentication successful for download request");
+
   // Extract recording ID from path or query parameters
   let id = event.queryStringParameters?.id;
 
@@ -55,40 +99,6 @@ export const handler = async (event: any, context: any) => {
     } catch (e) {
       // Ignore JSON parse errors
     }
-  }
-
-  // Check authentication (case insensitive)
-  const headers = event.headers || {};
-  const authHeader = headers.authorization || headers.Authorization || headers['Authorization'] || headers['authorization'];
-  const password = authHeader ? authHeader.replace('Bearer ', '') : null;
-  let bodyPassword = null;
-
-  if (event.body) {
-    try {
-      const body = JSON.parse(event.body);
-      bodyPassword = body.password;
-    } catch (e) {
-      // Ignore JSON parse errors
-    }
-  }
-
-  console.log("🔐 Auth check:", {
-    authHeader,
-    password,
-    bodyPassword,
-    hasValidAuth: password === "Tim&Pat95" || bodyPassword === "Tim&Pat95"
-  });
-
-  if (password !== "Tim&Pat95" && bodyPassword !== "Tim&Pat95") {
-    console.error("❌ Authentication failed for download request");
-    return {
-      statusCode: 401,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "Unauthorized" }),
-    };
   }
 
   if (!id) {
