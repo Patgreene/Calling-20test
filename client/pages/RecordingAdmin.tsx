@@ -306,33 +306,6 @@ export default function RecordingAdmin() {
         });
         const audioUrl = window.URL.createObjectURL(blob);
 
-        /* TODO: Re-enable when backend is working
-        if (!response.ok) {
-          let errorText = "Unknown error";
-          try {
-            errorText = await response.text();
-          } catch (readError) {
-            console.warn("Could not read response text:", readError);
-            errorText = `HTTP ${response.status} ${response.statusText}`;
-          }
-          console.error("Audio download failed:", {
-            status: response.status,
-            statusText: response.statusText,
-            error: errorText,
-            recordingId
-          });
-          throw new Error(`Failed to load audio: ${response.status} ${response.statusText}`);
-        }
-
-        const blob = await response.blob();
-        console.log("✅ Audio blob loaded:", {
-          size: blob.size,
-          type: blob.type,
-          recordingId
-        });
-        const audioUrl = window.URL.createObjectURL(blob);
-        */
-
         audio = new Audio(audioUrl);
         audio.onended = () => {
           setPlayingAudio(null);
@@ -567,7 +540,7 @@ export default function RecordingAdmin() {
         });
       }
     } catch (error) {
-      console.error("❌ Save transcript error:", error);
+      console.error("��� Save transcript error:", error);
       setMessage({
         type: "error",
         text: `Error saving transcript: ${error instanceof Error ? error.message : "Unknown error"}`,
