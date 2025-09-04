@@ -13,6 +13,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/realtime/client-secret"
+  to = "/.netlify/functions/client-secret"
+  status = 200
+
+[[redirects]]
   from = "/api/test"
   to = "/.netlify/functions/test"
   status = 200
