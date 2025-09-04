@@ -305,7 +305,6 @@ export default function OpenAIRealtimeTest() {
     try {
       setIsRecording(true);
 
-      const adminPassword = "vouch2024admin";
       const voucherNameForRecording = preparedNames ? `${preparedNames.voucher_first} ${preparedNames.voucher_last}`.trim() : voucherName;
       const voucheeNameForRecording = preparedNames ? `${preparedNames.vouchee_first} ${preparedNames.vouchee_last}`.trim() : voucheeName;
 
