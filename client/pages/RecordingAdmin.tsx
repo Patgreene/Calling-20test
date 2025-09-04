@@ -167,9 +167,32 @@ export default function RecordingAdmin() {
 
   const downloadRecording = async (recordingId: string, fileName: string) => {
     try {
-      setMessage({ type: "success", text: "Preparing download..." });
+      setMessage({ type: "success", text: "Preparing mock download..." });
 
-      // Get all chunks for this recording
+      // DEVELOPMENT MOCK: Create a mock file for download
+      console.log("🔧 DEV MODE: Creating mock download");
+
+      const createMockDownloadBlob = () => {
+        const text = `Mock Recording File
+Recording ID: ${recordingId}
+Filename: ${fileName}
+Created: ${new Date().toISOString()}
+This is a development mock file.`;
+        return new Blob([text], { type: 'text/plain' });
+      };
+
+      const blob = createMockDownloadBlob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName || `mock_recording_${recordingId}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      setMessage({ type: "success", text: "Mock download completed!" });
+
+      /* TODO: Re-enable when backend functions work
       const response = await fetch(
         `/api/admin/recordings/${recordingId}/download`,
         {
@@ -196,6 +219,7 @@ export default function RecordingAdmin() {
       } else {
         throw new Error("Download failed");
       }
+      */
     } catch (error) {
       console.error("Download error:", error);
       setMessage({
