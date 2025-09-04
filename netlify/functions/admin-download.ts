@@ -9,7 +9,7 @@ export const handler = async (event: any, context: any) => {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
       body: "",
@@ -234,7 +234,7 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": recording.mime_type || "audio/webm",
         "Content-Disposition": `attachment; filename="${recording.file_name}"`,
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
       body: Buffer.from(concatenatedBuffer).toString("base64"),
