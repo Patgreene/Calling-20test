@@ -31,16 +31,18 @@ export const handler = async (event: any, context: any) => {
   let id = event.queryStringParameters?.id;
 
   if (!id) {
-    // Try to extract from path
+    // Path format: /api/admin/recordings/{id}/download
+    // Split: ["", "api", "admin", "recordings", "{id}", "download"]
     const pathParts = event.path.split("/");
     const recordingsIndex = pathParts.findIndex(
       (part) => part === "recordings",
     );
+
     if (recordingsIndex >= 0 && recordingsIndex + 1 < pathParts.length) {
-      id = pathParts[recordingsIndex + 1];
-      // Remove 'download' suffix if present
-      if (id === "download" && recordingsIndex + 2 < pathParts.length) {
-        id = pathParts[recordingsIndex - 1];
+      const potentialId = pathParts[recordingsIndex + 1];
+      // Make sure we got the ID and not "download"
+      if (potentialId && potentialId !== "download") {
+        id = potentialId;
       }
     }
   }
