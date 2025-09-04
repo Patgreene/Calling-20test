@@ -324,7 +324,7 @@ This is a development mock file.`;
 
         const blob = await response.blob();
         */
-        console.log("✅ Mock audio blob created:", {
+        console.log("✅ Audio blob loaded:", {
           size: blob.size,
           type: blob.type,
           recordingId,
