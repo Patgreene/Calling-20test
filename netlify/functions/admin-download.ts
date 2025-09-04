@@ -27,16 +27,11 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
-  // TEMPORARILY DISABLE AUTH FOR DEBUGGING
-  console.log("🔧 DEBUG: Download request received:", {
+  console.log("📥 Download request received:", {
     path: event.path,
     method: event.httpMethod,
     hasBody: !!event.body,
   });
-
-  // TODO: Re-enable authentication once we confirm the function works
-
-  console.log("✅ Authentication successful for download request");
 
   // Extract recording ID from path or query parameters
   let id = event.queryStringParameters?.id;

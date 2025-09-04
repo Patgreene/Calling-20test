@@ -76,25 +76,6 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
-  // Check authentication (case insensitive)
-  const headers = event.headers || {};
-  const authHeader =
-    headers.authorization ||
-    headers.Authorization ||
-    headers["Authorization"] ||
-    headers["authorization"];
-  const password = authHeader ? authHeader.replace("Bearer ", "") : null;
-
-  if (password !== "Tim&Pat95") {
-    return {
-      statusCode: 401,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "Unauthorized" }),
-    };
-  }
 
   if (event.httpMethod !== "GET") {
     return {
