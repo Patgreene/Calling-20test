@@ -4,26 +4,26 @@ const SUPABASE_ANON_KEY =
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
@@ -35,9 +35,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Invalid JSON in request body" })
+      body: JSON.stringify({ error: "Invalid JSON in request body" }),
     };
   }
 
@@ -48,9 +48,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID is required" })
+      body: JSON.stringify({ error: "Recording ID is required" }),
     };
   }
 
@@ -60,9 +60,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "OpenAI API key not configured" })
+      body: JSON.stringify({ error: "OpenAI API key not configured" }),
     };
   }
 
@@ -78,7 +78,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!recordingResponse.ok) {
@@ -86,9 +86,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -98,9 +98,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -109,8 +109,8 @@ export const handler = async (event: any, context: any) => {
     // Create transcription record
     const transcriptionRecord = {
       recording_id: recording_id,
-      status: 'processing',
-      created_at: new Date().toISOString()
+      status: "processing",
+      created_at: new Date().toISOString(),
     };
 
     const transcriptionResponse = await fetch(
@@ -124,19 +124,21 @@ export const handler = async (event: any, context: any) => {
           Prefer: "return=representation",
         },
         body: JSON.stringify(transcriptionRecord),
-      }
+      },
     );
 
     if (!transcriptionResponse.ok) {
       const errorText = await transcriptionResponse.text();
-      console.error('Failed to create transcription record:', errorText);
+      console.error("Failed to create transcription record:", errorText);
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: 'Failed to create transcription record' })
+        body: JSON.stringify({
+          error: "Failed to create transcription record",
+        }),
       };
     }
 
@@ -153,16 +155,16 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!chunksResponse.ok) {
-      throw new Error('Failed to load recording chunks');
+      throw new Error("Failed to load recording chunks");
     }
 
     const chunks = await chunksResponse.json();
     if (chunks.length === 0) {
-      throw new Error('No audio chunks found for recording');
+      throw new Error("No audio chunks found for recording");
     }
 
     // Download and concatenate chunks
@@ -173,7 +175,7 @@ export const handler = async (event: any, context: any) => {
       try {
         const chunkUrl = `${SUPABASE_URL}/storage/v1/object/public/audio-chunks/${chunk.storage_path}`;
         const chunkResponse = await fetch(chunkUrl);
-        
+
         if (chunkResponse.ok) {
           const chunkBuffer = await chunkResponse.arrayBuffer();
           chunkBuffers.push(new Uint8Array(chunkBuffer));
@@ -185,7 +187,7 @@ export const handler = async (event: any, context: any) => {
     }
 
     if (chunkBuffers.length === 0) {
-      throw new Error('Failed to download any audio chunks');
+      throw new Error("Failed to download any audio chunks");
     }
 
     // Concatenate chunks
@@ -199,28 +201,31 @@ export const handler = async (event: any, context: any) => {
     console.log(`📦 Downloaded ${concatenatedBuffer.byteLength} bytes`);
 
     // Create form data for OpenAI Whisper API
-    const audioBlob = new Blob([concatenatedBuffer], { type: 'audio/webm' });
+    const audioBlob = new Blob([concatenatedBuffer], { type: "audio/webm" });
     const formData = new FormData();
-    formData.append('file', audioBlob, `${recording_id}.webm`);
-    formData.append('model', 'whisper-1');
-    formData.append('response_format', 'verbose_json');
-    formData.append('timestamp_granularities[]', 'word');
-    formData.append('timestamp_granularities[]', 'segment');
+    formData.append("file", audioBlob, `${recording_id}.webm`);
+    formData.append("model", "whisper-1");
+    formData.append("response_format", "verbose_json");
+    formData.append("timestamp_granularities[]", "word");
+    formData.append("timestamp_granularities[]", "segment");
 
     console.log(`🤖 Sending to OpenAI Whisper API...`);
 
     // Call OpenAI Whisper API
-    const whisperResponse = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+    const whisperResponse = await fetch(
+      "https://api.openai.com/v1/audio/transcriptions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openaiApiKey}`,
+        },
+        body: formData,
       },
-      body: formData,
-    });
+    );
 
     if (!whisperResponse.ok) {
       const errorText = await whisperResponse.text();
-      console.error('OpenAI API error:', errorText);
+      console.error("OpenAI API error:", errorText);
 
       // Update transcription record with error
       await fetch(
@@ -233,27 +238,31 @@ export const handler = async (event: any, context: any) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            status: 'failed',
+            status: "failed",
             error_message: `OpenAI API error: ${whisperResponse.statusText}`,
-            completed_at: new Date().toISOString()
+            completed_at: new Date().toISOString(),
           }),
-        }
+        },
       );
 
-      throw new Error(`OpenAI API error: ${whisperResponse.statusText} - ${errorText}`);
+      throw new Error(
+        `OpenAI API error: ${whisperResponse.statusText} - ${errorText}`,
+      );
     }
 
     const transcriptionResult = await whisperResponse.json();
-    console.log(`✅ Received transcription from OpenAI (${transcriptionResult.text.length} characters)`);
+    console.log(
+      `✅ Received transcription from OpenAI (${transcriptionResult.text.length} characters)`,
+    );
 
     // Update transcription record with results
     const updateData = {
-      status: 'completed',
+      status: "completed",
       transcript_text: transcriptionResult.text,
       transcript_json: transcriptionResult,
       completed_at: new Date().toISOString(),
       duration: transcriptionResult.duration,
-      language: transcriptionResult.language
+      language: transcriptionResult.language,
     };
 
     const updateResponse = await fetch(
@@ -267,18 +276,18 @@ export const handler = async (event: any, context: any) => {
           Prefer: "return=representation",
         },
         body: JSON.stringify(updateData),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
-      console.error('Failed to update transcription:', updateResponse.status);
+      console.error("Failed to update transcription:", updateResponse.status);
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: 'Failed to save transcription results' })
+        body: JSON.stringify({ error: "Failed to save transcription results" }),
       };
     }
 
@@ -293,17 +302,16 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
-        message: 'Transcription completed successfully',
-        transcript: updatedTranscription
-      })
+        message: "Transcription completed successfully",
+        transcript: updatedTranscription,
+      }),
     };
-
   } catch (error: any) {
-    console.error('💥 Transcription error:', error);
+    console.error("💥 Transcription error:", error);
 
     // Try to update transcription status to failed if we have the recording_id
     try {
@@ -317,26 +325,26 @@ export const handler = async (event: any, context: any) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            status: 'failed',
+            status: "failed",
             error_message: error.message,
-            completed_at: new Date().toISOString()
+            completed_at: new Date().toISOString(),
           }),
-        }
+        },
       );
     } catch (updateError) {
-      console.error('Failed to update failed status:', updateError);
+      console.error("Failed to update failed status:", updateError);
     }
 
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
-        error: 'Transcription failed',
-        message: error.message
-      })
+        error: "Transcription failed",
+        message: error.message,
+      }),
     };
   }
 };

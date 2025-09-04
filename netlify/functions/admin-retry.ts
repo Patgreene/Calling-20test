@@ -4,26 +4,26 @@ const SUPABASE_ANON_KEY =
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
@@ -35,9 +35,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Invalid JSON in request body" })
+      body: JSON.stringify({ error: "Invalid JSON in request body" }),
     };
   }
 
@@ -48,9 +48,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID is required" })
+      body: JSON.stringify({ error: "Recording ID is required" }),
     };
   }
 
@@ -66,7 +66,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!recordingResponse.ok) {
@@ -74,9 +74,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -86,9 +86,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -96,11 +96,11 @@ export const handler = async (event: any, context: any) => {
 
     // Reset recording status to allow retry
     const updateData = {
-      upload_status: 'uploading',
-      verification_status: 'pending',
+      upload_status: "uploading",
+      verification_status: "pending",
       retry_count: (recording.retry_count || 0) + 1,
       last_error_message: null,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     const updateResponse = await fetch(
@@ -114,23 +114,27 @@ export const handler = async (event: any, context: any) => {
           Prefer: "return=representation",
         },
         body: JSON.stringify(updateData),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
-      console.error('Failed to update recording:', updateResponse.status);
+      console.error("Failed to update recording:", updateResponse.status);
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: 'Failed to reset recording status for retry' })
+        body: JSON.stringify({
+          error: "Failed to reset recording status for retry",
+        }),
       };
     }
 
     const updatedRecordings = await updateResponse.json();
-    console.log(`✅ Recording ${recording_id} reset for retry (attempt ${updateData.retry_count})`);
+    console.log(
+      `✅ Recording ${recording_id} reset for retry (attempt ${updateData.retry_count})`,
+    );
 
     return {
       statusCode: 200,
@@ -138,27 +142,26 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
         message: `Recording reset for retry attempt ${updateData.retry_count}`,
-        recording: updatedRecordings[0]
-      })
+        recording: updatedRecordings[0],
+      }),
     };
-
   } catch (error: any) {
     console.error(`Retry error for recording ${recording_id}:`, error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: "Retry failed",
-        details: error.message
-      })
+        details: error.message,
+      }),
     };
   }
 };

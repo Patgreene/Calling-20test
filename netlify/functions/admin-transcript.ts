@@ -4,26 +4,26 @@ const SUPABASE_ANON_KEY =
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "PATCH, OPTIONS"
+        "Access-Control-Allow-Methods": "PATCH, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'PATCH') {
+  if (event.httpMethod !== "PATCH") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
@@ -35,9 +35,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Invalid JSON in request body" })
+      body: JSON.stringify({ error: "Invalid JSON in request body" }),
     };
   }
 
@@ -48,9 +48,11 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID and transcript text are required" })
+      body: JSON.stringify({
+        error: "Recording ID and transcript text are required",
+      }),
     };
   }
 
@@ -70,41 +72,43 @@ export const handler = async (event: any, context: any) => {
         },
         body: JSON.stringify({
           transcript_text: transcript_text,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         }),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
       const errorText = await updateResponse.text();
-      console.error('Failed to update transcript:', errorText);
+      console.error("Failed to update transcript:", errorText);
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ 
-          error: 'Failed to save transcript changes',
-          details: errorText
-        })
+        body: JSON.stringify({
+          error: "Failed to save transcript changes",
+          details: errorText,
+        }),
       };
     }
 
     const updatedTranscriptions = await updateResponse.json();
-    
+
     if (updatedTranscriptions.length === 0) {
       return {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Transcription not found" })
+        body: JSON.stringify({ error: "Transcription not found" }),
       };
     }
 
-    console.log(`✅ Transcript saved successfully for recording ${recording_id}`);
+    console.log(
+      `✅ Transcript saved successfully for recording ${recording_id}`,
+    );
 
     return {
       statusCode: 200,
@@ -112,27 +116,26 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "PATCH, OPTIONS"
+        "Access-Control-Allow-Methods": "PATCH, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
-        message: 'Transcript saved successfully',
-        transcript: updatedTranscriptions[0]
-      })
+        message: "Transcript saved successfully",
+        transcript: updatedTranscriptions[0],
+      }),
     };
-
   } catch (error: any) {
-    console.error('💥 Transcript save error:', error);
+    console.error("💥 Transcript save error:", error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
-        error: 'Failed to save transcript',
-        message: error.message
-      })
+        error: "Failed to save transcript",
+        message: error.message,
+      }),
     };
   }
 };

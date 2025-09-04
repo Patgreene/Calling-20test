@@ -12,7 +12,7 @@ async function getRecordingChunks(recordingId: string) {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -29,32 +29,32 @@ async function getRecordingChunks(recordingId: string) {
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
   // Extract recording ID from path
-  const pathParts = event.path.split('/');
-  const idIndex = pathParts.findIndex(part => part === 'recordings') + 1;
+  const pathParts = event.path.split("/");
+  const idIndex = pathParts.findIndex((part) => part === "recordings") + 1;
   const id = pathParts[idIndex];
 
   if (!id) {
@@ -62,9 +62,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID is required" })
+      body: JSON.stringify({ error: "Recording ID is required" }),
     };
   }
 
@@ -80,7 +80,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!recordingResponse.ok) {
@@ -88,9 +88,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -100,9 +100,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -113,8 +113,12 @@ export const handler = async (event: any, context: any) => {
 
     // Calculate verification stats
     const totalChunks = chunks.length;
-    const uploadedChunks = chunks.filter((c: any) => c.upload_status === 'uploaded').length;
-    const failedChunks = chunks.filter((c: any) => c.upload_status === 'failed').length;
+    const uploadedChunks = chunks.filter(
+      (c: any) => c.upload_status === "uploaded",
+    ).length;
+    const failedChunks = chunks.filter(
+      (c: any) => c.upload_status === "failed",
+    ).length;
 
     // Determine new status
     let uploadStatus = recording.upload_status;
@@ -122,50 +126,60 @@ export const handler = async (event: any, context: any) => {
     let message = "Recording status checked";
 
     if (totalChunks === 0) {
-      uploadStatus = 'failed';
-      verificationStatus = 'missing';
+      uploadStatus = "failed";
+      verificationStatus = "missing";
       message = "No chunks found - marking as failed";
     } else if (uploadedChunks > 0 && failedChunks === 0) {
       // All available chunks are uploaded successfully
-      uploadStatus = 'completed';
-      verificationStatus = 'verified';
+      uploadStatus = "completed";
+      verificationStatus = "verified";
       message = `All ${uploadedChunks} chunks verified - marking as completed`;
     } else if (uploadedChunks > 0) {
       // Some chunks uploaded, some failed
       if (uploadedChunks >= totalChunks * 0.8) {
         // If 80% or more chunks are uploaded, consider it completed with warning
-        uploadStatus = 'completed';
-        verificationStatus = 'verified';
+        uploadStatus = "completed";
+        verificationStatus = "verified";
         message = `Mostly complete - ${uploadedChunks}/${totalChunks} chunks uploaded`;
       } else {
-        uploadStatus = 'failed';
-        verificationStatus = failedChunks > uploadedChunks ? 'corrupted' : 'missing';
+        uploadStatus = "failed";
+        verificationStatus =
+          failedChunks > uploadedChunks ? "corrupted" : "missing";
         message = `Partial upload detected - ${uploadedChunks}/${totalChunks} chunks`;
       }
     } else {
-      uploadStatus = 'failed';
-      verificationStatus = 'missing';
+      uploadStatus = "failed";
+      verificationStatus = "missing";
       message = "No successful uploads found";
     }
 
     // Update recording status with corrected chunk counts
-    const actualTotalChunks = Math.max(recording.chunks_total || 0, totalChunks, uploadedChunks);
+    const actualTotalChunks = Math.max(
+      recording.chunks_total || 0,
+      totalChunks,
+      uploadedChunks,
+    );
 
     const updateData: any = {
       upload_status: uploadStatus,
       verification_status: verificationStatus,
       chunks_total: actualTotalChunks,
       chunks_uploaded: uploadedChunks,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     if (uploadedChunks > 0) {
-      const uploadedChunkData = chunks.filter((c: any) => c.upload_status === 'uploaded');
-      const totalSize = uploadedChunkData.reduce((sum: number, chunk: any) => sum + (chunk.chunk_size_bytes || 0), 0);
+      const uploadedChunkData = chunks.filter(
+        (c: any) => c.upload_status === "uploaded",
+      );
+      const totalSize = uploadedChunkData.reduce(
+        (sum: number, chunk: any) => sum + (chunk.chunk_size_bytes || 0),
+        0,
+      );
       updateData.file_size_bytes = totalSize;
     }
 
-    if (uploadStatus === 'failed') {
+    if (uploadStatus === "failed") {
       updateData.last_error_message = `Fix attempted: ${message}`;
     }
 
@@ -180,18 +194,18 @@ export const handler = async (event: any, context: any) => {
           Prefer: "return=representation",
         },
         body: JSON.stringify(updateData),
-      }
+      },
     );
 
     if (!updateResponse.ok) {
-      console.error('Failed to update recording:', updateResponse.status);
+      console.error("Failed to update recording:", updateResponse.status);
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: 'Failed to update recording status' })
+        body: JSON.stringify({ error: "Failed to update recording status" }),
       };
     }
 
@@ -204,7 +218,7 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
@@ -215,23 +229,22 @@ export const handler = async (event: any, context: any) => {
           uploadedChunks,
           failedChunks,
           newStatus: uploadStatus,
-          newVerification: verificationStatus
-        }
-      })
+          newVerification: verificationStatus,
+        },
+      }),
     };
-
   } catch (error: any) {
     console.error(`Fix error for recording ${id}:`, error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: "Fix failed",
-        details: error.message
-      })
+        details: error.message,
+      }),
     };
   }
 };
