@@ -43,33 +43,8 @@ export const handler = async (event: any, context: any) => {
     };
   }
 
-  let requestBody;
-  try {
-    requestBody = JSON.parse(event.body || "{}");
-  } catch (error) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "Invalid JSON in request body" }),
-    };
-  }
-
-  const { password } = requestBody;
-
-  // Simple password check
-  if (password !== "vouch2024admin") {
-    return {
-      statusCode: 401,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "Unauthorized" }),
-    };
-  }
+  // Admin pages are already protected by AdminProtectedRoute
+  // No additional password check needed
 
   try {
     console.log(`🔽 Downloading recording ${id}`);
