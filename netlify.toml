@@ -23,6 +23,16 @@
   status = 200
 
 [[redirects]]
+  from = "/api/admin/recordings/*/download"
+  to = "/.netlify/functions/admin-download"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/recordings/*"
+  to = "/.netlify/functions/admin-delete"
+  status = 200
+
+[[redirects]]
   from = "/api/admin/prompt"
   to = "/.netlify/functions/admin-prompt"
   status = 200
