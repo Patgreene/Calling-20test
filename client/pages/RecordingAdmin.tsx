@@ -189,10 +189,22 @@ export default function RecordingAdmin() {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to load audio");
+          const errorText = await response.text();
+          console.error("Audio download failed:", {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText,
+            recordingId
+          });
+          throw new Error(`Failed to load audio: ${response.status} ${response.statusText}`);
         }
 
         const blob = await response.blob();
+        console.log("✅ Audio blob loaded:", {
+          size: blob.size,
+          type: blob.type,
+          recordingId
+        });
         const audioUrl = window.URL.createObjectURL(blob);
 
         audio = new Audio(audioUrl);
