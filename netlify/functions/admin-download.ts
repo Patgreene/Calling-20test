@@ -1,0 +1,228 @@
+const SUPABASE_URL = "https://xbcmpkkqqfqsuapbvvkp.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiY21wa2txcWZxc3VhcGJ2dmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDAxMTcsImV4cCI6MjA2OTAxNjExN30.iKr-HNc3Zedc_qMHHCsQO8e1nNMxn0cyoA3Wr_zwQik";
+
+export const handler = async (event: any, context: any) => {
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+      },
+      body: ""
+    };
+  }
+
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
+  }
+
+  // Extract recording ID from path
+  const pathParts = event.path.split('/');
+  const idIndex = pathParts.findIndex(part => part === 'recordings') + 1;
+  const id = pathParts[idIndex];
+
+  if (!id) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: "Recording ID is required" })
+    };
+  }
+
+  let requestBody;
+  try {
+    requestBody = JSON.parse(event.body || '{}');
+  } catch (error) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: "Invalid JSON in request body" })
+    };
+  }
+
+  const { password } = requestBody;
+
+  // Simple password check
+  if (password !== "vouch2024admin") {
+    return {
+      statusCode: 401,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: "Unauthorized" })
+    };
+  }
+
+  try {
+    console.log(`🔽 Downloading recording ${id}`);
+
+    // Get recording details
+    const recordingResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/interview_recordings?id=eq.${id}`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!recordingResponse.ok) {
+      return {
+        statusCode: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "Recording not found" })
+      };
+    }
+
+    const recordings = await recordingResponse.json();
+    if (recordings.length === 0) {
+      return {
+        statusCode: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "Recording not found" })
+      };
+    }
+
+    const recording = recordings[0];
+
+    // Get recording chunks
+    const chunksResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/recording_chunks?recording_id=eq.${id}&upload_status=eq.uploaded&order=chunk_number.asc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!chunksResponse.ok) {
+      return {
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "Failed to load chunks" })
+      };
+    }
+
+    const chunks = await chunksResponse.json();
+
+    if (chunks.length === 0) {
+      return {
+        statusCode: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "No audio chunks found" })
+      };
+    }
+
+    // Sort chunks by number
+    chunks.sort((a: any, b: any) => a.chunk_number - b.chunk_number);
+
+    // Download and concatenate chunks
+    const chunkBuffers = [];
+    let totalSize = 0;
+
+    for (const chunk of chunks) {
+      try {
+        // Fetch chunk data from Supabase storage
+        const chunkUrl = `${SUPABASE_URL}/storage/v1/object/public/audio-chunks/${chunk.storage_path}`;
+        const chunkResponse = await fetch(chunkUrl);
+        
+        if (chunkResponse.ok) {
+          const chunkBuffer = await chunkResponse.arrayBuffer();
+          chunkBuffers.push(new Uint8Array(chunkBuffer));
+          totalSize += chunkBuffer.byteLength;
+        } else {
+          console.warn(`Failed to download chunk ${chunk.chunk_number}: ${chunkResponse.status}`);
+        }
+      } catch (error) {
+        console.warn(`Error downloading chunk ${chunk.chunk_number}:`, error);
+      }
+    }
+
+    if (chunkBuffers.length === 0) {
+      return {
+        statusCode: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "No chunks could be downloaded" })
+      };
+    }
+
+    // Concatenate all chunks
+    const concatenatedBuffer = new Uint8Array(totalSize);
+    let offset = 0;
+    for (const buffer of chunkBuffers) {
+      concatenatedBuffer.set(buffer, offset);
+      offset += buffer.length;
+    }
+
+    // Convert to base64 for transmission
+    const base64Audio = Buffer.from(concatenatedBuffer).toString('base64');
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+      },
+      body: JSON.stringify({
+        success: true,
+        filename: recording.file_name,
+        mimeType: recording.mime_type || 'audio/webm',
+        size: concatenatedBuffer.length,
+        audioData: base64Audio
+      })
+    };
+
+  } catch (error: any) {
+    console.error(`Download error for recording ${id}:`, error);
+    return {
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({
+        error: "Download failed",
+        details: error.message
+      })
+    };
+  }
+};
