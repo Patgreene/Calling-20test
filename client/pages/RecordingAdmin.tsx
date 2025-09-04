@@ -601,7 +601,7 @@ export default function RecordingAdmin() {
             <Button
               variant="outline"
               size="sm"
-              className="bg-green-500/10 border-green-500/30 text-green-300 hover:bg-green-500/20"
+              className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
               onClick={() => window.open("https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW", "_blank")}
             >
               Admin Profile
