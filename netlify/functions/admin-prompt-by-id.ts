@@ -18,7 +18,7 @@ export const handler = async (event: any, context: any) => {
 
   // Extract prompt ID from path or query parameters
   let promptId = event.queryStringParameters?.id;
-  
+
   if (!promptId) {
     // Try to extract from path
     const pathParts = event.path.split("/");
@@ -55,11 +55,13 @@ export const handler = async (event: any, context: any) => {
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch prompt: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch prompt: ${response.status} ${response.statusText}`,
+        );
       }
 
       const prompts = await response.json();
-      
+
       if (prompts.length === 0) {
         return {
           statusCode: 404,

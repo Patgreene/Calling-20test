@@ -25,7 +25,8 @@ export const handler = async (event: any, context: any) => {
 
   try {
     const requestBody = JSON.parse(event.body || "{}");
-    const { voucherName, voucherEmail, voucherPhone, voucheeName } = requestBody;
+    const { voucherName, voucherEmail, voucherPhone, voucheeName } =
+      requestBody;
 
     if (!voucherName || !voucherEmail || !voucheeName) {
       return {
@@ -34,18 +35,18 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ 
-          error: "Voucher name, email, and vouchee name are required" 
+        body: JSON.stringify({
+          error: "Voucher name, email, and vouchee name are required",
         }),
       };
     }
 
     // Log the vouch submission
-    console.log("🤝 Vouch submission:", { 
-      voucherName, 
-      voucherEmail, 
-      voucherPhone, 
-      voucheeName 
+    console.log("🤝 Vouch submission:", {
+      voucherName,
+      voucherEmail,
+      voucherPhone,
+      voucheeName,
     });
 
     // Here you could integrate with database, email service, etc.
@@ -65,7 +66,8 @@ export const handler = async (event: any, context: any) => {
         success: true,
         message: "Vouch submitted successfully!",
         vouchCode: vouchCode,
-        nextSteps: "You will receive an email with instructions to complete your vouch.",
+        nextSteps:
+          "You will receive an email with instructions to complete your vouch.",
       }),
     };
   } catch (error: any) {

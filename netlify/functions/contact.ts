@@ -34,12 +34,18 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Name, email, and message are required" }),
+        body: JSON.stringify({
+          error: "Name, email, and message are required",
+        }),
       };
     }
 
     // Log the contact form submission
-    console.log("📧 Contact form submission:", { name, email, message: message.substring(0, 100) + "..." });
+    console.log("📧 Contact form submission:", {
+      name,
+      email,
+      message: message.substring(0, 100) + "...",
+    });
 
     // Here you could integrate with email service, save to database, etc.
     // For now, just return success

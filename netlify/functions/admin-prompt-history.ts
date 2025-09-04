@@ -43,7 +43,9 @@ export const handler = async (event: any, context: any) => {
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch prompts: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch prompts: ${response.status} ${response.statusText}`,
+      );
     }
 
     const prompts = await response.json();

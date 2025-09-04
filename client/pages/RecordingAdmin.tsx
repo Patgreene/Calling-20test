@@ -602,7 +602,12 @@ export default function RecordingAdmin() {
               variant="outline"
               size="sm"
               className="bg-slate-500/10 border-slate-500/30 text-slate-300 hover:bg-slate-500/20"
-              onClick={() => window.open("https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW", "_blank")}
+              onClick={() =>
+                window.open(
+                  "https://profiles.vouchprofile.com/sys-admin-x9K2mP8qL5nW",
+                  "_blank",
+                )
+              }
             >
               Admin Profile
             </Button>
