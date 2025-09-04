@@ -233,6 +233,16 @@ export default function RecordingAdmin() {
           },
         );
 
+        // Use mock blob for development
+        const blob = mockAudioBlob;
+        console.log("✅ Mock audio blob created:", {
+          size: blob.size,
+          type: blob.type,
+          recordingId
+        });
+        const audioUrl = window.URL.createObjectURL(blob);
+
+        /* TODO: Re-enable when backend is working
         if (!response.ok) {
           let errorText = "Unknown error";
           try {
@@ -257,6 +267,7 @@ export default function RecordingAdmin() {
           recordingId
         });
         const audioUrl = window.URL.createObjectURL(blob);
+        */
 
         audio = new Audio(audioUrl);
         audio.onended = () => {
