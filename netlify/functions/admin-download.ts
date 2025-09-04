@@ -57,6 +57,31 @@ export const handler = async (event: any, context: any) => {
     }
   }
 
+  // Check authentication
+  const authHeader = event.headers.authorization || event.headers.Authorization;
+  const password = authHeader ? authHeader.replace('Bearer ', '') : null;
+  let bodyPassword = null;
+
+  if (event.body) {
+    try {
+      const body = JSON.parse(event.body);
+      bodyPassword = body.password;
+    } catch (e) {
+      // Ignore JSON parse errors
+    }
+  }
+
+  if (password !== "Tim&Pat95" && bodyPassword !== "Tim&Pat95") {
+    return {
+      statusCode: 401,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({ error: "Unauthorized" }),
+    };
+  }
+
   if (!id) {
     console.error("❌ No recording ID found in request", {
       path: event.path,
