@@ -12,7 +12,7 @@ async function getRecordingChunks(recordingId: string) {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -29,32 +29,32 @@ async function getRecordingChunks(recordingId: string) {
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "DELETE, OPTIONS"
+        "Access-Control-Allow-Methods": "DELETE, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'DELETE') {
+  if (event.httpMethod !== "DELETE") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
   // Extract recording ID from path
-  const pathParts = event.path.split('/');
-  const idIndex = pathParts.findIndex(part => part === 'recordings') + 1;
+  const pathParts = event.path.split("/");
+  const idIndex = pathParts.findIndex((part) => part === "recordings") + 1;
   const id = pathParts[idIndex];
 
   if (!id) {
@@ -62,23 +62,23 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID is required" })
+      body: JSON.stringify({ error: "Recording ID is required" }),
     };
   }
 
   let requestBody;
   try {
-    requestBody = JSON.parse(event.body || '{}');
+    requestBody = JSON.parse(event.body || "{}");
   } catch (error) {
     return {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Invalid JSON in request body" })
+      body: JSON.stringify({ error: "Invalid JSON in request body" }),
     };
   }
 
@@ -90,9 +90,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 401,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Unauthorized" })
+      body: JSON.stringify({ error: "Unauthorized" }),
     };
   }
 
@@ -108,7 +108,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!recordingResponse.ok) {
@@ -116,9 +116,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -128,9 +128,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -141,25 +141,31 @@ export const handler = async (event: any, context: any) => {
 
     // Delete chunks from storage
     for (const chunk of chunks) {
-      if (chunk.upload_status === 'uploaded' && chunk.storage_path) {
+      if (chunk.upload_status === "uploaded" && chunk.storage_path) {
         try {
           const deleteChunkResponse = await fetch(
             `${SUPABASE_URL}/storage/v1/object/audio-chunks/${chunk.storage_path}`,
             {
-              method: 'DELETE',
+              method: "DELETE",
               headers: {
                 Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
               },
-            }
+            },
           );
 
           if (deleteChunkResponse.ok) {
             console.log(`✅ Deleted chunk ${chunk.chunk_number} from storage`);
           } else {
-            console.warn(`⚠️ Failed to delete chunk ${chunk.chunk_number} from storage:`, deleteChunkResponse.status);
+            console.warn(
+              `⚠️ Failed to delete chunk ${chunk.chunk_number} from storage:`,
+              deleteChunkResponse.status,
+            );
           }
         } catch (error) {
-          console.error(`❌ Error deleting chunk ${chunk.chunk_number} from storage:`, error);
+          console.error(
+            `❌ Error deleting chunk ${chunk.chunk_number} from storage:`,
+            error,
+          );
         }
       }
     }
@@ -175,13 +181,16 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-      }
+      },
     );
 
     if (deleteChunksResponse.ok) {
       console.log(`✅ Deleted chunk records for recording ${id}`);
     } else {
-      console.error("Failed to delete recording chunks from database:", deleteChunksResponse.status);
+      console.error(
+        "Failed to delete recording chunks from database:",
+        deleteChunksResponse.status,
+      );
     }
 
     // Delete event records
@@ -195,13 +204,16 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-      }
+      },
     );
 
     if (deleteEventsResponse.ok) {
       console.log(`✅ Deleted event records for recording ${id}`);
     } else {
-      console.error("Failed to delete recording events from database:", deleteEventsResponse.status);
+      console.error(
+        "Failed to delete recording events from database:",
+        deleteEventsResponse.status,
+      );
     }
 
     // Delete transcription records (if any)
@@ -216,7 +228,7 @@ export const handler = async (event: any, context: any) => {
             "Content-Type": "application/json",
             Prefer: "return=minimal",
           },
-        }
+        },
       );
 
       if (deleteTranscriptionsResponse.ok) {
@@ -237,7 +249,7 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-      }
+      },
     );
 
     if (deleteRecordingResponse.ok) {
@@ -248,41 +260,43 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "DELETE, OPTIONS"
+          "Access-Control-Allow-Methods": "DELETE, OPTIONS",
         },
         body: JSON.stringify({
           success: true,
           message: `Recording ${id} and all associated data deleted successfully`,
-          deletedChunks: chunks.length
-        })
+          deletedChunks: chunks.length,
+        }),
       };
     } else {
-      console.error("Failed to delete main recording:", deleteRecordingResponse.status);
+      console.error(
+        "Failed to delete main recording:",
+        deleteRecordingResponse.status,
+      );
       return {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           error: "Failed to delete recording record",
-          details: `Status: ${deleteRecordingResponse.status}`
-        })
+          details: `Status: ${deleteRecordingResponse.status}`,
+        }),
       };
     }
-
   } catch (error: any) {
     console.error(`Delete error for recording ${id}:`, error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: "Delete failed",
-        details: error.message
-      })
+        details: error.message,
+      }),
     };
   }
 };

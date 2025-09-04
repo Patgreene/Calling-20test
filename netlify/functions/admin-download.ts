@@ -4,32 +4,32 @@ const SUPABASE_ANON_KEY =
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
   // Extract recording ID from path
-  const pathParts = event.path.split('/');
-  const idIndex = pathParts.findIndex(part => part === 'recordings') + 1;
+  const pathParts = event.path.split("/");
+  const idIndex = pathParts.findIndex((part) => part === "recordings") + 1;
   const id = pathParts[idIndex];
 
   if (!id) {
@@ -37,23 +37,23 @@ export const handler = async (event: any, context: any) => {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Recording ID is required" })
+      body: JSON.stringify({ error: "Recording ID is required" }),
     };
   }
 
   let requestBody;
   try {
-    requestBody = JSON.parse(event.body || '{}');
+    requestBody = JSON.parse(event.body || "{}");
   } catch (error) {
     return {
       statusCode: 400,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Invalid JSON in request body" })
+      body: JSON.stringify({ error: "Invalid JSON in request body" }),
     };
   }
 
@@ -65,9 +65,9 @@ export const handler = async (event: any, context: any) => {
       statusCode: 401,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Unauthorized" })
+      body: JSON.stringify({ error: "Unauthorized" }),
     };
   }
 
@@ -83,7 +83,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!recordingResponse.ok) {
@@ -91,9 +91,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -103,9 +103,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Recording not found" })
+        body: JSON.stringify({ error: "Recording not found" }),
       };
     }
 
@@ -120,7 +120,7 @@ export const handler = async (event: any, context: any) => {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!chunksResponse.ok) {
@@ -128,9 +128,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Failed to load chunks" })
+        body: JSON.stringify({ error: "Failed to load chunks" }),
       };
     }
 
@@ -141,9 +141,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "No audio chunks found" })
+        body: JSON.stringify({ error: "No audio chunks found" }),
       };
     }
 
@@ -159,13 +159,15 @@ export const handler = async (event: any, context: any) => {
         // Fetch chunk data from Supabase storage
         const chunkUrl = `${SUPABASE_URL}/storage/v1/object/public/audio-chunks/${chunk.storage_path}`;
         const chunkResponse = await fetch(chunkUrl);
-        
+
         if (chunkResponse.ok) {
           const chunkBuffer = await chunkResponse.arrayBuffer();
           chunkBuffers.push(new Uint8Array(chunkBuffer));
           totalSize += chunkBuffer.byteLength;
         } else {
-          console.warn(`Failed to download chunk ${chunk.chunk_number}: ${chunkResponse.status}`);
+          console.warn(
+            `Failed to download chunk ${chunk.chunk_number}: ${chunkResponse.status}`,
+          );
         }
       } catch (error) {
         console.warn(`Error downloading chunk ${chunk.chunk_number}:`, error);
@@ -177,9 +179,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 404,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "No chunks could be downloaded" })
+        body: JSON.stringify({ error: "No chunks could be downloaded" }),
       };
     }
 
@@ -192,7 +194,7 @@ export const handler = async (event: any, context: any) => {
     }
 
     // Convert to base64 for transmission
-    const base64Audio = Buffer.from(concatenatedBuffer).toString('base64');
+    const base64Audio = Buffer.from(concatenatedBuffer).toString("base64");
 
     return {
       statusCode: 200,
@@ -200,29 +202,28 @@ export const handler = async (event: any, context: any) => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
       body: JSON.stringify({
         success: true,
         filename: recording.file_name,
-        mimeType: recording.mime_type || 'audio/webm',
+        mimeType: recording.mime_type || "audio/webm",
         size: concatenatedBuffer.length,
-        audioData: base64Audio
-      })
+        audioData: base64Audio,
+      }),
     };
-
   } catch (error: any) {
     console.error(`Download error for recording ${id}:`, error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: "Download failed",
-        details: error.message
-      })
+        details: error.message,
+      }),
     };
   }
 };
