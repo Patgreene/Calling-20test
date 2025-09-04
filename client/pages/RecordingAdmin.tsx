@@ -83,7 +83,11 @@ export default function RecordingAdmin() {
   const loadRecordings = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/recordings");
+      const response = await fetch("/api/admin/recordings", {
+        headers: {
+          "Authorization": "Bearer Tim&Pat95"
+        }
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -131,8 +135,11 @@ export default function RecordingAdmin() {
         `/api/admin/recordings/${recordingId}/download`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer Tim&Pat95"
+          },
+          body: JSON.stringify({ password: "Tim&Pat95" }),
         },
       );
 
@@ -183,8 +190,11 @@ export default function RecordingAdmin() {
           `/api/admin/recordings/${recordingId}/download`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({}),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer Tim&Pat95"
+            },
+            body: JSON.stringify({ password: "Tim&Pat95" }),
           },
         );
 
