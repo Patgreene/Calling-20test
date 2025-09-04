@@ -23,6 +23,16 @@
   status = 200
 
 [[redirects]]
+  from = "/api/admin/recordings/chunk"
+  to = "/.netlify/functions/admin-chunk"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/recordings/finalize"
+  to = "/.netlify/functions/admin-finalize"
+  status = 200
+
+[[redirects]]
   from = "/api/admin/recordings/transcribe"
   to = "/.netlify/functions/admin-transcribe"
   status = 200
