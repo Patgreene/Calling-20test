@@ -75,15 +75,15 @@ const DEFAULT_SESSION_CONFIG = {
 
 export const handler = async (event: any, context: any) => {
   // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
+  if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
-      body: ""
+      body: "",
     };
   }
 
@@ -117,7 +117,7 @@ export const handler = async (event: any, context: any) => {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
           },
           body: JSON.stringify({
             instructions: activePrompt.prompt,
@@ -138,7 +138,7 @@ export const handler = async (event: any, context: any) => {
             },
             created_at: activePrompt.created_at,
             id: activePrompt.id,
-          })
+          }),
         };
       } else {
         // No active prompt found, return fallback
@@ -149,13 +149,13 @@ export const handler = async (event: any, context: any) => {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
           },
           body: JSON.stringify({
             instructions: DEFAULT_INSTRUCTIONS,
             sessionConfig: DEFAULT_SESSION_CONFIG,
             fallback: true,
-          })
+          }),
         };
       }
     } else {
@@ -164,9 +164,9 @@ export const handler = async (event: any, context: any) => {
         statusCode: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ error: "Failed to fetch active prompt" })
+        body: JSON.stringify({ error: "Failed to fetch active prompt" }),
       };
     }
   } catch (error: any) {
@@ -175,9 +175,12 @@ export const handler = async (event: any, context: any) => {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: "Error fetching active prompt", details: error.message })
+      body: JSON.stringify({
+        error: "Error fetching active prompt",
+        details: error.message,
+      }),
     };
   }
 };
