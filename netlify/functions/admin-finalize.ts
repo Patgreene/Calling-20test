@@ -55,7 +55,9 @@ export const handler = async (event: any, context: any) => {
   }
 
   try {
-    console.log(`🏁 Finalizing recording ${recording_id} with ${total_chunks} chunks, ${total_duration}s duration`);
+    console.log(
+      `🏁 Finalizing recording ${recording_id} with ${total_chunks} chunks, ${total_duration}s duration`,
+    );
 
     // Get current recording details
     const recordingResponse = await fetch(
@@ -95,12 +97,12 @@ export const handler = async (event: any, context: any) => {
     }
 
     const chunks = await chunksResponse.json();
-    
+
     // Verify chunk integrity
     const uploadedChunks = chunks.length;
     const expectedChunks = total_chunks || uploadedChunks;
     const missingChunks = [];
-    
+
     for (let i = 0; i < expectedChunks; i++) {
       if (!chunks.find((chunk: any) => chunk.chunk_number === i)) {
         missingChunks.push(i);
@@ -108,7 +110,10 @@ export const handler = async (event: any, context: any) => {
     }
 
     // Calculate total size
-    const totalSize = chunks.reduce((sum: number, chunk: any) => sum + (chunk.size_bytes || 0), 0);
+    const totalSize = chunks.reduce(
+      (sum: number, chunk: any) => sum + (chunk.size_bytes || 0),
+      0,
+    );
 
     // Determine upload and verification status
     let uploadStatus = "completed";
@@ -154,15 +159,21 @@ export const handler = async (event: any, context: any) => {
     if (!updateResponse.ok) {
       const errorText = await updateResponse.text();
       console.error("Failed to update recording:", errorText);
-      throw new Error(`Failed to update recording: ${updateResponse.status} ${errorText}`);
+      throw new Error(
+        `Failed to update recording: ${updateResponse.status} ${errorText}`,
+      );
     }
 
     const updatedRecordings = await updateResponse.json();
     const updatedRecording = updatedRecordings[0];
 
     console.log(`✅ Recording ${recording_id} finalized successfully`);
-    console.log(`📊 Status: ${uploadStatus}, Verification: ${verificationStatus}`);
-    console.log(`📈 Chunks: ${uploadedChunks}/${expectedChunks}, Size: ${Math.round(totalSize / 1024)}KB, Duration: ${total_duration}s`);
+    console.log(
+      `📊 Status: ${uploadStatus}, Verification: ${verificationStatus}`,
+    );
+    console.log(
+      `📈 Chunks: ${uploadedChunks}/${expectedChunks}, Size: ${Math.round(totalSize / 1024)}KB, Duration: ${total_duration}s`,
+    );
 
     return {
       statusCode: 200,

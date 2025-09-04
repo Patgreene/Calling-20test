@@ -33,11 +33,13 @@ export const handler = async (event: any, context: any) => {
   if (!id) {
     // Try to extract from path
     const pathParts = event.path.split("/");
-    const recordingsIndex = pathParts.findIndex((part) => part === "recordings");
+    const recordingsIndex = pathParts.findIndex(
+      (part) => part === "recordings",
+    );
     if (recordingsIndex >= 0 && recordingsIndex + 1 < pathParts.length) {
       id = pathParts[recordingsIndex + 1];
       // Remove 'download' suffix if present
-      if (id === 'download' && recordingsIndex + 2 < pathParts.length) {
+      if (id === "download" && recordingsIndex + 2 < pathParts.length) {
         id = pathParts[recordingsIndex - 1];
       }
     }

@@ -35,7 +35,10 @@ export const handler = async (event: any, context: any) => {
 
     if (event.headers["content-type"]?.includes("multipart/form-data")) {
       // Simple multipart parsing for chunks
-      const body = Buffer.from(event.body, event.isBase64Encoded ? "base64" : "utf8");
+      const body = Buffer.from(
+        event.body,
+        event.isBase64Encoded ? "base64" : "utf8",
+      );
       const boundary = event.headers["content-type"]
         .split("boundary=")[1]
         ?.replace(/"/g, "");
@@ -45,15 +48,15 @@ export const handler = async (event: any, context: any) => {
       }
 
       const parts = body.toString("binary").split(`--${boundary}`);
-      
+
       for (const part of parts) {
         if (part.includes('name="recording_id"')) {
-          recording_id = part.split('\r\n\r\n')[1]?.split('\r\n')[0];
+          recording_id = part.split("\r\n\r\n")[1]?.split("\r\n")[0];
         } else if (part.includes('name="chunk_index"')) {
-          chunk_index = parseInt(part.split('\r\n\r\n')[1]?.split('\r\n')[0]);
+          chunk_index = parseInt(part.split("\r\n\r\n")[1]?.split("\r\n")[0]);
         } else if (part.includes('name="chunk"')) {
-          const dataStart = part.indexOf('\r\n\r\n') + 4;
-          const dataEnd = part.lastIndexOf('\r\n');
+          const dataStart = part.indexOf("\r\n\r\n") + 4;
+          const dataEnd = part.lastIndexOf("\r\n");
           chunkBuffer = Buffer.from(part.slice(dataStart, dataEnd), "binary");
         }
       }
@@ -62,7 +65,7 @@ export const handler = async (event: any, context: any) => {
       const requestBody = JSON.parse(event.body || "{}");
       recording_id = requestBody.recording_id;
       chunk_index = requestBody.chunk_index;
-      
+
       if (requestBody.chunk_data) {
         chunkBuffer = Buffer.from(requestBody.chunk_data, "base64");
       }
@@ -75,16 +78,19 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ 
-          error: "Missing required fields: recording_id, chunk_index, or chunk data" 
+        body: JSON.stringify({
+          error:
+            "Missing required fields: recording_id, chunk_index, or chunk data",
         }),
       };
     }
 
-    console.log(`📦 Uploading chunk ${chunk_index} for recording ${recording_id} (${chunkBuffer.length} bytes)`);
+    console.log(
+      `📦 Uploading chunk ${chunk_index} for recording ${recording_id} (${chunkBuffer.length} bytes)`,
+    );
 
     // Generate unique storage path for this chunk
-    const storagePath = `${recording_id}/chunk_${chunk_index.toString().padStart(4, '0')}.webm`;
+    const storagePath = `${recording_id}/chunk_${chunk_index.toString().padStart(4, "0")}.webm`;
 
     // Upload chunk to Supabase storage
     const uploadResponse = await fetch(
@@ -103,7 +109,9 @@ export const handler = async (event: any, context: any) => {
     if (!uploadResponse.ok) {
       const errorText = await uploadResponse.text();
       console.error("Storage upload failed:", errorText);
-      throw new Error(`Storage upload failed: ${uploadResponse.status} ${errorText}`);
+      throw new Error(
+        `Storage upload failed: ${uploadResponse.status} ${errorText}`,
+      );
     }
 
     // Create or update chunk record in database
@@ -116,24 +124,23 @@ export const handler = async (event: any, context: any) => {
       uploaded_at: new Date().toISOString(),
     };
 
-    const dbResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/recording_chunks`,
-      {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "resolution=merge-duplicates",
-        },
-        body: JSON.stringify(chunkRecord),
+    const dbResponse = await fetch(`${SUPABASE_URL}/rest/v1/recording_chunks`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates",
       },
-    );
+      body: JSON.stringify(chunkRecord),
+    });
 
     if (!dbResponse.ok) {
       const errorText = await dbResponse.text();
       console.error("Database insert failed:", errorText);
-      throw new Error(`Database insert failed: ${dbResponse.status} ${errorText}`);
+      throw new Error(
+        `Database insert failed: ${dbResponse.status} ${errorText}`,
+      );
     }
 
     console.log(`✅ Chunk ${chunk_index} uploaded successfully`);
