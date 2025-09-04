@@ -85,8 +85,8 @@ export default function RecordingAdmin() {
     try {
       const response = await fetch("/api/admin/recordings", {
         headers: {
-          "Authorization": "Bearer Tim&Pat95"
-        }
+          Authorization: "Bearer Tim&Pat95",
+        },
       });
 
       if (response.ok) {
@@ -208,9 +208,11 @@ export default function RecordingAdmin() {
             status: response.status,
             statusText: response.statusText,
             error: errorText,
-            recordingId
+            recordingId,
           });
-          throw new Error(`Failed to load audio: ${response.status} ${response.statusText}`);
+          throw new Error(
+            `Failed to load audio: ${response.status} ${response.statusText}`,
+          );
         }
 
         const blob = await response.blob();
