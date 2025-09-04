@@ -193,24 +193,18 @@ export const handler = async (event: any, context: any) => {
       offset += buffer.length;
     }
 
-    // Convert to base64 for transmission
-    const base64Audio = Buffer.from(concatenatedBuffer).toString("base64");
-
+    // Return the binary audio data directly
     return {
       statusCode: 200,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": recording.mime_type || "audio/webm",
+        "Content-Disposition": `attachment; filename="${recording.file_name}"`,
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
-      body: JSON.stringify({
-        success: true,
-        filename: recording.file_name,
-        mimeType: recording.mime_type || "audio/webm",
-        size: concatenatedBuffer.length,
-        audioData: base64Audio,
-      }),
+      body: Buffer.from(concatenatedBuffer).toString("base64"),
+      isBase64Encoded: true,
     };
   } catch (error: any) {
     console.error(`Download error for recording ${id}:`, error);
