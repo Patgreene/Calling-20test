@@ -25,7 +25,7 @@ export default function VouchStart() {
           </div>
 
           <button
-            onClick={() => alert("Call starting (placeholder)")}
+            onClick={() => alert("Starting call...")}
             className="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center shadow-lg"
             aria-label="Start call"
           >
