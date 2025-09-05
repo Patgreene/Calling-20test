@@ -55,6 +55,66 @@ interface Recording {
   };
 }
 
+function generateMockRecordings(): Recording[] {
+  const now = Date.now();
+  return [
+    {
+      id: "mock-001",
+      created_at: new Date(now - 1000 * 60 * 60).toISOString(),
+      call_code: "CALL-ABC123",
+      voucher_name: "Alex Rivera",
+      vouchee_name: "Jamie Lee",
+      duration_seconds: 356,
+      file_name: "CALL-ABC123.webm",
+      file_size_bytes: 6_543_210,
+      upload_status: "completed",
+      verification_status: "verified",
+      retry_count: 0,
+      chunks_total: 12,
+      chunks_uploaded: 12,
+      transcription: {
+        id: "tx-001",
+        status: "completed",
+        transcript_text:
+          "I worked with Jamie on several projects. What really stood out was their initiative and clarity of communication...",
+        duration: 356,
+        language: "en",
+        completed_at: new Date(now - 1000 * 60 * 30).toISOString(),
+      },
+    },
+    {
+      id: "mock-002",
+      created_at: new Date(now - 1000 * 60 * 120).toISOString(),
+      call_code: "CALL-XYZ789",
+      voucher_name: "Morgan Chen",
+      vouchee_name: "Taylor Brooks",
+      duration_seconds: 124,
+      file_name: "CALL-XYZ789.webm",
+      file_size_bytes: 2_345_678,
+      upload_status: "completed",
+      verification_status: "verified",
+      retry_count: 1,
+      chunks_total: 5,
+      chunks_uploaded: 5,
+    },
+    {
+      id: "mock-003",
+      created_at: new Date(now - 1000 * 60 * 10).toISOString(),
+      call_code: "CALL-PENDING-42",
+      voucher_name: "Riley Patel",
+      vouchee_name: "Sam Green",
+      file_name: "CALL-PENDING-42.webm",
+      file_size_bytes: 987_654,
+      upload_status: "verifying",
+      verification_status: "pending",
+      retry_count: 2,
+      chunks_total: 7,
+      chunks_uploaded: 6,
+      last_error_message: "1 chunk missing; waiting for verification",
+    },
+  ];
+}
+
 export default function RecordingAdmin() {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,20 +142,45 @@ export default function RecordingAdmin() {
 
   const loadRecordings = async () => {
     setIsLoading(true);
+
+    const mockFlag = new URLSearchParams(window.location.search).get("mock");
+    if (mockFlag === "1") {
+      const mockData = generateMockRecordings();
+      setRecordings(mockData);
+      calculateStats(mockData);
+      setMessage({ type: "success", text: "Showing sample data" });
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/.netlify/functions/admin-recordings");
 
       if (response.ok) {
         const data = await response.json();
-        setRecordings(data.recordings || []);
-        calculateStats(data.recordings || []);
+        const list = data.recordings || [];
+        if (list.length === 0) {
+          const mockData = generateMockRecordings();
+          setRecordings(mockData);
+          calculateStats(mockData);
+          setMessage({ type: "warning", text: "Showing sample data (no records found)" });
+        } else {
+          setRecordings(list);
+          calculateStats(list);
+        }
       } else {
         console.error("Failed to load recordings:", response.status);
-        setMessage({ type: "error", text: "Failed to load recordings" });
+        const mockData = generateMockRecordings();
+        setRecordings(mockData);
+        calculateStats(mockData);
+        setMessage({ type: "warning", text: "Showing sample data (service unavailable)" });
       }
     } catch (error) {
       console.error("Error loading recordings:", error);
-      setMessage({ type: "error", text: "Error loading recordings" });
+      const mockData = generateMockRecordings();
+      setRecordings(mockData);
+      calculateStats(mockData);
+      setMessage({ type: "warning", text: "Showing sample data (offline)" });
     }
     setIsLoading(false);
   };
