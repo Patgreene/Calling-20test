@@ -1,17 +1,8 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist/spa" }
-    }
-  ],
-  "routes": [
-    { "src": "/api/contact", "dest": "/api/contact" },
-    {
-      "src": "/(.*\\.(?:js|css|map|png|jpg|jpeg|gif|svg|webp|ico|txt|json))",
-      "dest": "/$1"
-    },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/spa",
+  "rewrites": [
+    { "source": "/api/contact", "destination": "/api/contact" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
