@@ -1,9 +1,11 @@
 {
-  "builds": [{
-    "src": "package.json",
-    "use": "@vercel/static-build",
-    "config": { "distDir": "dist/spa" }
-  }],
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist/spa" }
+    }
+  ],
   "routes": [
     { "src": "/api/contact", "dest": "/api/contact" },
     { "src": "/(.*)", "dest": "/index.html" }
