@@ -133,7 +133,7 @@ export const handler = async (event: any, context: any) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, PUT, OPTIONS",
       },
       body: "",
     };
@@ -148,7 +148,7 @@ export const handler = async (event: any, context: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+          "Access-Control-Allow-Methods": "GET, PUT, OPTIONS",
         },
         body: JSON.stringify(promptData),
       };
@@ -167,7 +167,111 @@ export const handler = async (event: any, context: any) => {
     }
   }
 
-  // For now, just support GET. PUT can be added later if needed
+  if (event.httpMethod === "PUT") {
+    try {
+      const body = JSON.parse(event.body || "{}");
+      const { instructions, sessionConfig } = body;
+
+      if (!instructions || typeof instructions !== "string") {
+        return {
+          statusCode: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({ error: "Instructions are required" }),
+        };
+      }
+
+      // Deactivate any currently active prompts
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/interview_prompts?is_active=eq.true`, {
+          method: "PATCH",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({ is_active: false }),
+        });
+      } catch (deactivateError) {
+        console.warn("Failed to deactivate existing prompts:", deactivateError);
+      }
+
+      // Prepare new prompt record
+      const dataToSave: any = {
+        prompt: instructions,
+        is_active: true,
+      };
+
+      if (sessionConfig) {
+        dataToSave.voice = sessionConfig.voice;
+        dataToSave.speed = sessionConfig.speed;
+        dataToSave.temperature = sessionConfig.temperature;
+        dataToSave.max_response_tokens = sessionConfig.max_response_output_tokens;
+        dataToSave.vad_threshold = sessionConfig.turn_detection?.threshold;
+        dataToSave.silence_duration_ms = sessionConfig.turn_detection?.silence_duration_ms;
+        dataToSave.prefix_padding_ms = sessionConfig.turn_detection?.prefix_padding_ms;
+      }
+
+      const saveResponse = await fetch(`${SUPABASE_URL}/rest/v1/interview_prompts`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify(dataToSave),
+      });
+
+      if (!saveResponse.ok) {
+        const errorText = await saveResponse.text();
+        return {
+          statusCode: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({
+            error: "Failed to save prompt",
+            details: errorText,
+          }),
+        };
+      }
+
+      const [saved] = await saveResponse.json();
+
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Methods": "GET, PUT, OPTIONS",
+        },
+        body: JSON.stringify({
+          message: "Prompt and settings saved successfully",
+          promptId: saved.id,
+          created_at: saved.created_at,
+        }),
+      };
+    } catch (error: any) {
+      return {
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          error: "Failed to save prompt",
+          details: error.message,
+        }),
+      };
+    }
+  }
+
   return {
     statusCode: 405,
     headers: {
