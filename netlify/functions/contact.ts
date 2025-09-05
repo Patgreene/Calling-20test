@@ -25,7 +25,8 @@ export const handler = async (event: any, context: any) => {
 
   try {
     const requestBody = JSON.parse(event.body || "{}");
-    const { name, email, message } = requestBody;
+    const { name, email } = requestBody;
+    const message: string = requestBody.message ?? requestBody.comment ?? "";
 
     if (!name || !email || !message) {
       return {
