@@ -17,7 +17,10 @@ export const handler = async (event: any) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
@@ -26,8 +29,13 @@ export const handler = async (event: any) => {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
       return {
         statusCode: 500,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-        body: JSON.stringify({ error: "SUPABASE_URL or SUPABASE_ANON_KEY not configured" }),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          error: "SUPABASE_URL or SUPABASE_ANON_KEY not configured",
+        }),
       };
     }
 
@@ -37,7 +45,10 @@ export const handler = async (event: any) => {
     if (!voucher_name || !vouchee_name || !voucher_email || !voucher_phone) {
       return {
         statusCode: 400,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
         body: JSON.stringify({ error: "Missing required fields" }),
       };
     }
@@ -50,27 +61,44 @@ export const handler = async (event: any) => {
         "Content-Type": "application/json",
         Prefer: "return=representation",
       },
-      body: JSON.stringify({ voucher_name, vouchee_name, voucher_email, voucher_phone }),
+      body: JSON.stringify({
+        voucher_name,
+        vouchee_name,
+        voucher_email,
+        voucher_phone,
+      }),
     });
 
     const data = await resp.json().catch(() => ({}));
     if (!resp.ok) {
       return {
         statusCode: 500,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-        body: JSON.stringify({ error: "Supabase insert failed", details: data }),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          error: "Supabase insert failed",
+          details: data,
+        }),
       };
     }
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       body: JSON.stringify({ success: true, record: data[0] }),
     };
   } catch (e: any) {
     return {
       statusCode: 500,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       body: JSON.stringify({ error: "Unexpected error", message: e.message }),
     };
   }

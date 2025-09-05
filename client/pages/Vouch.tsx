@@ -8,7 +8,10 @@ export default function Vouch() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const emailValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
+  const emailValid = useMemo(
+    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+    [email],
+  );
   const phoneValid = useMemo(() => phone.trim().length >= 7, [phone]);
   const isValid = name.trim() && vouchee.trim() && emailValid && phoneValid;
 
@@ -47,7 +50,9 @@ export default function Vouch() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-6">
-          <h1 className="text-white text-3xl sm:text-4xl font-bold">Vouch Interview</h1>
+          <h1 className="text-white text-3xl sm:text-4xl font-bold">
+            Vouch Interview
+          </h1>
           <p className="text-blue-200 mt-2">Fill in your details</p>
         </div>
 
@@ -57,7 +62,9 @@ export default function Vouch() {
         >
           <div className="space-y-5">
             <div>
-              <label className="block text-sm text-white/80 mb-2">Your Name</label>
+              <label className="block text-sm text-white/80 mb-2">
+                Your Name
+              </label>
               <input
                 type="text"
                 placeholder="Full name"
@@ -68,7 +75,9 @@ export default function Vouch() {
             </div>
 
             <div>
-              <label className="block text-sm text-white/80 mb-2">Who are you Vouching for?</label>
+              <label className="block text-sm text-white/80 mb-2">
+                Who are you Vouching for?
+              </label>
               <input
                 type="text"
                 placeholder="Full name"
@@ -79,7 +88,9 @@ export default function Vouch() {
             </div>
 
             <div>
-              <label className="block text-sm text-white/80 mb-2">Your Email</label>
+              <label className="block text-sm text-white/80 mb-2">
+                Your Email
+              </label>
               <input
                 type="email"
                 placeholder="your.email@example.com"
@@ -94,7 +105,9 @@ export default function Vouch() {
             </div>
 
             <div>
-              <label className="block text-sm text-white/80 mb-2">Your Phone</label>
+              <label className="block text-sm text-white/80 mb-2">
+                Your Phone
+              </label>
               <input
                 type="tel"
                 placeholder="+64 21 123 4567"

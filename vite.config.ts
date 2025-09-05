@@ -37,8 +37,14 @@ function devApiPlugin(): Plugin {
         req.on("end", async () => {
           try {
             const body = JSON.parse(raw || "{}");
-            const { voucher_name, vouchee_name, voucher_email, voucher_phone } = body;
-            if (!voucher_name || !vouchee_name || !voucher_email || !voucher_phone) {
+            const { voucher_name, vouchee_name, voucher_email, voucher_phone } =
+              body;
+            if (
+              !voucher_name ||
+              !vouchee_name ||
+              !voucher_email ||
+              !voucher_phone
+            ) {
               res.statusCode = 400;
               res.setHeader("Content-Type", "application/json");
               res.end(JSON.stringify({ error: "Missing required fields" }));
@@ -55,21 +61,36 @@ function devApiPlugin(): Plugin {
                   "Content-Type": "application/json",
                   Prefer: "return=representation",
                 },
-                body: JSON.stringify({ voucher_name, vouchee_name, voucher_email, voucher_phone }),
+                body: JSON.stringify({
+                  voucher_name,
+                  vouchee_name,
+                  voucher_email,
+                  voucher_phone,
+                }),
               });
               const data = await resp.json().catch(() => ({}));
               res.statusCode = resp.ok ? 200 : 500;
               res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify(resp.ok ? { success: true, record: data[0] } : { error: "Supabase insert failed", details: data }));
+              res.end(
+                JSON.stringify(
+                  resp.ok
+                    ? { success: true, record: data[0] }
+                    : { error: "Supabase insert failed", details: data },
+                ),
+              );
               return;
             }
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ success: true, record: { id: "dev-mock-id" } }));
+            res.end(
+              JSON.stringify({ success: true, record: { id: "dev-mock-id" } }),
+            );
           } catch (e: any) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ error: "Failed to create", message: e.message }));
+            res.end(
+              JSON.stringify({ error: "Failed to create", message: e.message }),
+            );
           }
         });
       });
@@ -92,7 +113,11 @@ function devApiPlugin(): Plugin {
             if (!name || !email || !message) {
               res.statusCode = 400;
               res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify({ error: "Name, email, and message are required" }));
+              res.end(
+                JSON.stringify({
+                  error: "Name, email, and message are required",
+                }),
+              );
               return;
             }
             res.statusCode = 200;
@@ -100,13 +125,19 @@ function devApiPlugin(): Plugin {
             res.end(
               JSON.stringify({
                 success: true,
-                message: "Thank you for your message. We'll get back to you soon!",
-              })
+                message:
+                  "Thank you for your message. We'll get back to you soon!",
+              }),
             );
           } catch (e: any) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ error: "Failed to submit contact form", message: e.message }));
+            res.end(
+              JSON.stringify({
+                error: "Failed to submit contact form",
+                message: e.message,
+              }),
+            );
           }
         });
       });
