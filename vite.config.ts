@@ -25,7 +25,6 @@ function devApiPlugin(): Plugin {
     name: "dev-api-plugin",
     apply: "serve",
     configureServer(server) {
-
       server.middlewares.use("/api/contact", (req, res, next) => {
         if (req.method !== "POST") {
           res.statusCode = 405;

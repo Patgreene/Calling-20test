@@ -109,7 +109,6 @@ export default function Index() {
               View Demo Profile
             </Button>
           </a>
-
         </div>
 
         {/* Quote Section */}
