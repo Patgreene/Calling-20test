@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import Vouch from "./pages/Vouch";
+import VouchStart from "./pages/VouchStart";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/vouch" element={<Vouch />} />
+          <Route path="/vouch/start" element={<VouchStart />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
