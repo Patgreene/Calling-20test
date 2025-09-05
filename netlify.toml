@@ -6,103 +6,11 @@
 [functions]
   node_bundler = "esbuild"
 
-# API redirects - each endpoint maps to its own function
-[[redirects]]
-  from = "/api/active-prompt"
-  to = "/.netlify/functions/active-prompt"
-  status = 200
-
+# API redirects
 [[redirects]]
   from = "/api/contact"
   to = "/.netlify/functions/contact"
   status = 200
-
-[[redirects]]
-  from = "/api/submit-vouch"
-  to = "/.netlify/functions/submit-vouch"
-  status = 200
-
-[[redirects]]
-  from = "/api/upload-image"
-  to = "/.netlify/functions/upload-image"
-  status = 200
-
-[[redirects]]
-  from = "/api/realtime/client-secret"
-  to = "/.netlify/functions/client-secret"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings"
-  to = "/.netlify/functions/admin-recordings"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/chunk"
-  to = "/.netlify/functions/admin-chunk"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/finalize"
-  to = "/.netlify/functions/admin-finalize"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/transcribe"
-  to = "/.netlify/functions/admin-transcribe"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/transcript"
-  to = "/.netlify/functions/admin-transcript"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/retry"
-  to = "/.netlify/functions/admin-retry"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/:id/download"
-  to = "/.netlify/functions/admin-download?id=:id"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/:id/fix"
-  to = "/.netlify/functions/admin-fix?id=:id"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/recordings/:id"
-  to = "/.netlify/functions/admin-delete?id=:id"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/prompt-history"
-  to = "/.netlify/functions/admin-prompt-history"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/prompt/:id"
-  to = "/.netlify/functions/admin-prompt-by-id?id=:id"
-  status = 200
-
-[[redirects]]
-  from = "/api/admin/prompt"
-  to = "/.netlify/functions/admin-prompt"
-  status = 200
-
-[[redirects]]
-  from = "/api/test"
-  to = "/.netlify/functions/test"
-  status = 200
-
-# Catch-all for other API routes (if needed)
-[[redirects]]
-  force = true
-  from = "/api/*"
-  status = 200
-  to = "/.netlify/functions/api/:splat"
 
 # SPA redirect - serve index.html for all routes
 [[redirects]]
