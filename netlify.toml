@@ -12,6 +12,11 @@
   to = "/.netlify/functions/contact"
   status = 200
 
+[[redirects]]
+  from = "/api/create-recording"
+  to = "/.netlify/functions/create-recording"
+  status = 200
+
 # SPA redirect - serve index.html for all routes
 [[redirects]]
   from = "/*"
