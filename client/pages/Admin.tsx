@@ -93,21 +93,25 @@ export default function Admin() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         setOriginalPrompt(prompt);
         setOriginalSessionConfig(sessionConfig);
         setMessage({
           type: "success",
-          text: "Prompt and settings saved to Supabase successfully!",
+          text: data.message || "Prompt and settings saved successfully!",
         });
-        // Refresh history if it's currently shown
         if (showHistory) {
           loadPromptHistory();
         }
       } else {
-        const error = await response.json();
+        let errorText = "Failed to save prompt";
+        try {
+          const error = await response.json();
+          errorText = error.error || error.details || error.message || errorText;
+        } catch {}
         setMessage({
           type: "error",
-          text: error.error || "Failed to save prompt",
+          text: errorText,
         });
       }
     } catch (error) {
@@ -145,7 +149,15 @@ export default function Admin() {
       const response = await fetch("/api/admin/prompt-history");
       if (response.ok) {
         const data = await response.json();
-        setPromptHistory(data.history);
+        const list = (data.history || data.prompts || []).map((item: any) => ({
+          id: item.id,
+          prompt: item.prompt ?? item.prompt_text ?? "",
+          created_at: item.created_at,
+          length: item.length ?? (item.prompt ? item.prompt.length : 0),
+          preview: item.preview ?? (item.prompt ? item.prompt.substring(0, 150) + "..." : ""),
+          is_active: item.is_active,
+        }));
+        setPromptHistory(list);
         setShowHistory(true);
       } else {
         setMessage({ type: "error", text: "Failed to load prompt history" });
@@ -166,8 +178,9 @@ export default function Admin() {
           ? new Date(historyItem.created_at).toLocaleString()
           : "Unknown";
 
-        setPrompt(data.instructions);
-        updateStats(data.instructions);
+        const instructions = data.instructions ?? data.prompt?.prompt ?? "";
+        setPrompt(instructions);
+        updateStats(instructions);
         setMessage({
           type: "success",
           text: `Reverted to prompt from ${promptDate}. Remember to save if you want to keep these changes.`,
