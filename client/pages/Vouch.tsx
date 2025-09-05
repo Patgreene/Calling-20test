@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Vouch() {
   const [name, setName] = useState("");
@@ -11,10 +12,35 @@ export default function Vouch() {
   const phoneValid = useMemo(() => phone.trim().length >= 7, [phone]);
   const isValid = name.trim() && vouchee.trim() && emailValid && phoneValid;
 
-  const onNext = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const onNext = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid) return;
-    alert("Thanks! Next step coming soon.");
+
+    try {
+      const resp = await fetch("/api/create-recording", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voucher_name: name.trim(),
+          vouchee_name: vouchee.trim(),
+          voucher_email: email.trim(),
+          voucher_phone: phone.trim(),
+        }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok || !data?.success) {
+        alert(data?.error || "Failed to save");
+        return;
+      }
+
+      const id = data.record?.id || "";
+      navigate("/vouch/start", { state: { recordingId: id, name, vouchee } });
+    } catch (err: any) {
+      alert(err.message || "Unexpected error");
+    }
   };
 
   return (
