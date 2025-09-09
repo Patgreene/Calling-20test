@@ -109,6 +109,19 @@ export default function Index() {
               View Demo Profile
             </Button>
           </a>
+          <a
+            href="https://interview.vouchprofile.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant={null}
+              size="lg"
+              className="!bg-[#007BC1] hover:!bg-[#0066A3] !text-white font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto"
+            >
+              Vouch For Someone
+            </Button>
+          </a>
         </div>
 
         {/* Quote Section */}
