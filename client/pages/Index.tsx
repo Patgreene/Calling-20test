@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X, Mail } from "lucide-react";
 
 export default function Index() {
@@ -10,38 +9,6 @@ export default function Index() {
     email: "",
     comment: "",
   });
-  const quotes = [
-    {
-      text: '" She is one of the most creative people I\'ve ever worked with. "',
-      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=329&e=390",
-    },
-    {
-      text: '" Results came from relentless iteration, late-night testing, and a level of ownership that\'s incredibly rare in a contractor. "',
-      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-2&s=781&e=905",
-    },
-    {
-      text: '" What really blew me away was her ability to connect with people. Whether it was a developer or stakeholder. "',
-      link: "https://profiles.vouchprofile.com/demo?t=demo-transcript-1&s=390&e=497",
-    },
-  ];
-
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
-
-  useEffect(() => {
-    const setupNextQuote = () => {
-      // First quote shows for 7 seconds, others for 10 seconds
-      const currentDuration = currentQuoteIndex === 0 ? 7000 : 10000;
-
-      const timeout = setTimeout(() => {
-        setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-      }, currentDuration);
-
-      return timeout;
-    };
-
-    const timeout = setupNextQuote();
-    return () => clearTimeout(timeout);
-  }, [currentQuoteIndex, quotes.length]);
 
   const handleContactFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -98,6 +65,11 @@ export default function Index() {
           <br />
         </h1>
 
+        {/* Subheading */}
+        <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+          Vouch is a tool that helps people prove they’re good at what they do through quick interviews with colleagues and clients.
+        </p>
+
         {/* CTA Buttons */}
         <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a href="https://profiles.vouchprofile.com/demo">
@@ -121,27 +93,6 @@ export default function Index() {
             >
               Vouch For Someone
             </Button>
-          </a>
-        </div>
-
-        {/* Quote Section */}
-        <div className="pt-12">
-          {/* Text */}
-          <div className="hidden sm:flex justify-end pr-8 mb-4">
-            <div className="text-[#7FB5C5] text-lg font-semibold transform rotate-3">
-              Comments that deserve to be saved!
-            </div>
-          </div>
-
-          <a
-            href={quotes[currentQuoteIndex].link}
-            className="group text-center max-w-lg mx-auto block hover:scale-105 transition-transform duration-200"
-          >
-            <p className="text-xl md:text-2xl text-[#FF7A56] font-semibold italic leading-relaxed hover:text-[#f15a33] transition-all duration-500 h-32 flex items-center justify-center">
-              <span className="transition-opacity duration-500 text-center">
-                {quotes[currentQuoteIndex].text}
-              </span>
-            </p>
           </a>
         </div>
       </div>
