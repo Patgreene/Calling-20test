@@ -61,13 +61,13 @@ export default function Index() {
 
         {/* Hero Heading */}
         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight font-sans">
-          Profiles that capture your reputation
+          Profiles that capture your reputation.
           <br />
         </h1>
 
         {/* Subheading */}
         <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-          Vouch is a tool that helps people prove they’re good at what they do through quick interviews with colleagues and clients.
+          Vouch is a tool that <strong>helps people prove they’re good at what they do</strong> through quick interviews with <span>colleagues and clients</span>.
         </p>
 
         {/* CTA Buttons */}
