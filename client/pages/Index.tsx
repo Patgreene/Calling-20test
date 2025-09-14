@@ -67,7 +67,9 @@ export default function Index() {
 
         {/* Subheading */}
         <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-          Vouch is a tool that <strong>helps people prove they’re good at what they do</strong> through quick interviews with <span>colleagues and clients</span>.
+          Vouch is a tool that{" "}
+          <strong>helps people prove they’re good at what they do</strong>{" "}
+          through quick interviews with <span>colleagues and clients</span>.
         </p>
 
         {/* CTA Buttons */}
