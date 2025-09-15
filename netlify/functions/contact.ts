@@ -41,15 +41,29 @@ export const handler = async (event: any, context: any) => {
       };
     }
 
-    // Log the contact form submission
-    console.log("📧 Contact form submission:", {
+    const payload = {
       name,
       email,
-      message: message.substring(0, 100) + "...",
-    });
+      message: String(message),
+      source: "site-contact",
+      timestamp: new Date().toISOString(),
+    };
 
-    // Here you could integrate with email service, save to database, etc.
-    // For now, just return success
+    const webhookUrl = process.env.CONTACT_WEBHOOK_URL;
+
+    if (webhookUrl) {
+      const resp = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) {
+        const text = await resp.text().catch(() => "");
+        throw new Error(`Webhook failed: ${resp.status} ${text}`);
+      }
+    } else {
+      console.warn("CONTACT_WEBHOOK_URL not set; received contact submission", payload);
+    }
 
     return {
       statusCode: 200,

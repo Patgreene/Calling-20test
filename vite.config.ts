@@ -50,15 +50,56 @@ function devApiPlugin(): Plugin {
               );
               return;
             }
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.end(
-              JSON.stringify({
-                success: true,
-                message:
-                  "Thank you for your message. We'll get back to you soon!",
-              }),
-            );
+            const webhookUrl = process.env.CONTACT_WEBHOOK_URL;
+            if (webhookUrl) {
+              fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name,
+                  email,
+                  message,
+                  source: "site-contact",
+                  timestamp: new Date().toISOString(),
+                }),
+              })
+                .then(async (resp) => {
+                  if (!resp.ok) {
+                    const text = await resp.text().catch(() => "");
+                    throw new Error(`Webhook failed: ${resp.status} ${text}`);
+                  }
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.end(
+                    JSON.stringify({
+                      success: true,
+                      message:
+                        "Thank you for your message. We'll get back to you soon!",
+                    }),
+                  );
+                })
+                .catch((err) => {
+                  res.statusCode = 500;
+                  res.setHeader("Content-Type", "application/json");
+                  res.end(
+                    JSON.stringify({
+                      error: "Failed to submit contact form",
+                      message: String(err?.message || err),
+                    }),
+                  );
+                });
+              return;
+            } else {
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  message:
+                    "Thank you for your message. We'll get back to you soon!",
+                }),
+              );
+            }
           } catch (e: any) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
