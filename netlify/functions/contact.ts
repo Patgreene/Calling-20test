@@ -62,7 +62,10 @@ export const handler = async (event: any, context: any) => {
         throw new Error(`Webhook failed: ${resp.status} ${text}`);
       }
     } else {
-      console.warn("CONTACT_WEBHOOK_URL not set; received contact submission", payload);
+      console.warn(
+        "CONTACT_WEBHOOK_URL not set; received contact submission",
+        payload,
+      );
     }
 
     return {

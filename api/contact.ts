@@ -46,7 +46,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         throw new Error(`Webhook failed: ${resp.status} ${text}`);
       }
     } else {
-      console.warn("CONTACT_WEBHOOK_URL not set; received contact submission", payload);
+      console.warn(
+        "CONTACT_WEBHOOK_URL not set; received contact submission",
+        payload,
+      );
     }
 
     res.setHeader("Access-Control-Allow-Origin", "*");
